@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Truck, Package, Ruler, Users, Fuel } from "lucide-react";
+import { Package, Ruler, Users, Fuel } from "lucide-react";
 import { dispatchLogiqEvent } from "@/lib/logiq";
 import type { Vehicle } from "@/data/vehicles";
 
@@ -9,6 +10,8 @@ interface VehicleCardProps {
 }
 
 export function VehicleCard({ vehicle }: VehicleCardProps) {
+  const [showInterior, setShowInterior] = useState(false);
+
   const handleClick = () => {
     dispatchLogiqEvent("logiq:vehicleClick", { vehicleId: vehicle.id });
   };
@@ -18,14 +21,37 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
       className="bg-card rounded-lg border shadow-sm hover:shadow-md transition-shadow overflow-hidden"
       data-vehicle-id={vehicle.id}
       data-daily-price={vehicle.priceDay}
-      data-volume={vehicle.specs.volume}
+      data-volume="13m3"
       data-height={vehicle.specs.height}
       onClick={handleClick}
       role="article"
       aria-label={`${vehicle.name} — CHF ${vehicle.priceDay}/jour`}
     >
-      <div className="aspect-[16/10] bg-muted flex items-center justify-center">
-        <Truck className="h-16 w-16 text-muted-foreground/30" />
+      <div className="relative aspect-[16/10] bg-muted overflow-hidden">
+        <img
+          src={showInterior ? vehicle.images.interior : vehicle.images.exterior}
+          alt={showInterior ? `${vehicle.name} — volume de chargement` : `${vehicle.name} — vue extérieure`}
+          className="w-full h-full object-cover transition-opacity duration-300"
+          loading="lazy"
+        />
+        <div className="absolute bottom-2 right-2 flex gap-1">
+          <button
+            onClick={(e) => { e.stopPropagation(); setShowInterior(false); }}
+            className={`px-2 py-1 text-xs rounded font-medium transition-colors ${
+              !showInterior ? "bg-primary text-primary-foreground" : "bg-background/80 text-foreground hover:bg-background"
+            }`}
+          >
+            Extérieur
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); setShowInterior(true); }}
+            className={`px-2 py-1 text-xs rounded font-medium transition-colors ${
+              showInterior ? "bg-primary text-primary-foreground" : "bg-background/80 text-foreground hover:bg-background"
+            }`}
+          >
+            Intérieur
+          </button>
+        </div>
       </div>
       <div className="p-5">
         <div className="mb-3">
