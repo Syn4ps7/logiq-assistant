@@ -7,8 +7,8 @@ import heroImage from "@/assets/hero-van.jpg";
 
 const features = [
   { icon: Shield, title: "Assurance complète", description: "RC et casco incluses. Franchise réduite disponible avec l'option Sérénité." },
-  { icon: Clock, title: "Réservation rapide", description: "Réservez en ligne en 3 étapes. Prise en charge dès 07h00." },
-  { icon: MapPin, title: "Riviera Vaudoise", description: "Basés à Vevey, nous couvrons toute la Riviera et au-delà." },
+  { icon: Clock, title: "Réservation rapide", description: "Réservez en ligne en 3 étapes. Prise en charge 24/7." },
+  { icon: MapPin, title: "Riviera Vaudoise", description: "Nous couvrons toute la Riviera et au-delà." },
   { icon: Headphones, title: "Support 7j/7", description: "Assistance routière et support client disponible en permanence." },
 ];
 
@@ -93,7 +93,7 @@ const Index = () => {
         <div className="container text-center max-w-2xl">
           <h2 className="text-3xl font-bold mb-4">Prêt à démarrer ?</h2>
           <p className="text-lg opacity-80 mb-8">
-            Réservez votre utilitaire en quelques clics. Prise en charge à Vevey, Riviera Vaudoise.
+            Réservez votre utilitaire en quelques clics. Prise en charge 24/7.
           </p>
           <div className="flex justify-center gap-3">
             <Link to="/reservation">

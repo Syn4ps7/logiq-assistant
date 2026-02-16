@@ -8,7 +8,7 @@ const Privacy = () => {
         <section className="space-y-6 text-sm text-muted-foreground leading-relaxed">
           <div>
             <h2 className="text-lg font-semibold text-foreground">1. Responsable du traitement</h2>
-            <p>LogIQ Transport Sàrl, Route de la Riviera 12, 1800 Vevey, Suisse. Contact : privacy@logiq-transport.ch</p>
+            <p>LogIQ Transport Sàrl, Suisse. Contact : contact@logiq-transport.ch</p>
           </div>
 
           <div>

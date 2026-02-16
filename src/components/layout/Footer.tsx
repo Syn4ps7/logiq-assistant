@@ -25,16 +25,13 @@ export function Footer() {
               <li><Link to="/faq" className="opacity-80 hover:opacity-100 transition-opacity">FAQ</Link></li>
               <li><Link to="/cgl" className="opacity-80 hover:opacity-100 transition-opacity">Conditions générales</Link></li>
               <li><Link to="/privacy" className="opacity-80 hover:opacity-100 transition-opacity">Confidentialité</Link></li>
-              <li><Link to="/contact" className="opacity-80 hover:opacity-100 transition-opacity">Contact</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider opacity-70">Contact</h4>
             <ul className="space-y-2 text-sm opacity-80">
-              <li>Route de la Riviera 12</li>
-              <li>1800 Vevey, Suisse</li>
-              <li>+41 21 123 45 67</li>
-              <li>info@logiq-transport.ch</li>
+              <li>contact@logiq-transport.ch</li>
+              <li>Tel: 078 200 69 58</li>
             </ul>
           </div>
         </div>

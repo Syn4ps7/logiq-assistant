@@ -1,4 +1,4 @@
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { Phone, Mail, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -16,32 +16,24 @@ const Contact = () => {
             <h2 className="text-lg font-semibold mb-4">Nos coordonnées</h2>
             <div className="space-y-4">
               <div className="flex gap-3">
-                <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-medium">Adresse</p>
-                  <p className="text-sm text-muted-foreground">Route de la Riviera 12, 1800 Vevey, Suisse</p>
-                </div>
-              </div>
-              <div className="flex gap-3">
                 <Phone className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium">Téléphone</p>
-                  <p className="text-sm text-muted-foreground">+41 21 123 45 67</p>
+                  <p className="text-sm text-muted-foreground">078 200 69 58</p>
                 </div>
               </div>
               <div className="flex gap-3">
                 <Mail className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium">Email</p>
-                  <p className="text-sm text-muted-foreground">info@logiq-transport.ch</p>
+                  <p className="text-sm text-muted-foreground">contact@logiq-transport.ch</p>
                 </div>
               </div>
               <div className="flex gap-3">
                 <Clock className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium">Horaires</p>
-                  <p className="text-sm text-muted-foreground">Lun-Ven: 07h00-18h30</p>
-                  <p className="text-sm text-muted-foreground">Sam: 08h00-12h00</p>
+                  <p className="font-medium">Disponibilité</p>
+                  <p className="text-sm text-muted-foreground">Prise en charge 24/7</p>
                 </div>
               </div>
             </div>

@@ -12,9 +12,17 @@ export interface Vehicle {
     fuel: string;
   };
   features: string[];
-  image: string;
+  images: {
+    exterior: string;
+    interior: string;
+  };
   availability: boolean;
 }
+
+import van1Exterior from "@/assets/van1-exterior.jpg";
+import van1Interior from "@/assets/van1-interior.jpg";
+import van2Exterior from "@/assets/van2-exterior.jpg";
+import van2Interior from "@/assets/van2-interior.jpg";
 
 export const vehicles: Vehicle[] = [
   {
@@ -31,7 +39,7 @@ export const vehicles: Vehicle[] = [
       fuel: "Diesel",
     },
     features: ["GPS intégré", "Caméra de recul", "Régulateur de vitesse", "Bluetooth"],
-    image: "/placeholder.svg",
+    images: { exterior: van1Exterior, interior: van1Interior },
     availability: true,
   },
   {
@@ -48,7 +56,7 @@ export const vehicles: Vehicle[] = [
       fuel: "Diesel",
     },
     features: ["GPS intégré", "Caméra de recul", "Régulateur de vitesse", "Bluetooth"],
-    image: "/placeholder.svg",
+    images: { exterior: van2Exterior, interior: van2Interior },
     availability: true,
   },
 ];

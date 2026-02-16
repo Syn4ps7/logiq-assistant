@@ -81,8 +81,8 @@ const Reservation = () => {
   return (
     <main className="py-12">
       <div className="container max-w-3xl">
-        <h1 className="text-3xl font-bold mb-2">Réservation</h1>
-        <p className="text-muted-foreground mb-8">Réservez votre véhicule en 3 étapes simples.</p>
+        <h1 className="text-3xl font-bold mb-2">Réservation rapide</h1>
+        <p className="text-muted-foreground mb-8">Réservez en ligne en 3 étapes. Prise en charge 24/7.</p>
 
         {/* Stepper */}
         <div className="flex items-center gap-2 mb-10">
@@ -316,7 +316,7 @@ const Reservation = () => {
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                La confirmation de réservation nécessite un backend. Intégration en cours.
+                La réservation est confirmée une fois validée par LogIQ Transport.
               </p>
             </div>
           )}
