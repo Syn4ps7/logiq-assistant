@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { vehicles, vehicleOptions, ratePlans, EXTRA_KM_RATE } from "@/data/vehicles";
 import { updateBookingDraft, dispatchLogiqEvent } from "@/lib/logiq";
 import { Check, ChevronRight, Info } from "lucide-react";
-
-const steps = ["Formule & dates", "Véhicule", "Options & confirmation"];
+import { useTranslation } from "react-i18next";
 
 type RatePlanId = "week" | "weekend" | "pack-48h";
 
 const Reservation = () => {
+  const { t } = useTranslation();
+  const steps = t("reservation.steps", { returnObjects: true }) as string[];
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(0);
   const [selectedPlan, setSelectedPlan] = useState<RatePlanId | "">("");
@@ -45,7 +46,6 @@ const Reservation = () => {
     let includedKm: number;
 
     if (plan.isFlat) {
-      // Pack 48h
       baseTotal = plan.priceValue;
       includedKm = plan.totalIncludedKm || 200;
       days = 2;
@@ -56,7 +56,6 @@ const Reservation = () => {
       includedKm = plan.includedKmPerDay * days;
     }
 
-    // Options are all flat-per-rental
     const optionsCost = selectedOptions.reduce((sum, optId) => {
       const opt = vehicleOptions.find((o) => o.id === optId);
       return sum + (opt ? opt.price : 0);
@@ -81,8 +80,8 @@ const Reservation = () => {
   return (
     <main className="py-12">
       <div className="container max-w-3xl">
-        <h1 className="text-3xl font-bold mb-2">Réservation rapide</h1>
-        <p className="text-muted-foreground mb-8">Réservez en ligne en 3 étapes. Prise en charge 24/7.</p>
+        <h1 className="text-3xl font-bold mb-2">{t("reservation.title")}</h1>
+        <p className="text-muted-foreground mb-8">{t("reservation.subtitle")}</p>
 
         {/* Stepper */}
         <div className="flex items-center gap-2 mb-10">
@@ -103,10 +102,10 @@ const Reservation = () => {
         </div>
 
         <div id="logiq-reservation-widget" data-env="staging" className="bg-card rounded-lg border p-6">
-          {/* Step 0: Plan & Dates */}
+          {/* Step 0 */}
           {step === 0 && (
             <div className="space-y-6">
-              <h2 className="text-lg font-semibold">Choisissez votre formule</h2>
+              <h2 className="text-lg font-semibold">{t("reservation.choosePlan")}</h2>
               <div className="space-y-3">
                 {ratePlans.map((plan) => (
                   <button
@@ -129,64 +128,39 @@ const Reservation = () => {
 
               {selectedPlan && !isPack && (
                 <div className="space-y-4">
-                  <h3 className="font-medium">Dates de location</h3>
+                  <h3 className="font-medium">{t("reservation.rentalDates")}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-1">Date de début</label>
-                      <input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                        aria-label="Date de début de location"
-                      />
+                      <label className="block text-sm font-medium mb-1">{t("reservation.startDate")}</label>
+                      <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1">Date de fin</label>
-                      <input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                        aria-label="Date de fin de location"
-                      />
+                      <label className="block text-sm font-medium mb-1">{t("reservation.endDate")}</label>
+                      <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
                     </div>
                   </div>
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium mb-1">Km estimés (total)</label>
-                <input
-                  type="number"
-                  value={estKm}
-                  onChange={(e) => setEstKm(Number(e.target.value))}
-                  className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                  min={0}
-                  aria-label="Kilomètres estimés"
-                />
+                <label className="block text-sm font-medium mb-1">{t("reservation.estKm")}</label>
+                <input type="number" value={estKm} onChange={(e) => setEstKm(Number(e.target.value))} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" min={0} />
                 <p className="text-xs text-muted-foreground mt-1">
-                  {isPack
-                    ? "200 km inclus dans le Pack 48h"
-                    : "100 km inclus par jour de location"}
-                  {" · "}{EXTRA_KM_RATE.toFixed(2)} CHF/km supplémentaire
+                  {isPack ? t("reservation.kmIncludedPack") : t("reservation.kmIncludedDay")}
+                  {" · "}{EXTRA_KM_RATE.toFixed(2)} {t("reservation.extraKmRate")}
                 </p>
               </div>
 
-              <Button
-                variant="petrol"
-                onClick={() => setStep(1)}
-                disabled={!selectedPlan || (!isPack && (!startDate || !endDate))}
-              >
-                Continuer <ChevronRight className="h-4 w-4 ml-1" />
+              <Button variant="petrol" onClick={() => setStep(1)} disabled={!selectedPlan || (!isPack && (!startDate || !endDate))}>
+                {t("reservation.continue")} <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
           )}
 
-          {/* Step 1: Vehicle */}
+          {/* Step 1 */}
           {step === 1 && (
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold">Choisissez votre véhicule</h2>
+              <h2 className="text-lg font-semibold">{t("reservation.chooseVehicle")}</h2>
               <div className="space-y-3">
                 {vehicles.map((v) => (
                   <button
@@ -203,38 +177,32 @@ const Reservation = () => {
                     <div className="flex justify-between items-center">
                       <div>
                         <div className="font-medium">{v.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {v.specs.volume} · {v.specs.payload} · {v.specs.transmission}
-                        </div>
+                        <div className="text-sm text-muted-foreground">{v.specs.volume} · {v.specs.payload} · {v.specs.transmission}</div>
                       </div>
                     </div>
                   </button>
                 ))}
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setStep(0)}>Retour</Button>
+                <Button variant="outline" onClick={() => setStep(0)}>{t("reservation.back")}</Button>
                 <Button variant="petrol" onClick={() => setStep(2)} disabled={!selectedVehicle}>
-                  Continuer <ChevronRight className="h-4 w-4 ml-1" />
+                  {t("reservation.continue")} <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
             </div>
           )}
 
-          {/* Step 2: Options & Summary */}
+          {/* Step 2 */}
           {step === 2 && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-lg font-semibold mb-3">Options</h2>
+                <h2 className="text-lg font-semibold mb-3">{t("reservation.options")}</h2>
                 <div className="space-y-2">
                   {vehicleOptions.map((opt) => (
                     <label
                       key={opt.id}
                       className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                        selectedOptions.includes(opt.id)
-                          ? "border-primary bg-primary/5"
-                          : opt.id === "serenite"
-                          ? "border-accent/50 hover:border-accent"
-                          : "border-border hover:border-primary/30"
+                        selectedOptions.includes(opt.id) ? "border-primary bg-primary/5" : opt.id === "serenite" ? "border-accent/50 hover:border-accent" : "border-border hover:border-primary/30"
                       }`}
                     >
                       <input
@@ -250,19 +218,19 @@ const Reservation = () => {
                         <div className="font-medium text-sm flex items-center gap-1.5">
                           {opt.name}
                           {opt.id === "serenite" && (
-                            <span className="text-xs bg-accent/10 text-accent px-1.5 py-0.5 rounded font-semibold">Recommandé</span>
+                            <span className="text-xs bg-accent/10 text-accent px-1.5 py-0.5 rounded font-semibold">{t("reservation.sereniteRecommended")}</span>
                           )}
                         </div>
                         <div className="text-xs text-muted-foreground">{opt.description}</div>
                         {opt.id === "serenite" && (
                           <div className="text-xs text-muted-foreground mt-0.5 flex items-start gap-1">
                             <Info className="h-3 w-3 mt-0.5 shrink-0" />
-                            <span>Réduit la franchise standard de 2'000 CHF à 500 CHF par sinistre</span>
+                            <span>{t("reservation.sereniteInfo")}</span>
                           </div>
                         )}
                       </div>
                       <span className="text-sm font-semibold text-primary whitespace-nowrap">
-                        {opt.price} CHF / location
+                        {opt.price} {t("rates.perRental")}
                       </span>
                     </label>
                   ))}
@@ -271,13 +239,13 @@ const Reservation = () => {
 
               {price && (
                 <div className="bg-muted/50 rounded-lg p-4">
-                  <h3 className="font-semibold mb-2">Estimation du prix</h3>
+                  <h3 className="font-semibold mb-2">{t("reservation.priceEstimate")}</h3>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
                       <span>
                         {isPack
-                          ? `Pack 48h (forfait)`
-                          : `${price.planName} (${price.days} jour${price.days > 1 ? "s" : ""})`}
+                          ? t("reservation.packFlat")
+                          : `${price.planName} (${price.days} ${price.days > 1 ? t("reservation.days") : t("reservation.day")})`}
                       </span>
                       <span>{price.baseTotal} CHF</span>
                     </div>
@@ -286,23 +254,23 @@ const Reservation = () => {
                       if (!opt) return null;
                       return (
                         <div key={optId} className="flex justify-between">
-                          <span>{opt.name} (par location)</span>
+                          <span>{opt.name} ({t("reservation.perRental")})</span>
                           <span>{opt.price} CHF</span>
                         </div>
                       );
                     })}
                     <div className="flex justify-between text-muted-foreground">
-                      <span>Km inclus</span>
+                      <span>{t("reservation.kmIncluded")}</span>
                       <span>{price.includedKm} km</span>
                     </div>
                     {price.extraKm > 0 && (
                       <div className="flex justify-between">
-                        <span>Km supplémentaires ({price.extraKm} km × {EXTRA_KM_RATE.toFixed(2)} CHF)</span>
+                        <span>{t("reservation.extraKmLabel")} ({price.extraKm} km × {EXTRA_KM_RATE.toFixed(2)} CHF)</span>
                         <span>{price.extraKmCost.toFixed(2)} CHF</span>
                       </div>
                     )}
                     <div className="flex justify-between font-bold text-base pt-2 border-t">
-                      <span>Total estimé (TVA incl.)</span>
+                      <span>{t("reservation.totalEstimate")}</span>
                       <span className="text-primary">{price.total.toFixed(2)} CHF</span>
                     </div>
                   </div>
@@ -310,14 +278,10 @@ const Reservation = () => {
               )}
 
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setStep(1)}>Retour</Button>
-                <Button variant="hero" disabled>
-                  Confirmer la réservation
-                </Button>
+                <Button variant="outline" onClick={() => setStep(1)}>{t("reservation.back")}</Button>
+                <Button variant="hero" disabled>{t("reservation.confirm")}</Button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                La réservation est confirmée une fois validée par LogIQ Transport.
-              </p>
+              <p className="text-xs text-muted-foreground">{t("reservation.microlegal")}</p>
             </div>
           )}
         </div>
