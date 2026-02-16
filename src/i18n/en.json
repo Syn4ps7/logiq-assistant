@@ -1,0 +1,150 @@
+{
+  "nav": {
+    "vehicles": "Vehicles",
+    "rates": "Rates",
+    "cgl": "T&Cs",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "viewRates": "View rates",
+    "book": "Book now",
+    "openChat": "Open chat"
+  },
+  "hero": {
+    "title1": "Utility van rental",
+    "title2": "connected",
+    "title3": "& reliable",
+    "subtitle": "Modern utility vehicles on the Swiss Riviera. Online booking, transparent pricing, professional support.",
+    "cta": "Book now",
+    "ctaRates": "View rates"
+  },
+  "reassurance": {
+    "insurance": "Full insurance",
+    "insuranceDesc": "Liability and comprehensive included. Reduced deductible available with the Serenity option.",
+    "booking": "Quick booking",
+    "bookingDesc": "Book online in 3 steps. Pickup available 24/7.",
+    "area": "Swiss Riviera",
+    "areaDesc": "We cover the entire Riviera and beyond.",
+    "support": "24/7 support",
+    "supportDesc": "Roadside assistance and customer support available at all times."
+  },
+  "fleet": {
+    "title": "Our fleet",
+    "subtitle": "Recent, well-maintained 13 m³ utility vans.",
+    "viewAll": "View all",
+    "viewAllMobile": "View all vehicles"
+  },
+  "cta": {
+    "title": "Ready to go?",
+    "subtitle": "Book your utility van in a few clicks. Pickup available 24/7.",
+    "book": "Book now",
+    "contact": "Contact us"
+  },
+  "vehicleCard": {
+    "exterior": "Exterior",
+    "interior": "Interior",
+    "from": "From",
+    "perDay": "CHF/day",
+    "seats": "seats",
+    "book": "Book",
+    "details": "Details",
+    "moreFeatures": "+{{count}}"
+  },
+  "vehicles": {
+    "title": "Our vehicles",
+    "subtitle": "Discover our fleet of connected utility vehicles. All our vans are recent, well-maintained, and equipped for your professional needs."
+  },
+  "rates": {
+    "title": "Rates",
+    "subtitle": "Transparent pricing, VAT 8.1% included. Extra km: {{rate}} CHF/km.",
+    "plans": "Our plans",
+    "popular": "Popular",
+    "availableVehicles": "Available vehicles",
+    "options": "Options",
+    "recommended": "Recommended",
+    "perRental": "CHF / rental",
+    "extraKm": "Extra kilometres",
+    "extraKmDesc": "Each plan includes a km allowance (100 km/day for Weekday and Weekend, 200 km for the 48h Pack). Beyond that, each extra kilometre is charged at",
+    "extraKmRate": "CHF/km",
+    "extraKmAuto": ", calculated automatically upon vehicle return.",
+    "included": "Included in every rental",
+    "includedItems": ["Standard liability insurance", "24/7 roadside assistance", "Digital condition report", "VAT 8.1% included"]
+  },
+  "reservation": {
+    "title": "Quick booking",
+    "subtitle": "Book online in 3 steps. Pickup available 24/7.",
+    "steps": ["Plan & dates", "Vehicle", "Options & confirmation"],
+    "choosePlan": "Choose your plan",
+    "rentalDates": "Rental dates",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "estKm": "Estimated km (total)",
+    "kmIncludedPack": "200 km included in 48h Pack",
+    "kmIncludedDay": "100 km included per rental day",
+    "extraKmRate": "CHF/extra km",
+    "continue": "Continue",
+    "back": "Back",
+    "chooseVehicle": "Choose your vehicle",
+    "options": "Options",
+    "priceEstimate": "Price estimate",
+    "packFlat": "48h Pack (flat fee)",
+    "day": "day",
+    "days": "days",
+    "perRental": "per rental",
+    "kmIncluded": "Km included",
+    "extraKmLabel": "Extra kilometres",
+    "totalEstimate": "Estimated total (VAT incl.)",
+    "confirm": "Confirm booking",
+    "microlegal": "Booking is confirmed once LogIQ Transport validates the reservation.",
+    "sereniteRecommended": "Recommended",
+    "sereniteInfo": "Reduces the standard deductible from CHF 2,000 to CHF 500 per claim"
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "subtitle": "Find answers to the most common questions."
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Have a question? We're here to help.",
+    "coordinates": "Our details",
+    "phone": "Phone",
+    "email": "Email",
+    "availability": "Availability",
+    "availabilityValue": "Pickup available 24/7",
+    "form": "Contact form",
+    "name": "Full name",
+    "emailLabel": "Email",
+    "message": "Message",
+    "send": "Send",
+    "thanks": "Thank you for your message!",
+    "thanksDesc": "We'll get back to you as soon as possible."
+  },
+  "footer": {
+    "description": "Connected utility vehicle rental on the Swiss Riviera. Professional and reliable service.",
+    "services": "Services",
+    "ourVehicles": "Our vehicles",
+    "booking": "Booking",
+    "information": "Information",
+    "conditions": "Terms & conditions",
+    "privacy": "Privacy",
+    "copyright": "© 2026 LogIQ Transport Sàrl — All rights reserved",
+    "location": "Swiss Riviera, Switzerland"
+  },
+  "cookies": {
+    "message": "We use cookies to improve your experience. Under Swiss data protection law (nFADP), your explicit consent is required.",
+    "learnMore": "Learn more",
+    "decline": "Decline",
+    "accept": "Accept"
+  },
+  "chatbot": {
+    "title": "LogIQ Assistant",
+    "online": "Online — Ready to help",
+    "greeting": "Hello — I can check availability, estimate prices, or explain our Terms & Conditions. How can I help you?",
+    "placeholder": "Type your message…",
+    "integrating": "Chatbot integration in progress — Coming soon"
+  },
+  "notFound": {
+    "title": "404",
+    "message": "Oops! Page not found",
+    "backHome": "Return to home"
+  }
+}

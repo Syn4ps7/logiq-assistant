@@ -9,6 +9,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ChatbotWidget } from "@/components/ChatbotWidget";
 import { CookieBanner } from "@/components/CookieBanner";
 import { initLogiq } from "@/lib/logiq";
+import "@/i18n/config";
 import Index from "./pages/Index";
 import Vehicles from "./pages/Vehicles";
 import Rates from "./pages/Rates";

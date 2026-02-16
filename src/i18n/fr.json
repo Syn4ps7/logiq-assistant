@@ -1,0 +1,150 @@
+{
+  "nav": {
+    "vehicles": "Véhicules",
+    "rates": "Tarifs",
+    "cgl": "CGL",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "viewRates": "Voir les tarifs",
+    "book": "Réserver",
+    "openChat": "Ouvrir le chat"
+  },
+  "hero": {
+    "title1": "Location utilitaire",
+    "title2": "connectée",
+    "title3": "& fiable",
+    "subtitle": "Véhicules utilitaires modernes sur la Riviera Vaudoise. Réservation en ligne, tarifs transparents, support professionnel.",
+    "cta": "Réserver maintenant",
+    "ctaRates": "Voir les tarifs"
+  },
+  "reassurance": {
+    "insurance": "Assurance complète",
+    "insuranceDesc": "RC et casco incluses. Franchise réduite disponible avec l'option Sérénité.",
+    "booking": "Réservation rapide",
+    "bookingDesc": "Réservez en ligne en 3 étapes. Prise en charge 24/7.",
+    "area": "Riviera Vaudoise",
+    "areaDesc": "Nous couvrons toute la Riviera et au-delà.",
+    "support": "Support 7j/7",
+    "supportDesc": "Assistance routière et support client disponible en permanence."
+  },
+  "fleet": {
+    "title": "Notre flotte",
+    "subtitle": "Utilitaires 13 m³ récents et bien entretenus.",
+    "viewAll": "Voir tout",
+    "viewAllMobile": "Voir tous les véhicules"
+  },
+  "cta": {
+    "title": "Prêt à démarrer ?",
+    "subtitle": "Réservez votre utilitaire en quelques clics. Prise en charge 24/7.",
+    "book": "Réserver",
+    "contact": "Nous contacter"
+  },
+  "vehicleCard": {
+    "exterior": "Extérieur",
+    "interior": "Intérieur",
+    "from": "Dès",
+    "perDay": "CHF/jour",
+    "seats": "places",
+    "book": "Réserver",
+    "details": "Détails",
+    "moreFeatures": "+{{count}}"
+  },
+  "vehicles": {
+    "title": "Nos véhicules",
+    "subtitle": "Découvrez notre flotte de véhicules utilitaires connectés. Tous nos utilitaires sont récents, bien entretenus et équipés pour vos besoins professionnels."
+  },
+  "rates": {
+    "title": "Tarifs",
+    "subtitle": "Tarifs transparents, TVA 8.1% incluse. Km supplémentaires : {{rate}} CHF/km.",
+    "plans": "Nos formules",
+    "popular": "Populaire",
+    "availableVehicles": "Véhicules disponibles",
+    "options": "Options",
+    "recommended": "Recommandé",
+    "perRental": "CHF / location",
+    "extraKm": "Kilomètres supplémentaires",
+    "extraKmDesc": "Chaque formule inclut un quota kilométrique (100 km/jour en Semaine et Week‑End, 200 km pour le Pack 48h). Au-delà, chaque kilomètre supplémentaire est facturé",
+    "extraKmRate": "CHF/km",
+    "extraKmAuto": ", calculé automatiquement au retour du véhicule.",
+    "included": "Inclus dans chaque location",
+    "includedItems": ["Assurance RC standard", "Assistance routière 24/7", "État des lieux numérique", "TVA 8.1% incluse"]
+  },
+  "reservation": {
+    "title": "Réservation rapide",
+    "subtitle": "Réservez en ligne en 3 étapes. Prise en charge 24/7.",
+    "steps": ["Formule & dates", "Véhicule", "Options & confirmation"],
+    "choosePlan": "Choisissez votre formule",
+    "rentalDates": "Dates de location",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "estKm": "Km estimés (total)",
+    "kmIncludedPack": "200 km inclus dans le Pack 48h",
+    "kmIncludedDay": "100 km inclus par jour de location",
+    "extraKmRate": "CHF/km supplémentaire",
+    "continue": "Continuer",
+    "back": "Retour",
+    "chooseVehicle": "Choisissez votre véhicule",
+    "options": "Options",
+    "priceEstimate": "Estimation du prix",
+    "packFlat": "Pack 48h (forfait)",
+    "day": "jour",
+    "days": "jours",
+    "perRental": "par location",
+    "kmIncluded": "Km inclus",
+    "extraKmLabel": "Km supplémentaires",
+    "totalEstimate": "Total estimé (TVA incl.)",
+    "confirm": "Confirmer la réservation",
+    "microlegal": "La réservation est confirmée une fois validée par LogIQ Transport.",
+    "sereniteRecommended": "Recommandé",
+    "sereniteInfo": "Réduit la franchise standard de 2'000 CHF à 500 CHF par sinistre"
+  },
+  "faq": {
+    "title": "Questions fréquentes",
+    "subtitle": "Retrouvez les réponses aux questions les plus courantes."
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Une question ? Nous sommes à votre disposition.",
+    "coordinates": "Nos coordonnées",
+    "phone": "Téléphone",
+    "email": "Email",
+    "availability": "Disponibilité",
+    "availabilityValue": "Prise en charge 24/7",
+    "form": "Formulaire de contact",
+    "name": "Nom complet",
+    "emailLabel": "Email",
+    "message": "Message",
+    "send": "Envoyer",
+    "thanks": "Merci pour votre message !",
+    "thanksDesc": "Nous vous répondrons dans les meilleurs délais."
+  },
+  "footer": {
+    "description": "Location de véhicules utilitaires connectés sur la Riviera Vaudoise. Service professionnel et fiable.",
+    "services": "Services",
+    "ourVehicles": "Nos véhicules",
+    "booking": "Réservation",
+    "information": "Informations",
+    "conditions": "Conditions générales",
+    "privacy": "Confidentialité",
+    "copyright": "© 2026 LogIQ Transport Sàrl — Tous droits réservés",
+    "location": "Riviera Vaudoise, Suisse"
+  },
+  "cookies": {
+    "message": "Nous utilisons des cookies pour améliorer votre expérience. Conformément à la LPD, votre consentement explicite est requis.",
+    "learnMore": "En savoir plus",
+    "decline": "Refuser",
+    "accept": "Accepter"
+  },
+  "chatbot": {
+    "title": "LogIQ Assistant",
+    "online": "En ligne — Prêt à vous aider",
+    "greeting": "Bonjour — Je peux vérifier la disponibilité, estimer un prix, ou vous expliquer nos Conditions Générales. Comment puis-je vous aider ?",
+    "placeholder": "Écrivez votre message…",
+    "integrating": "Chatbot en cours d'intégration — Disponible prochainement"
+  },
+  "notFound": {
+    "title": "404",
+    "message": "Oops ! Page introuvable",
+    "backHome": "Retour à l'accueil"
+  }
+}
