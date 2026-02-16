@@ -1,7 +1,7 @@
 export interface Vehicle {
   id: string;
   name: string;
-  priceDay: number;
+  priceDay: number; // base daily rate (Week rate)
   specs: {
     volume: string;
     height: string;
@@ -18,11 +18,11 @@ export interface Vehicle {
 
 export const vehicles: Vehicle[] = [
   {
-    id: "sprinter-l2h2",
-    name: "Mercedes Sprinter L2H2",
-    priceDay: 120,
+    id: "utilitaire-1",
+    name: "Utilitaire 1 — 13 m³",
+    priceDay: 140,
     specs: {
-      volume: "14 m³",
+      volume: "13 m³",
       height: "1.90 m",
       length: "3.27 m",
       payload: "1'200 kg",
@@ -30,51 +30,122 @@ export const vehicles: Vehicle[] = [
       transmission: "Automatique",
       fuel: "Diesel",
     },
-    features: ["GPS intégré", "Caméra de recul", "Régulateur de vitesse", "Bluetooth", "Hayon élévateur disponible"],
+    features: ["GPS intégré", "Caméra de recul", "Régulateur de vitesse", "Bluetooth"],
     image: "/placeholder.svg",
     availability: true,
   },
   {
-    id: "master-l2h2",
-    name: "Renault Master L2H2",
-    priceDay: 95,
+    id: "utilitaire-2",
+    name: "Utilitaire 2 — 13 m³",
+    priceDay: 140,
     specs: {
-      volume: "12 m³",
-      height: "1.85 m",
-      length: "3.08 m",
-      payload: "1'100 kg",
-      seats: 3,
-      transmission: "Manuelle",
-      fuel: "Diesel",
-    },
-    features: ["GPS intégré", "Caméra de recul", "Bluetooth", "Barres d'arrimage"],
-    image: "/placeholder.svg",
-    availability: true,
-  },
-  {
-    id: "sprinter-l3h2",
-    name: "Mercedes Sprinter L3H2",
-    priceDay: 145,
-    specs: {
-      volume: "17 m³",
+      volume: "13 m³",
       height: "1.90 m",
-      length: "3.94 m",
-      payload: "1'300 kg",
+      length: "3.27 m",
+      payload: "1'200 kg",
       seats: 3,
       transmission: "Automatique",
       fuel: "Diesel",
     },
-    features: ["GPS intégré", "Caméra de recul", "Régulateur adaptatif", "Bluetooth", "Hayon élévateur", "Cloison de séparation"],
+    features: ["GPS intégré", "Caméra de recul", "Régulateur de vitesse", "Bluetooth"],
     image: "/placeholder.svg",
     availability: true,
   },
 ];
 
-export const vehicleOptions = [
-  { id: "serenite", name: "Sérénité+", priceDay: 25, description: "Franchise réduite de 2'000 CHF à 500 CHF" },
-  { id: "km-unlimited", name: "Km illimités", priceDay: 15, description: "Pas de surcoût kilométrique" },
-  { id: "gps-ext", name: "GPS Europe", priceDay: 5, description: "Navigation GPS étendue Europe" },
-  { id: "hayon", name: "Hayon élévateur", priceDay: 30, description: "Hayon élévateur 500 kg" },
-  { id: "diable", name: "Diable de transport", priceDay: 5, description: "Chariot de transport inclus" },
-  { id: "couvertures", name: "Kit de protection", priceDay: 10, description: "Couvertures + sangles d'arrimage" },
+export interface VehicleOption {
+  id: string;
+  name: string;
+  price: number;
+  priceType: "flat" | "per-day";
+  description: string;
+}
+
+export const vehicleOptions: VehicleOption[] = [
+  {
+    id: "serenite",
+    name: "Sérénité",
+    price: 49,
+    priceType: "flat",
+    description: "Franchise réduite de 2'000 CHF à 500 CHF",
+  },
+  {
+    id: "diable",
+    name: "Diable de transport",
+    price: 10,
+    priceType: "flat",
+    description: "Chariot de transport inclus",
+  },
+  {
+    id: "sangles-couverture",
+    name: "Sangles & Couverture",
+    price: 5,
+    priceType: "flat",
+    description: "Sangles d'arrimage et couvertures de protection",
+  },
 ];
+
+export interface RatePlan {
+  id: string;
+  name: string;
+  subtitle: string;
+  priceDisplay: string;
+  priceValue: number;
+  isFlat: boolean;
+  includedKmPerDay: number;
+  totalIncludedKm?: number;
+  features: string[];
+  popular?: boolean;
+}
+
+export const ratePlans: RatePlan[] = [
+  {
+    id: "week",
+    name: "Semaine",
+    subtitle: "Lundi → Jeudi",
+    priceDisplay: "140 CHF / jour",
+    priceValue: 140,
+    isFlat: false,
+    includedKmPerDay: 100,
+    features: [
+      "140 CHF / jour",
+      "100 km inclus / jour",
+      "Assurance standard",
+      "Assistance 24/7",
+    ],
+  },
+  {
+    id: "weekend",
+    name: "Week‑End",
+    subtitle: "Vendredi → Dimanche",
+    priceDisplay: "180 CHF / jour",
+    priceValue: 180,
+    isFlat: false,
+    includedKmPerDay: 100,
+    features: [
+      "180 CHF / jour",
+      "100 km inclus / jour",
+      "Assurance standard",
+      "Assistance 24/7",
+    ],
+  },
+  {
+    id: "pack-48h",
+    name: "Pack 48h",
+    subtitle: "Idéal pour vos projets",
+    priceDisplay: "390 CHF",
+    priceValue: 390,
+    isFlat: true,
+    includedKmPerDay: 0,
+    totalIncludedKm: 200,
+    features: [
+      "390 CHF forfait",
+      "200 km inclus (total)",
+      "Assurance standard",
+      "Flexibilité",
+    ],
+    popular: true,
+  },
+];
+
+export const EXTRA_KM_RATE = 0.70;

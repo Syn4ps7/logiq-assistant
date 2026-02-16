@@ -6,7 +6,7 @@ import { Shield, Clock, MapPin, Headphones, ChevronRight } from "lucide-react";
 import heroImage from "@/assets/hero-van.jpg";
 
 const features = [
-  { icon: Shield, title: "Assurance complète", description: "RC et casco incluses. Franchise réduite disponible avec Sérénité+." },
+  { icon: Shield, title: "Assurance complète", description: "RC et casco incluses. Franchise réduite disponible avec l'option Sérénité." },
   { icon: Clock, title: "Réservation rapide", description: "Réservez en ligne en 3 étapes. Prise en charge dès 07h00." },
   { icon: MapPin, title: "Riviera Vaudoise", description: "Basés à Vevey, nous couvrons toute la Riviera et au-delà." },
   { icon: Headphones, title: "Support 7j/7", description: "Assistance routière et support client disponible en permanence." },
@@ -69,13 +69,13 @@ const Index = () => {
           <div className="flex items-end justify-between mb-8">
             <div>
               <h2 className="text-3xl font-bold mb-2">Notre flotte</h2>
-              <p className="text-muted-foreground">Véhicules utilitaires L2H2 et L3H2 récents et bien entretenus.</p>
+              <p className="text-muted-foreground">Utilitaires 13 m³ récents et bien entretenus.</p>
             </div>
             <Link to="/vehicles" className="hidden sm:flex items-center gap-1 text-sm font-medium text-primary hover:underline">
               Voir tout <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {vehicles.map((v) => (
               <VehicleCard key={v.id} vehicle={v} />
             ))}
