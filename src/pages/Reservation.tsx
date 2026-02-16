@@ -1,20 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { vehicles, vehicleOptions } from "@/data/vehicles";
+import { vehicles, vehicleOptions, ratePlans, EXTRA_KM_RATE } from "@/data/vehicles";
 import { updateBookingDraft, dispatchLogiqEvent } from "@/lib/logiq";
-import { Check, ChevronRight } from "lucide-react";
+import { Check, ChevronRight, Info } from "lucide-react";
 
-const steps = ["Dates & lieu", "Véhicule", "Options & confirmation"];
+const steps = ["Formule & dates", "Véhicule", "Options & confirmation"];
+
+type RatePlanId = "week" | "weekend" | "pack-48h";
 
 const Reservation = () => {
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(0);
+  const [selectedPlan, setSelectedPlan] = useState<RatePlanId | "">("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedVehicle, setSelectedVehicle] = useState(searchParams.get("vehicle") || "");
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-  const [estKm, setEstKm] = useState(150);
+  const [estKm, setEstKm] = useState(200);
 
   useEffect(() => {
     dispatchLogiqEvent("logiq:openReservation", {
@@ -32,29 +35,39 @@ const Reservation = () => {
     });
   }, [startDate, endDate, selectedVehicle, selectedOptions, estKm]);
 
-  const calculatePrice = () => {
-    if (!startDate || !endDate || !selectedVehicle) return null;
-    const days = Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / 86400000));
-    const vehicle = vehicles.find((v) => v.id === selectedVehicle);
-    if (!vehicle) return null;
+  const price = useMemo(() => {
+    if (!selectedVehicle) return null;
+    const plan = ratePlans.find((p) => p.id === selectedPlan);
+    if (!plan) return null;
 
-    let rate = vehicle.priceDay;
-    if (days >= 14) rate *= 0.8;
-    else if (days >= 7) rate *= 0.85;
-    else if (days >= 3) rate *= 0.9;
+    let days = 1;
+    let baseTotal: number;
+    let includedKm: number;
 
+    if (plan.isFlat) {
+      // Pack 48h
+      baseTotal = plan.priceValue;
+      includedKm = plan.totalIncludedKm || 200;
+      days = 2;
+    } else {
+      if (!startDate || !endDate) return null;
+      days = Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / 86400000));
+      baseTotal = days * plan.priceValue;
+      includedKm = plan.includedKmPerDay * days;
+    }
+
+    // Options are all flat-per-rental
     const optionsCost = selectedOptions.reduce((sum, optId) => {
       const opt = vehicleOptions.find((o) => o.id === optId);
-      return sum + (opt ? opt.priceDay : 0);
+      return sum + (opt ? opt.price : 0);
     }, 0);
 
-    const extraKm = Math.max(0, estKm - 150 * days) * 0.45;
-    const total = Math.round(days * (rate + optionsCost) + extraKm);
+    const extraKm = Math.max(0, estKm - includedKm);
+    const extraKmCost = Math.round(extraKm * EXTRA_KM_RATE * 100) / 100;
+    const total = Math.round((baseTotal + optionsCost + extraKmCost) * 100) / 100;
 
-    return { days, rate: Math.round(rate), optionsCost, extraKm: Math.round(extraKm), total };
-  };
-
-  const price = calculatePrice();
+    return { days, baseTotal, includedKm, optionsCost, extraKm, extraKmCost, total, planName: plan.name };
+  }, [selectedPlan, startDate, endDate, selectedVehicle, selectedOptions, estKm]);
 
   useEffect(() => {
     if (price) {
@@ -62,6 +75,8 @@ const Reservation = () => {
       dispatchLogiqEvent("logiq:priceCalculated", { priceBreakdown: price });
     }
   }, [price?.total]);
+
+  const isPack = selectedPlan === "pack-48h";
 
   return (
     <main className="py-12">
@@ -87,37 +102,59 @@ const Reservation = () => {
           ))}
         </div>
 
-        <div
-          id="logiq-reservation-widget"
-          data-env="staging"
-          className="bg-card rounded-lg border p-6"
-        >
-          {/* Step 0: Dates */}
+        <div id="logiq-reservation-widget" data-env="staging" className="bg-card rounded-lg border p-6">
+          {/* Step 0: Plan & Dates */}
           {step === 0 && (
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold">Choisissez vos dates</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Date de début</label>
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                    aria-label="Date de début de location"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Date de fin</label>
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                    aria-label="Date de fin de location"
-                  />
-                </div>
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold">Choisissez votre formule</h2>
+              <div className="space-y-3">
+                {ratePlans.map((plan) => (
+                  <button
+                    key={plan.id}
+                    onClick={() => setSelectedPlan(plan.id as RatePlanId)}
+                    className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
+                      selectedPlan === plan.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"
+                    }`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="font-medium">{plan.name}</div>
+                        <div className="text-sm text-muted-foreground">{plan.subtitle}</div>
+                      </div>
+                      <span className="text-lg font-bold text-primary">{plan.priceDisplay}</span>
+                    </div>
+                  </button>
+                ))}
               </div>
+
+              {selectedPlan && !isPack && (
+                <div className="space-y-4">
+                  <h3 className="font-medium">Dates de location</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Date de début</label>
+                      <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                        aria-label="Date de début de location"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Date de fin</label>
+                      <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                        aria-label="Date de fin de location"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium mb-1">Km estimés (total)</label>
                 <input
@@ -128,8 +165,19 @@ const Reservation = () => {
                   min={0}
                   aria-label="Kilomètres estimés"
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {isPack
+                    ? "200 km inclus dans le Pack 48h"
+                    : "100 km inclus par jour de location"}
+                  {" · "}{EXTRA_KM_RATE.toFixed(2)} CHF/km supplémentaire
+                </p>
               </div>
-              <Button variant="petrol" onClick={() => setStep(1)} disabled={!startDate || !endDate}>
+
+              <Button
+                variant="petrol"
+                onClick={() => setStep(1)}
+                disabled={!selectedPlan || (!isPack && (!startDate || !endDate))}
+              >
                 Continuer <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
@@ -149,15 +197,15 @@ const Reservation = () => {
                     }`}
                     data-vehicle-id={v.id}
                     data-daily-price={v.priceDay}
+                    data-volume={v.specs.volume}
+                    data-height={v.specs.height}
                   >
                     <div className="flex justify-between items-center">
                       <div>
                         <div className="font-medium">{v.name}</div>
-                        <div className="text-sm text-muted-foreground">{v.specs.volume} · {v.specs.payload} · {v.specs.transmission}</div>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-lg font-bold text-primary">{v.priceDay} CHF</span>
-                        <span className="text-xs text-muted-foreground">/jour</span>
+                        <div className="text-sm text-muted-foreground">
+                          {v.specs.volume} · {v.specs.payload} · {v.specs.transmission}
+                        </div>
                       </div>
                     </div>
                   </button>
@@ -182,7 +230,11 @@ const Reservation = () => {
                     <label
                       key={opt.id}
                       className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                        selectedOptions.includes(opt.id) ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"
+                        selectedOptions.includes(opt.id)
+                          ? "border-primary bg-primary/5"
+                          : opt.id === "serenite"
+                          ? "border-accent/50 hover:border-accent"
+                          : "border-border hover:border-primary/30"
                       }`}
                     >
                       <input
@@ -195,10 +247,23 @@ const Reservation = () => {
                         className="accent-primary"
                       />
                       <div className="flex-1">
-                        <div className="font-medium text-sm">{opt.name}</div>
+                        <div className="font-medium text-sm flex items-center gap-1.5">
+                          {opt.name}
+                          {opt.id === "serenite" && (
+                            <span className="text-xs bg-accent/10 text-accent px-1.5 py-0.5 rounded font-semibold">Recommandé</span>
+                          )}
+                        </div>
                         <div className="text-xs text-muted-foreground">{opt.description}</div>
+                        {opt.id === "serenite" && (
+                          <div className="text-xs text-muted-foreground mt-0.5 flex items-start gap-1">
+                            <Info className="h-3 w-3 mt-0.5 shrink-0" />
+                            <span>Réduit la franchise standard de 2'000 CHF à 500 CHF par sinistre</span>
+                          </div>
+                        )}
                       </div>
-                      <span className="text-sm font-semibold text-primary">{opt.priceDay} CHF/j</span>
+                      <span className="text-sm font-semibold text-primary whitespace-nowrap">
+                        {opt.price} CHF / location
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -209,24 +274,36 @@ const Reservation = () => {
                   <h3 className="font-semibold mb-2">Estimation du prix</h3>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
-                      <span>Véhicule ({price.days} jours × {price.rate} CHF)</span>
-                      <span>{price.days * price.rate} CHF</span>
+                      <span>
+                        {isPack
+                          ? `Pack 48h (forfait)`
+                          : `${price.planName} (${price.days} jour${price.days > 1 ? "s" : ""})`}
+                      </span>
+                      <span>{price.baseTotal} CHF</span>
                     </div>
-                    {price.optionsCost > 0 && (
-                      <div className="flex justify-between">
-                        <span>Options ({price.days} jours × {price.optionsCost} CHF)</span>
-                        <span>{price.days * price.optionsCost} CHF</span>
-                      </div>
-                    )}
+                    {selectedOptions.map((optId) => {
+                      const opt = vehicleOptions.find((o) => o.id === optId);
+                      if (!opt) return null;
+                      return (
+                        <div key={optId} className="flex justify-between">
+                          <span>{opt.name} (par location)</span>
+                          <span>{opt.price} CHF</span>
+                        </div>
+                      );
+                    })}
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Km inclus</span>
+                      <span>{price.includedKm} km</span>
+                    </div>
                     {price.extraKm > 0 && (
                       <div className="flex justify-between">
-                        <span>Km supplémentaires</span>
-                        <span>{price.extraKm} CHF</span>
+                        <span>Km supplémentaires ({price.extraKm} km × {EXTRA_KM_RATE.toFixed(2)} CHF)</span>
+                        <span>{price.extraKmCost.toFixed(2)} CHF</span>
                       </div>
                     )}
                     <div className="flex justify-between font-bold text-base pt-2 border-t">
                       <span>Total estimé (TVA incl.)</span>
-                      <span className="text-primary">{price.total} CHF</span>
+                      <span className="text-primary">{price.total.toFixed(2)} CHF</span>
                     </div>
                   </div>
                 </div>

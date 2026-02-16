@@ -28,12 +28,9 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
         <Truck className="h-16 w-16 text-muted-foreground/30" />
       </div>
       <div className="p-5">
-        <div className="flex justify-between items-start mb-3">
+        <div className="mb-3">
           <h3 className="font-semibold text-lg">{vehicle.name}</h3>
-          <div className="text-right">
-            <span className="text-2xl font-bold text-primary">{vehicle.priceDay}</span>
-            <span className="text-sm text-muted-foreground"> CHF/jour</span>
-          </div>
+          <p className="text-sm text-muted-foreground">Dès {vehicle.priceDay} CHF/jour</p>
         </div>
 
         <div className="grid grid-cols-2 gap-2 mb-4 text-sm text-muted-foreground">

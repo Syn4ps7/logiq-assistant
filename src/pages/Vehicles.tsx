@@ -11,7 +11,7 @@ const Vehicles = () => {
             Découvrez notre flotte de véhicules utilitaires connectés. Tous nos utilitaires sont récents, bien entretenus et équipés pour vos besoins professionnels.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {vehicles.map((v) => (
             <VehicleCard key={v.id} vehicle={v} />
           ))}
