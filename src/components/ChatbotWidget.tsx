@@ -101,6 +101,45 @@ export function ChatbotWidget() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
 
+  // Draggable bubble state
+  const [bubblePos, setBubblePos] = useState<{ x: number; y: number } | null>(null);
+  const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number; moved: boolean } | null>(null);
+  const bubbleRef = useRef<HTMLButtonElement>(null);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    const el = bubbleRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    dragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      origX: rect.left,
+      origY: rect.top,
+      moved: false,
+    };
+    el.setPointerCapture(e.pointerId);
+  }, []);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (!d) return;
+    const dx = e.clientX - d.startX;
+    const dy = e.clientY - d.startY;
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) d.moved = true;
+    if (!d.moved) return;
+    const newX = Math.max(0, Math.min(window.innerWidth - 56, d.origX + dx));
+    const newY = Math.max(0, Math.min(window.innerHeight - 56, d.origY + dy));
+    setBubblePos({ x: newX, y: newY });
+  }, []);
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (!d) return;
+    if (!d.moved) setIsActive((v) => !v);
+    dragRef.current = null;
+    bubbleRef.current?.releasePointerCapture(e.pointerId);
+  }, []);
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
@@ -163,7 +202,11 @@ export function ChatbotWidget() {
   const send = useCallback(() => sendText(input), [input, sendText]);
 
   return (
-    <div id="logiq-chatbot" className="fixed bottom-6 right-6 z-50">
+    <div
+      id="logiq-chatbot"
+      className="fixed z-50"
+      style={bubblePos ? { left: bubblePos.x, top: bubblePos.y, right: "auto", bottom: "auto" } : { bottom: 24, right: 24 }}
+    >
       {isActive && (
         <div className="mb-4 w-80 sm:w-96 bg-card rounded-xl shadow-2xl border overflow-hidden animate-fade-in-up flex flex-col" style={{ maxHeight: "min(500px, 70vh)" }}>
           {/* Header */}
@@ -179,7 +222,6 @@ export function ChatbotWidget() {
 
           {/* Messages */}
           <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto space-y-3 bg-muted/30">
-            {/* Greeting */}
             <div className="bg-muted rounded-lg p-3 text-sm max-w-[85%]">
               <p className="text-foreground">{t("chatbot.greeting")}</p>
             </div>
@@ -261,8 +303,11 @@ export function ChatbotWidget() {
         </button>
       )}
       <button
-        onClick={() => setIsActive(!isActive)}
-        className="h-14 w-14 rounded-full bg-accent text-accent-foreground shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-105"
+        ref={bubbleRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        className="h-14 w-14 rounded-full bg-accent text-accent-foreground shadow-lg hover:shadow-xl flex items-center justify-center transition-shadow touch-none select-none cursor-grab active:cursor-grabbing"
         aria-label={isActive ? "Fermer le chat" : "Ouvrir le chat"}
       >
         {isActive ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}

@@ -80,7 +80,7 @@ export const vehicleOptions: VehicleOption[] = [
   {
     id: "diable",
     name: "Diable de transport",
-    price: 10,
+    price: 15,
     priceType: "flat",
     description: "Chariot de transport inclus",
   },
