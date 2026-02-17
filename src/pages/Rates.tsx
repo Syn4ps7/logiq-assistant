@@ -188,7 +188,7 @@ const Rates = () => {
                 <TableRow>
                   <TableCell className="font-medium">{t("rates.compareDiable")}</TableCell>
                   <TableCell className="text-center text-muted-foreground">{t("rates.compareOption")}</TableCell>
-                  <TableCell className="text-center text-muted-foreground">{t("rates.compareNon")}</TableCell>
+                  <TableCell className="text-center text-muted-foreground">{t("rates.compareOption")}</TableCell>
                   <TableCell className="text-center font-semibold text-primary">{t("rates.compareInclus")}</TableCell>
                 </TableRow>
               </TableBody>
