@@ -2,25 +2,25 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useTranslation } from "react-i18next";
 
 const faqs = [
-  { q: "Quels documents dois-je présenter ?", a: "Un document d'identité valide, votre permis de conduire (catégorie B, 2 ans minimum) et une carte de crédit à votre nom pour le dépôt de garantie." },
-  { q: "Quelle est la franchise en cas de sinistre ?", a: "La franchise standard est de 2'000 CHF par événement. Avec l'option Sérénité+ (49 CHF/location), elle est réduite à 500 CHF." },
-  { q: "Combien de kilomètres sont inclus ?", a: "150 km par jour de location sont inclus. Chaque km supplémentaire est facturé 0.45 CHF. L'option Km illimités (15 CHF/jour) supprime ce surcoût." },
-  { q: "Puis-je circuler à l'étranger ?", a: "Oui, dans les pays limitrophes (France, Allemagne, Italie, Autriche, Liechtenstein) sans supplément. D'autres pays peuvent être ajoutés sur demande (30 CHF/pays/jour)." },
-  { q: "Quelles sont les conditions d'annulation ?", a: "Annulation gratuite jusqu'à 72h avant. Entre 72h et 24h : 50% du montant. Moins de 24h : 100% du montant." },
-  { q: "Quels moyens de paiement acceptez-vous ?", a: "Visa, Mastercard, American Express et TWINT. Le virement bancaire est accepté pour les réservations de plus de 7 jours. Le paiement en espèces n'est pas accepté." },
-  { q: "Le véhicule est-il assuré ?", a: "Oui, tous nos véhicules disposent d'une assurance RC et casco complète. Voir les détails dans nos Conditions Générales (Article 7)." },
-  { q: "Comment fonctionne le chatbot ?", a: "Notre assistant en ligne peut vérifier la disponibilité, estimer des prix et répondre à vos questions sur les CGL. Aucune donnée personnelle n'est partagée sans votre consentement explicite (LPD)." },
+  { q: "Quels documents dois-je présenter ?", a: "Un document d'identité valide, votre permis de conduire (catégorie B, 2 ans minimum), et un moyen de paiement valide au nom du conducteur principal. Le conducteur doit être âgé d'au moins 21 ans (CGL, Art. 2.1)." },
+  { q: "Quelle est la franchise en cas de sinistre ?", a: "La franchise standard est de 2'000 CHF par sinistre responsable ou sans tiers identifié. Avec l'option Sérénité (49 CHF/location), elle est réduite à 500 CHF (CGL, Art. 7.1 & 7.2). Attention : certains dommages sont exclus de toute garantie (CGL, Art. 7.3)." },
+  { q: "Combien de kilomètres sont inclus ?", a: "100 km par jour de location sont inclus. Chaque km supplémentaire est facturé 0.70 CHF, calculé automatiquement au retour du véhicule (CGL, Art. 5.2)." },
+  { q: "Puis-je circuler à l'étranger ?", a: "Non. Le véhicule est strictement autorisé à circuler en Suisse et au Liechtenstein. Toute sortie du territoire sans accord écrit préalable entraîne l'annulation des garanties d'assurance, la responsabilité intégrale du locataire et une pénalité forfaitaire de 500 CHF (CGL, Art. 2.2)." },
+  { q: "Quelles sont les conditions d'annulation ?", a: "Plus de 48h avant le début : remboursement à 100 %. Entre 48h et 24h : remboursement à 50 %. Moins de 24h : aucun remboursement. Les frais de paiement ne sont pas remboursables. Délai bancaire de 5 à 10 jours ouvrés (CGL, Art. 3.2)." },
+  { q: "Quels moyens de paiement acceptez-vous ?", a: "Visa, Mastercard, American Express et TWINT. Une empreinte bancaire (pré-autorisation) est requise avant le départ en guise de caution (CGL, Art. 11). Le paiement en espèces n'est pas accepté." },
+  { q: "Le véhicule est-il assuré ?", a: "Oui, tous nos véhicules incluent l'assurance responsabilité civile (RC). La franchise standard est de 2'000 CHF, réductible à 500 CHF avec l'option Sérénité (49 CHF/location). Certaines situations sont exclues de toute garantie (CGL, Art. 7)." },
+  { q: "Comment fonctionne le chatbot ?", a: "Notre assistant en ligne peut vérifier la disponibilité, estimer des prix et répondre à vos questions sur les CGL. Aucune donnée personnelle n'est partagée sans votre consentement explicite (LPD, CGL Art. 12)." },
 ];
 
 const faqsEn = [
-  { q: "What documents do I need?", a: "A valid ID, your driving license (category B, minimum 2 years) and a credit card in your name for the security deposit." },
-  { q: "What is the deductible in case of damage?", a: "The standard deductible is CHF 2,000 per event. With the Serenity+ option (CHF 49/rental), it is reduced to CHF 500." },
-  { q: "How many kilometres are included?", a: "150 km per rental day are included. Each extra km is charged at CHF 0.45. The Unlimited km option (CHF 15/day) removes this surcharge." },
-  { q: "Can I drive abroad?", a: "Yes, in neighbouring countries (France, Germany, Italy, Austria, Liechtenstein) at no extra charge. Other countries can be added on request (CHF 30/country/day)." },
-  { q: "What are the cancellation conditions?", a: "Free cancellation up to 72h before. Between 72h and 24h: 50% of the amount. Less than 24h: 100% of the amount." },
-  { q: "What payment methods do you accept?", a: "Visa, Mastercard, American Express and TWINT. Bank transfer is accepted for bookings over 7 days. Cash payments are not accepted." },
-  { q: "Is the vehicle insured?", a: "Yes, all our vehicles have full liability and comprehensive insurance. See details in our Terms & Conditions (Article 7)." },
-  { q: "How does the chatbot work?", a: "Our online assistant can check availability, estimate prices, or explain our T&Cs. No personal data is shared without your explicit consent (nFADP)." },
+  { q: "What documents do I need?", a: "A valid ID, your driving licence (category B, minimum 2 years), and a valid payment method in the main driver's name. The driver must be at least 21 years old (T&Cs, Art. 2.1)." },
+  { q: "What is the deductible in case of damage?", a: "The standard deductible is CHF 2,000 per at-fault claim or claim without an identified third party. With the Serenity option (CHF 49/rental), it is reduced to CHF 500 (T&Cs, Art. 7.1 & 7.2). Note: certain damages are excluded from all coverage (T&Cs, Art. 7.3)." },
+  { q: "How many kilometres are included?", a: "100 km per rental day are included. Each extra km is charged at CHF 0.70, calculated automatically upon vehicle return (T&Cs, Art. 5.2)." },
+  { q: "Can I drive abroad?", a: "No. The vehicle is strictly authorised to circulate in Switzerland and Liechtenstein. Any cross-border travel without prior written agreement voids insurance coverage, makes the renter fully liable, and incurs a CHF 500 penalty (T&Cs, Art. 2.2)." },
+  { q: "What are the cancellation conditions?", a: "More than 48h before start: 100% refund. Between 48h and 24h: 50% refund. Less than 24h: no refund. Payment processing fees are non-refundable. Bank processing takes 5–10 business days (T&Cs, Art. 3.2)." },
+  { q: "What payment methods do you accept?", a: "Visa, Mastercard, American Express and TWINT. A card hold (pre-authorisation) is required before departure as a security deposit (T&Cs, Art. 11). Cash payments are not accepted." },
+  { q: "Is the vehicle insured?", a: "Yes, all our vehicles include liability insurance (RC). The standard deductible is CHF 2,000, reducible to CHF 500 with the Serenity option (CHF 49/rental). Certain situations are excluded from all coverage (T&Cs, Art. 7)." },
+  { q: "How does the chatbot work?", a: "Our online assistant can check availability, estimate prices, or explain our T&Cs. No personal data is shared without your explicit consent (nFADP, T&Cs Art. 12)." },
 ];
 
 const FAQ = () => {
