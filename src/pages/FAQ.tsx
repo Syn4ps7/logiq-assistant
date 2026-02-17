@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 const faqs = [
   { q: "Quels documents dois-je présenter ?", a: "Un document d'identité valide, votre permis de conduire (catégorie B, 2 ans minimum) et une carte de crédit à votre nom pour le dépôt de garantie." },
-  { q: "Quelle est la franchise en cas de sinistre ?", a: "La franchise standard est de 2'000 CHF par événement. Avec l'option Sérénité+ (25 CHF/jour), elle est réduite à 500 CHF." },
+  { q: "Quelle est la franchise en cas de sinistre ?", a: "La franchise standard est de 2'000 CHF par événement. Avec l'option Sérénité+ (49 CHF/location), elle est réduite à 500 CHF." },
   { q: "Combien de kilomètres sont inclus ?", a: "150 km par jour de location sont inclus. Chaque km supplémentaire est facturé 0.45 CHF. L'option Km illimités (15 CHF/jour) supprime ce surcoût." },
   { q: "Puis-je circuler à l'étranger ?", a: "Oui, dans les pays limitrophes (France, Allemagne, Italie, Autriche, Liechtenstein) sans supplément. D'autres pays peuvent être ajoutés sur demande (30 CHF/pays/jour)." },
   { q: "Quelles sont les conditions d'annulation ?", a: "Annulation gratuite jusqu'à 72h avant. Entre 72h et 24h : 50% du montant. Moins de 24h : 100% du montant." },
@@ -14,7 +14,7 @@ const faqs = [
 
 const faqsEn = [
   { q: "What documents do I need?", a: "A valid ID, your driving license (category B, minimum 2 years) and a credit card in your name for the security deposit." },
-  { q: "What is the deductible in case of damage?", a: "The standard deductible is CHF 2,000 per event. With the Serenity+ option (CHF 25/day), it is reduced to CHF 500." },
+  { q: "What is the deductible in case of damage?", a: "The standard deductible is CHF 2,000 per event. With the Serenity+ option (CHF 49/rental), it is reduced to CHF 500." },
   { q: "How many kilometres are included?", a: "150 km per rental day are included. Each extra km is charged at CHF 0.45. The Unlimited km option (CHF 15/day) removes this surcharge." },
   { q: "Can I drive abroad?", a: "Yes, in neighbouring countries (France, Germany, Italy, Austria, Liechtenstein) at no extra charge. Other countries can be added on request (CHF 30/country/day)." },
   { q: "What are the cancellation conditions?", a: "Free cancellation up to 72h before. Between 72h and 24h: 50% of the amount. Less than 24h: 100% of the amount." },
