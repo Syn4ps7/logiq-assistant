@@ -50,7 +50,7 @@ const Rates = () => {
                   </ul>
                 )}
                 <ul className="space-y-2 mb-4">
-                  {plan.features.map((f) => (
+                  {(t(`rates.planFeatures.${plan.id}`, { returnObjects: true }) as string[]).map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm">
                       <Check className="h-4 w-4 text-primary shrink-0" />
                       <span>{f}</span>
