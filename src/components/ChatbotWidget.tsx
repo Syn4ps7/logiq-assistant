@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { MessageCircle, X, Send, Loader2 } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
@@ -70,6 +70,24 @@ async function streamChat({
     }
   }
   onDone();
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <button
+      onClick={copy}
+      className="absolute top-1.5 right-1.5 h-6 w-6 rounded-md bg-background/80 border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+      aria-label="Copier"
+    >
+      {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3 text-muted-foreground" />}
+    </button>
+  );
 }
 
 export function ChatbotWidget() {
@@ -167,13 +185,16 @@ export function ChatbotWidget() {
             </div>
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`rounded-lg p-3 text-sm max-w-[85%] ${
+                <div className={`group relative rounded-lg p-3 text-sm max-w-[85%] ${
                   m.role === "user"
                     ? "bg-primary text-primary-foreground whitespace-pre-wrap"
                     : "bg-muted text-foreground prose prose-sm prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-headings:my-1 max-w-[85%]"
                 }`}>
                   {m.role === "assistant" ? (
-                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                    <>
+                      <ReactMarkdown>{m.content}</ReactMarkdown>
+                      <CopyButton text={m.content} />
+                    </>
                   ) : (
                     m.content
                   )}
