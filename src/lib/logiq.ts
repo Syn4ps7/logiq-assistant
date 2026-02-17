@@ -1,4 +1,4 @@
-import { vehicles, type Vehicle } from "@/data/vehicles";
+import { vehicles, ratePlans, vehicleOptions, EXTRA_KM_RATE, type Vehicle, type RatePlan, type VehicleOption } from "@/data/vehicles";
 import { CGL_HASH } from "@/data/cgl-content";
 
 // Types for window.LOGIQ
@@ -25,6 +25,9 @@ export interface TermsVersion {
 
 export interface LogiqGlobal {
   vehicleList: { id: string; name: string; priceDay: number; specs: Vehicle["specs"]; availability: boolean }[];
+  ratePlans: RatePlan[];
+  vehicleOptions: VehicleOption[];
+  extraKmRate: number;
   bookingDraft: BookingDraft;
   userConsent: UserConsent;
   termsVersion: TermsVersion;
@@ -48,6 +51,9 @@ export function initLogiq(): void {
       specs: v.specs,
       availability: v.availability,
     })),
+    ratePlans,
+    vehicleOptions,
+    extraKmRate: EXTRA_KM_RATE,
     bookingDraft: {
       start: null,
       end: null,
