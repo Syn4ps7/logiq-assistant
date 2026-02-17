@@ -22,15 +22,15 @@ const fmt = (v: number) => {
   return rounded.toLocaleString("fr-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
-/** Compute TTC from HT */
-const ttc = (ht: number) => roundCHF(ht * (1 + TVA_RATE));
+/** Compute HT from TTC */
+const ht = (ttcVal: number) => roundCHF(ttcVal / (1 + TVA_RATE));
 
-/** Inline price display: HT primary, TTC secondary */
-const PriceHT = ({ ht, suffix = "" }: { ht: number; suffix?: string }) => (
+/** Inline price display: HT primary (computed from TTC), TTC secondary */
+const PriceHT = ({ ttcVal, suffix = "" }: { ttcVal: number; suffix?: string }) => (
   <div>
-    <span className="font-semibold">{fmt(ht)} CHF HT{suffix}</span>
+    <span className="font-semibold">{fmt(ht(ttcVal))} CHF HT{suffix}</span>
     <br />
-    <span className="text-xs text-muted-foreground">{fmt(ttc(ht))} CHF TTC</span>
+    <span className="text-xs text-muted-foreground">{fmt(ttcVal)} CHF TTC</span>
   </div>
 );
 
@@ -125,28 +125,28 @@ const Pro = () => {
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.flexWeekday")}</TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ht={149} suffix={` / ${t("pro.day")}`} />
+                    <PriceHT ttcVal={149} suffix={` / ${t("pro.day")}`} />
                   </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.flexWeekend")}</TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ht={179} suffix={` / ${t("pro.day")}`} />
+                    <PriceHT ttcVal={179} suffix={` / ${t("pro.day")}`} />
                   </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.flexPack")}</TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ht={360} />
+                    <PriceHT ttcVal={360} />
                   </TableCell>
                   <TableCell className="text-right">400 km</TableCell>
                 </TableRow>
                 <TableRow className="bg-muted/30">
                   <TableCell className="font-medium">{t("pro.extraKm")}</TableCell>
                   <TableCell className="text-right" colSpan={2}>
-                    <PriceHT ht={0.60} suffix="/km" />
+                    <PriceHT ttcVal={0.60} suffix="/km" />
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -175,30 +175,30 @@ const Pro = () => {
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.carnet10")}</TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ht={1290} />
+                    <PriceHT ttcVal={1290} />
                   </TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ht={129} suffix={`/${t("pro.day")}`} />
+                    <PriceHT ttcVal={129} suffix={`/${t("pro.day")}`} />
                   </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.carnet20")}</TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ht={2440} />
+                    <PriceHT ttcVal={2440} />
                   </TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ht={122} suffix={`/${t("pro.day")}`} />
+                    <PriceHT ttcVal={122} suffix={`/${t("pro.day")}`} />
                   </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
                 <TableRow className="bg-accent/5">
                   <TableCell className="font-medium">{t("pro.carnet40")}</TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ht={4600} />
+                    <PriceHT ttcVal={4600} />
                   </TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ht={115} suffix={`/${t("pro.day")}`} />
+                    <PriceHT ttcVal={115} suffix={`/${t("pro.day")}`} />
                   </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
