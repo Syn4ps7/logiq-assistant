@@ -220,4 +220,60 @@ export const cglArticles: CGLArticle[] = [
     content:
       "Les présentes CGL sont soumises au droit suisse. En cas de litige, et à défaut d'accord amiable, le for juridique exclusif est situé à Vevey, en Suisse.",
   },
+  {
+    id: "article-14",
+    title: "Article 14 — Conditions Particulières – Clients Professionnels (B2B)",
+    content:
+      "",
+    subsections: [
+      {
+        id: "article-14.1",
+        title: "14.1 — Définition",
+        content:
+          "Est considéré comme « Client Professionnel » toute personne morale ou toute personne physique agissant dans le cadre de son activité professionnelle (réservation au nom d'une entreprise, demande de facture entreprise, utilisation professionnelle).",
+      },
+      {
+        id: "article-14.2",
+        title: "14.2 — Hiérarchie contractuelle",
+        content:
+          "Pour les Clients Professionnels, les présentes Conditions Particulières prévalent sur toute clause contradictoire des CGL. Les autres articles des CGL restent applicables.",
+      },
+      {
+        id: "article-14.3",
+        title: "14.3 — Prix, TVA et affichage",
+        content:
+          "a) Les prix affichés sur la page « Pro » sont indiqués en CHF hors taxe (HT) comme base de calcul.\nb) La TVA suisse au taux en vigueur (actuellement 8,1 %) est ajoutée au montant HT et apparaît sur la facture.\nc) Le prix TTC (TVA incluse) peut être affiché à titre informatif. En cas de divergence d'affichage, le montant facturé selon (a) + (b) fait foi.",
+      },
+      {
+        id: "article-14.4",
+        title: "14.4 — Facturation (B2B)",
+        content:
+          "a) Le Client Professionnel s'engage à fournir les informations nécessaires à la facturation : raison sociale, adresse complète, email comptabilité, IDE/TVA si applicable.\nb) La facture est transmise par voie électronique (email) sauf accord contraire.",
+      },
+      {
+        id: "article-14.5",
+        title: "14.5 — Modalités de paiement",
+        content:
+          "a) Par défaut, toute réservation (y compris Pro) est payable immédiatement par carte / lien de paiement.\nb) Un paiement sur facture à 30 jours peut être accordé uniquement après validation par LogIQ Transport, notamment sous réserve : signature d'un contrat cadre ; au moins 3 locations réglées sans incident ; mise en place d'un plafond d'encours (ex : 1'500 CHF à 2'500 CHF) ; respect strict des échéances.\nc) En cas de dépassement d'encours ou d'échéance impayée, LogIQ Transport peut suspendre les réservations futures et exiger le paiement immédiat.",
+      },
+      {
+        id: "article-14.6",
+        title: "14.6 — Retard de paiement – intérêts et frais",
+        content:
+          "a) Toute somme échue et impayée porte intérêt moratoire dès le lendemain de l'échéance.\nb) Sauf taux supérieur convenu au contrat cadre, l'intérêt moratoire est de 5 % l'an.\nc) Les frais de rappel, de recouvrement et/ou de procédure (poursuite) peuvent être facturés au Client Professionnel en sus.",
+      },
+      {
+        id: "article-14.7",
+        title: "14.7 — Contestation / réclamation",
+        content:
+          "Toute contestation relative à une facture doit être notifiée par écrit dans un délai de 5 jours ouvrables suivant sa réception, en motivant la réclamation. À défaut, la facture est réputée acceptée.",
+      },
+      {
+        id: "article-14.8",
+        title: "14.8 — Conducteurs / Responsabilité",
+        content:
+          "Le Client Professionnel s'assure que les conducteurs respectent les conditions d'éligibilité des CGL (âge, permis, etc.). Le Client Professionnel demeure responsable du respect des obligations contractuelles et des frais (dommages, franchises, pénalités, carburant, kilomètres, amendes) liés aux locations effectuées sous son compte.",
+      },
+    ],
+  },
 ];
