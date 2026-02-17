@@ -252,12 +252,22 @@
   "chatbot": {
     "title": "LogIQ Assistant",
     "online": "Online — Ready to help",
-    "greeting": "Hello — I can check availability, estimate prices, or explain our Terms & Conditions. How can I help you?",
+    "modePro": "Professional Mode",
+    "modeParticulier": "Individual Mode",
+    "clientTypeQuestion": "You are…",
+    "particulier": "Individual",
+    "professionnel": "Professional",
+    "greeting": "Hello! I'm the LogIQ assistant. Are you an individual or a professional?",
+    "greetingPro": "Welcome to the **Pro** area! I can help with business rates, invoicing, or Pro Booklets. How can I assist you?",
+    "greetingParticulier": "Hello! I can help you choose a vehicle, estimate a price, or answer your questions. How can I help?",
     "placeholder": "Type your message…",
     "proactive": "Need help choosing your van or estimating a price? 💬",
     "quick1": "💰 What are your rates?",
     "quick2": "🚛 What vehicles do you have?",
     "quick3": "📦 What's the 48h Pack?",
+    "quickPro1": "💼 Pro Flex rates?",
+    "quickPro2": "📋 Prepaid Pro Booklets?",
+    "quickPro3": "🧾 Net-30 invoicing?",
     "integrating": "Powered by LogIQ Transport"
   },
   "notFound": {
