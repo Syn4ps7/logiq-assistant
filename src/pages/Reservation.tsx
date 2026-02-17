@@ -27,6 +27,10 @@ const Reservation = () => {
   }, [searchParams]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step]);
+
+  useEffect(() => {
     updateBookingDraft({
       start: startDate || null,
       end: endDate || null,
