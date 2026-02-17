@@ -45,6 +45,8 @@ const Index = () => {
           <source src={heroVideo} type="video/mp4" />
         </motion.video>
         <div className="absolute inset-0 gradient-hero" />
+        {/* Extra mobile overlay for better text contrast */}
+        <div className="absolute inset-0 bg-black/30 sm:bg-transparent" />
 
         {/* Subtle animated grain overlay for premium feel */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
@@ -134,8 +136,16 @@ const Index = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {vehicles.map((v) => (
-              <VehicleCard key={v.id} vehicle={v} />
+            {vehicles.map((v, i) => (
+              <motion.div
+                key={v.id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: i * 0.15, ease: "easeOut" }}
+              >
+                <VehicleCard vehicle={v} />
+              </motion.div>
             ))}
           </div>
           <div className="mt-6 text-center sm:hidden">
