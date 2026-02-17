@@ -18,6 +18,7 @@ import CGL from "./pages/CGL";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import Privacy from "./pages/Privacy";
+import Pro from "./pages/Pro";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => {
                 <Route path="/reservation" element={<Reservation />} />
                 <Route path="/cgl" element={<CGL />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/pro" element={<Pro />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="*" element={<NotFound />} />
