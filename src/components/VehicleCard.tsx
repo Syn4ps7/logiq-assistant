@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Package, Ruler, Users, Fuel, ArrowRight } from "lucide-react";
+import { Package, Ruler, Users, Fuel, ArrowRight, X, Check, Gauge, Cog } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { dispatchLogiqEvent } from "@/lib/logiq";
 import { useTranslation } from "react-i18next";
 import type { Vehicle } from "@/data/vehicles";
+import { vehicleOptions } from "@/data/vehicles";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -12,6 +14,8 @@ interface VehicleCardProps {
 
 export function VehicleCard({ vehicle }: VehicleCardProps) {
   const [showInterior, setShowInterior] = useState(false);
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const { t } = useTranslation();
 
   const handleClick = () => {
@@ -96,15 +100,26 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
 
         {/* Features */}
         <div className="flex flex-wrap gap-1.5 mb-5">
-          {vehicle.features.slice(0, 3).map((feature) => (
+          {(showAllFeatures ? vehicle.features : vehicle.features.slice(0, 3)).map((feature) => (
             <span key={feature} className="text-xs bg-primary/5 text-primary border border-primary/10 px-2.5 py-1 rounded-full font-medium">
               {feature}
             </span>
           ))}
-          {vehicle.features.length > 3 && (
-            <span className="text-xs bg-muted px-2.5 py-1 rounded-full text-muted-foreground font-medium">
+          {vehicle.features.length > 3 && !showAllFeatures && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setShowAllFeatures(true); }}
+              className="text-xs bg-muted px-2.5 py-1 rounded-full text-muted-foreground font-medium hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
+            >
               +{vehicle.features.length - 3}
-            </span>
+            </button>
+          )}
+          {showAllFeatures && vehicle.features.length > 3 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setShowAllFeatures(false); }}
+              className="text-xs bg-muted px-2.5 py-1 rounded-full text-muted-foreground font-medium hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
+            >
+              {t("vehicleCard.showLess", "Moins")}
+            </button>
           )}
         </div>
 
@@ -116,11 +131,84 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
               <ArrowRight className="h-3.5 w-3.5 ml-1 transition-transform group-hover/btn:translate-x-0.5" />
             </Button>
           </Link>
-          <Link to="/vehicles">
-            <Button variant="outline" size="sm">{t("vehicleCard.details")}</Button>
-          </Link>
+          <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setShowDetails(true); }}>
+            {t("vehicleCard.details")}
+          </Button>
         </div>
       </div>
+
+      {/* Details Dialog */}
+      <Dialog open={showDetails} onOpenChange={setShowDetails}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{vehicle.name}</DialogTitle>
+            <DialogDescription>{t("vehicleCard.detailsDescription", "Caractéristiques et options disponibles")}</DialogDescription>
+          </DialogHeader>
+
+          {/* Image */}
+          <div className="rounded-lg overflow-hidden aspect-[16/10] bg-muted">
+            <img src={vehicle.images.exterior} alt={vehicle.name} className="w-full h-full object-cover" />
+          </div>
+
+          {/* All specs */}
+          <div>
+            <h4 className="font-semibold text-sm mb-2">{t("vehicleCard.specifications", "Caractéristiques")}</h4>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { icon: Package, label: `Volume: ${vehicle.specs.volume}` },
+                { icon: Ruler, label: `Hauteur: ${vehicle.specs.height}` },
+                { icon: Ruler, label: `Longueur: ${vehicle.specs.length}` },
+                { icon: Gauge, label: `Charge: ${vehicle.specs.payload}` },
+                { icon: Users, label: `${vehicle.specs.seats} ${t("vehicleCard.seats")}` },
+                { icon: Cog, label: vehicle.specs.transmission },
+                { icon: Fuel, label: vehicle.specs.fuel },
+              ].map((spec, i) => (
+                <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+                  <spec.icon className="h-3.5 w-3.5 text-primary shrink-0" />
+                  <span>{spec.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* All features */}
+          <div>
+            <h4 className="font-semibold text-sm mb-2">{t("vehicleCard.equipment", "Équipements")}</h4>
+            <div className="flex flex-wrap gap-1.5">
+              {vehicle.features.map((feature) => (
+                <span key={feature} className="text-xs bg-primary/5 text-primary border border-primary/10 px-2.5 py-1 rounded-full font-medium flex items-center gap-1">
+                  <Check className="h-3 w-3" />
+                  {feature}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Available options */}
+          <div>
+            <h4 className="font-semibold text-sm mb-2">{t("vehicleCard.availableOptions", "Options disponibles")}</h4>
+            <div className="space-y-2">
+              {vehicleOptions.map((option) => (
+                <div key={option.id} className="flex items-center justify-between bg-muted/50 rounded-lg px-3 py-2">
+                  <div>
+                    <p className="text-sm font-medium">{option.name}</p>
+                    <p className="text-xs text-muted-foreground">{option.description}</p>
+                  </div>
+                  <span className="text-sm font-semibold text-primary whitespace-nowrap ml-2">{option.price} CHF</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <Link to={`/reservation?vehicle=${vehicle.id}`} className="w-full">
+            <Button variant="petrol" className="w-full" size="default">
+              {t("vehicleCard.book")}
+              <ArrowRight className="h-4 w-4 ml-1" />
+            </Button>
+          </Link>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
