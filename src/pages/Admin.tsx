@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar } from "lucide-react";
+import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface ProLead {
@@ -85,6 +85,28 @@ const Admin = () => {
     }
   };
 
+  const exportCsv = () => {
+    const headers = ["Date", "Entreprise", "Contact", "Téléphone", "Email", "Ville", "Volume estimé", "Besoin"];
+    const rows = leads.map((l) => [
+      new Date(l.created_at).toLocaleString("fr-CH"),
+      l.company_name,
+      l.contact_name,
+      l.phone,
+      l.email,
+      l.city || "",
+      l.estimated_volume || "",
+      `"${l.need.replace(/"/g, '""')}"`,
+    ]);
+    const csv = [headers.join(";"), ...rows.map((r) => r.join(";"))].join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `leads-pro-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/login");
@@ -115,6 +137,12 @@ const Admin = () => {
               <RefreshCw className={`h-4 w-4 mr-1 ${loading ? "animate-spin" : ""}`} />
               Actualiser
             </Button>
+            {leads.length > 0 && (
+              <Button variant="outline" size="sm" onClick={exportCsv}>
+                <Download className="h-4 w-4 mr-1" />
+                CSV
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={handleLogout}>
               <LogOut className="h-4 w-4 mr-1" />
               Déconnexion
