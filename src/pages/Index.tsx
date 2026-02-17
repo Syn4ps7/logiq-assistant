@@ -19,6 +19,7 @@ const Index = () => {
   });
   const videoY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
   const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 0.6, 0]);
 
   const features = [
     { icon: Shield, titleKey: "reassurance.insurance", descKey: "reassurance.insuranceDesc" },
@@ -48,7 +49,7 @@ const Index = () => {
         {/* Subtle animated grain overlay for premium feel */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
 
-        <div className="relative container py-20 lg:py-32">
+        <motion.div style={{ opacity: heroOpacity }} className="relative container py-20 lg:py-32">
           <div className="max-w-2xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -100,7 +101,7 @@ const Index = () => {
               {t("hero.reassuranceLine")}
             </motion.p>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Reassurance bar */}
