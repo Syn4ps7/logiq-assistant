@@ -10,6 +10,30 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
+const TVA_RATE = 0.081;
+
+/** Round to nearest 0.05 CHF (Swiss rounding) */
+const roundCHF = (v: number) => Math.round(v / 0.05) * 0.05;
+
+/** Format a number to 2 decimals with Swiss thousands separator */
+const fmt = (v: number) => {
+  const rounded = roundCHF(v);
+  // Use apostrophe as thousands separator
+  return rounded.toLocaleString("fr-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+/** Compute TTC from HT */
+const ttc = (ht: number) => roundCHF(ht * (1 + TVA_RATE));
+
+/** Inline price display: HT primary, TTC secondary */
+const PriceHT = ({ ht, suffix = "" }: { ht: number; suffix?: string }) => (
+  <div>
+    <span className="font-semibold">{fmt(ht)} CHF HT{suffix}</span>
+    <br />
+    <span className="text-xs text-muted-foreground">{fmt(ttc(ht))} CHF TTC</span>
+  </div>
+);
+
 const Pro = () => {
   const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
@@ -39,7 +63,6 @@ const Pro = () => {
       return;
     }
 
-    // Track conversion event
     if (typeof window !== "undefined" && (window as any).gtag) {
       (window as any).gtag("event", "lead_pro_submit");
     }
@@ -101,22 +124,30 @@ const Pro = () => {
               <TableBody>
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.flexWeekday")}</TableCell>
-                  <TableCell className="text-right">149 CHF / {t("pro.day")}</TableCell>
+                  <TableCell className="text-right">
+                    <PriceHT ht={149} suffix={` / ${t("pro.day")}`} />
+                  </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.flexWeekend")}</TableCell>
-                  <TableCell className="text-right">179 CHF / {t("pro.day")}</TableCell>
+                  <TableCell className="text-right">
+                    <PriceHT ht={179} suffix={` / ${t("pro.day")}`} />
+                  </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.flexPack")}</TableCell>
-                  <TableCell className="text-right">360 CHF</TableCell>
+                  <TableCell className="text-right">
+                    <PriceHT ht={360} />
+                  </TableCell>
                   <TableCell className="text-right">400 km</TableCell>
                 </TableRow>
                 <TableRow className="bg-muted/30">
                   <TableCell className="font-medium">{t("pro.extraKm")}</TableCell>
-                  <TableCell className="text-right" colSpan={2}>0.60 CHF/km</TableCell>
+                  <TableCell className="text-right" colSpan={2}>
+                    <PriceHT ht={0.60} suffix="/km" />
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -143,20 +174,32 @@ const Pro = () => {
               <TableBody>
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.carnet10")}</TableCell>
-                  <TableCell className="text-right">1'290 CHF</TableCell>
-                  <TableCell className="text-right">129 CHF/{t("pro.day")}</TableCell>
+                  <TableCell className="text-right">
+                    <PriceHT ht={1290} />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <PriceHT ht={129} suffix={`/${t("pro.day")}`} />
+                  </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.carnet20")}</TableCell>
-                  <TableCell className="text-right">2'440 CHF</TableCell>
-                  <TableCell className="text-right">122 CHF/{t("pro.day")}</TableCell>
+                  <TableCell className="text-right">
+                    <PriceHT ht={2440} />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <PriceHT ht={122} suffix={`/${t("pro.day")}`} />
+                  </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
                 <TableRow className="bg-accent/5">
                   <TableCell className="font-medium">{t("pro.carnet40")}</TableCell>
-                  <TableCell className="text-right font-semibold">4'600 CHF</TableCell>
-                  <TableCell className="text-right font-semibold">115 CHF/{t("pro.day")}</TableCell>
+                  <TableCell className="text-right">
+                    <PriceHT ht={4600} />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <PriceHT ht={115} suffix={`/${t("pro.day")}`} />
+                  </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
               </TableBody>

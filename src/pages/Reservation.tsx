@@ -6,6 +6,10 @@ import { updateBookingDraft, dispatchLogiqEvent } from "@/lib/logiq";
 import { Check, ChevronRight, Info, Truck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+const TVA_RATE = 0.081;
+const roundCHF = (v: number) => Math.round(v / 0.05) * 0.05;
+const fmtCHF = (v: number) => roundCHF(v).toLocaleString("fr-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 type RatePlanId = "week" | "weekend" | "pack-48h";
 type WeekendPack = "standard" | "confort" | "premium";
 
@@ -34,6 +38,8 @@ const Reservation = () => {
   const [deliveryCity, setDeliveryCity] = useState("");
   const [deliveryPhone, setDeliveryPhone] = useState("");
   const [deliveryInstructions, setDeliveryInstructions] = useState("");
+
+  const isProCheckout = searchParams.get("source") === "pro";
 
   // Pre-fill from query params (from Rates page links)
   useEffect(() => {
@@ -421,10 +427,27 @@ const Reservation = () => {
                         <span className="text-right text-xs max-w-[200px]">{deliveryAddress}, {deliveryNpa} {deliveryCity}</span>
                       </div>
                     )}
-                    <div className="flex justify-between font-bold text-base pt-2 border-t">
-                      <span>{t("reservation.totalEstimate")}</span>
-                      <span className="text-primary">{price.total.toFixed(2)} CHF</span>
-                    </div>
+                    {isProCheckout ? (
+                      <>
+                        <div className="flex justify-between pt-2 border-t">
+                          <span className="font-medium">Sous-total HT</span>
+                          <span>{fmtCHF(price.total / (1 + TVA_RATE))} CHF</span>
+                        </div>
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>TVA (8.1 %)</span>
+                          <span>{fmtCHF(price.total - price.total / (1 + TVA_RATE))} CHF</span>
+                        </div>
+                        <div className="flex justify-between font-bold text-base pt-1 border-t">
+                          <span>Total TTC</span>
+                          <span className="text-primary">{fmtCHF(price.total)} CHF</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex justify-between font-bold text-base pt-2 border-t">
+                        <span>{t("reservation.totalEstimate")}</span>
+                        <span className="text-primary">{price.total.toFixed(2)} CHF</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
