@@ -4,12 +4,21 @@ import { VehicleCard } from "@/components/VehicleCard";
 import { vehicles } from "@/data/vehicles";
 import { Shield, Clock, MapPin, Headphones, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import heroImage from "@/assets/hero-van.jpg";
 import heroVideo from "@/assets/hero-video.mp4";
 
 const Index = () => {
   const { t } = useTranslation();
+
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const videoY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
   const features = [
     { icon: Shield, titleKey: "reassurance.insurance", descKey: "reassurance.insuranceDesc" },
@@ -21,18 +30,19 @@ const Index = () => {
   return (
     <main>
       {/* Hero with video */}
-      <section className="relative min-h-[600px] lg:min-h-[700px] flex items-center overflow-hidden" aria-label="Présentation">
-        {/* Video background */}
-        <video
+      <section ref={heroRef} className="relative min-h-[600px] lg:min-h-[700px] flex items-center overflow-hidden" aria-label="Présentation">
+        {/* Video background with parallax */}
+        <motion.video
           autoPlay
           loop
           muted
           playsInline
           poster={heroImage}
+          style={{ y: videoY, scale: videoScale }}
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source src={heroVideo} type="video/mp4" />
-        </video>
+        </motion.video>
         <div className="absolute inset-0 gradient-hero" />
 
         {/* Subtle animated grain overlay for premium feel */}
