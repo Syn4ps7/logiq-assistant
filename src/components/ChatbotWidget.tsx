@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 
@@ -166,12 +167,16 @@ export function ChatbotWidget() {
             </div>
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`rounded-lg p-3 text-sm max-w-[85%] whitespace-pre-wrap ${
+                <div className={`rounded-lg p-3 text-sm max-w-[85%] ${
                   m.role === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-foreground"
+                    ? "bg-primary text-primary-foreground whitespace-pre-wrap"
+                    : "bg-muted text-foreground prose prose-sm prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-headings:my-1 max-w-[85%]"
                 }`}>
-                  {m.content}
+                  {m.role === "assistant" ? (
+                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                  ) : (
+                    m.content
+                  )}
                 </div>
               </div>
             ))}
