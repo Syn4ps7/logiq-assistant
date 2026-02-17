@@ -7,13 +7,38 @@ import { motion } from "framer-motion";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 const Pro = () => {
   const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitting(true);
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const { error } = await supabase.from("pro_leads").insert({
+      company_name: (formData.get("company_name") as string).trim(),
+      contact_name: (formData.get("contact_name") as string).trim(),
+      phone: (formData.get("phone") as string).trim(),
+      email: (formData.get("email") as string).trim(),
+      city: (formData.get("city") as string)?.trim() || null,
+      estimated_volume: (formData.get("estimated_volume") as string)?.trim() || null,
+      need: (formData.get("need") as string).trim(),
+    });
+
+    setSubmitting(false);
+
+    if (error) {
+      toast({ title: "Erreur", description: "Une erreur est survenue. Veuillez réessayer.", variant: "destructive" });
+      return;
+    }
+
     // Track conversion event
     if (typeof window !== "undefined" && (window as any).gtag) {
       (window as any).gtag("event", "lead_pro_submit");
@@ -198,40 +223,40 @@ const Pro = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("pro.fieldCompany")}</label>
-                  <input required type="text" maxLength={100} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                  <input name="company_name" required type="text" maxLength={100} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("pro.fieldName")}</label>
-                  <input required type="text" maxLength={100} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                  <input name="contact_name" required type="text" maxLength={100} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("pro.fieldPhone")}</label>
-                  <input required type="tel" maxLength={20} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                  <input name="phone" required type="tel" maxLength={20} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("pro.fieldEmail")}</label>
-                  <input required type="email" maxLength={255} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                  <input name="email" required type="email" maxLength={255} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("pro.fieldCity")}</label>
-                  <input type="text" maxLength={100} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                  <input name="city" type="text" maxLength={100} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("pro.fieldVolume")}</label>
-                  <input type="text" maxLength={100} placeholder={t("pro.fieldVolumePlaceholder")} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                  <input name="estimated_volume" type="text" maxLength={100} placeholder={t("pro.fieldVolumePlaceholder")} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">{t("pro.fieldNeed")}</label>
-                <textarea required rows={3} maxLength={1000} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none resize-none" />
+                <textarea name="need" required rows={3} maxLength={1000} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none resize-none" />
               </div>
-              <Button variant="petrol" type="submit" size="lg" className="w-full sm:w-auto">
-                {t("pro.ctaOpen")}
-                <ChevronRight className="h-4 w-4 ml-1" />
+              <Button variant="petrol" type="submit" size="lg" className="w-full sm:w-auto" disabled={submitting}>
+                {submitting ? "Envoi…" : t("pro.ctaOpen")}
+                {!submitting && <ChevronRight className="h-4 w-4 ml-1" />}
               </Button>
             </form>
           )}
