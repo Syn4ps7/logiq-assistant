@@ -4,6 +4,7 @@ import { VehicleCard } from "@/components/VehicleCard";
 import { vehicles } from "@/data/vehicles";
 import { Shield, Clock, MapPin, Headphones, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import heroImage from "@/assets/hero-van.jpg";
 import heroVideo from "@/assets/hero-video.mp4";
 
@@ -38,18 +39,38 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
 
         <div className="relative container py-20 lg:py-32">
-          <div className="max-w-2xl animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 text-primary-foreground text-xs font-medium mb-6">
+          <div className="max-w-2xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 text-primary-foreground text-xs font-medium mb-6"
+            >
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               Swiss Riviera · 24/7
-            </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-[1.15] mb-5">
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-[1.15] mb-5"
+            >
               {t("hero.title1")}
-            </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-primary-foreground/80 mb-8 leading-relaxed max-w-xl">
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 25 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+              className="text-base sm:text-lg lg:text-xl text-primary-foreground/80 mb-8 leading-relaxed max-w-xl"
+            >
               {t("hero.subtitle")}
-            </p>
-            <div className="flex flex-wrap gap-3 mb-6">
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.45, ease: "easeOut" }}
+              className="flex flex-wrap gap-3 mb-6"
+            >
               <Link to="/reservation">
                 <Button variant="hero" size="lg" className="shadow-xl shadow-accent/20">
                   {t("hero.cta")}
@@ -59,10 +80,15 @@ const Index = () => {
               <Link to="/rates">
                 <Button variant="hero-outline" size="lg">{t("hero.ctaRates")}</Button>
               </Link>
-            </div>
-            <p className="text-xs sm:text-sm text-primary-foreground/60 tracking-wide">
+            </motion.div>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-xs sm:text-sm text-primary-foreground/60 tracking-wide"
+            >
               {t("hero.reassuranceLine")}
-            </p>
+            </motion.p>
           </div>
         </div>
       </section>
