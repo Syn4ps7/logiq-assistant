@@ -76,6 +76,8 @@ export function ChatbotWidget() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showProactive, setShowProactive] = useState(false);
+  const proactiveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
@@ -85,8 +87,22 @@ export function ChatbotWidget() {
   }, [messages]);
 
   useEffect(() => {
-    if (isActive) inputRef.current?.focus();
+    if (isActive) {
+      inputRef.current?.focus();
+      setShowProactive(false);
+      if (proactiveTimerRef.current) clearTimeout(proactiveTimerRef.current);
+    }
   }, [isActive]);
+
+  // Proactive message after 8 seconds if chat not opened
+  useEffect(() => {
+    proactiveTimerRef.current = setTimeout(() => {
+      if (!isActive) setShowProactive(true);
+    }, 8000);
+    return () => {
+      if (proactiveTimerRef.current) clearTimeout(proactiveTimerRef.current);
+    };
+  }, []);
 
   const send = useCallback(async () => {
     const text = input.trim();
@@ -187,6 +203,23 @@ export function ChatbotWidget() {
             </Button>
           </form>
         </div>
+      )}
+      {/* Proactive bubble */}
+      {showProactive && !isActive && (
+        <button
+          onClick={() => { setShowProactive(false); setIsActive(true); }}
+          className="mb-3 bg-card border shadow-lg rounded-xl px-4 py-3 text-sm text-foreground max-w-[260px] text-left animate-fade-in-up hover:shadow-xl transition-shadow relative"
+        >
+          <button
+            onClick={(e) => { e.stopPropagation(); setShowProactive(false); }}
+            className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-muted border flex items-center justify-center hover:bg-muted-foreground/10"
+            aria-label="Fermer"
+          >
+            <X className="h-3 w-3" />
+          </button>
+          <p className="font-medium text-xs text-primary mb-0.5">LogIQ Assistant</p>
+          <p>{t("chatbot.proactive")}</p>
+        </button>
       )}
       <button
         onClick={() => setIsActive(!isActive)}
