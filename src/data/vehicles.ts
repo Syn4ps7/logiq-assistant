@@ -139,7 +139,7 @@ export const ratePlans: RatePlan[] = [
   },
   {
     id: "pack-48h",
-    name: "Pack 48h",
+    name: "Pack 48h Déménagement",
     subtitle: "Idéal pour vos projets",
     priceDisplay: "340 CHF",
     priceValue: 340,

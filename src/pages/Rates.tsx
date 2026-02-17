@@ -1,7 +1,7 @@
 import { vehicles, vehicleOptions, ratePlans, EXTRA_KM_RATE } from "@/data/vehicles";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Check, Star } from "lucide-react";
+import { Check, Star, Package } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const Rates = () => {
@@ -29,7 +29,7 @@ const Rates = () => {
               >
                 {plan.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground px-3 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1">
-                    <Star className="h-3 w-3" /> {t("rates.popular")}
+                    <Package className="h-3 w-3" /> {t("rates.bestMoving")}
                   </div>
                 )}
                 <div className="text-center mb-4">
@@ -39,7 +39,17 @@ const Rates = () => {
                     <span className="text-3xl font-bold text-primary">{plan.priceDisplay}</span>
                   </div>
                 </div>
-                <ul className="space-y-2 mb-6">
+                {plan.id === "pack-48h" && (
+                  <ul className="space-y-1.5 mb-4 bg-primary/5 rounded-md p-3">
+                    {(t("rates.packBullets", { returnObjects: true }) as string[]).map((b) => (
+                      <li key={b} className="flex items-center gap-2 text-sm font-medium">
+                        <Check className="h-4 w-4 text-primary shrink-0" />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <ul className="space-y-2 mb-4">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm">
                       <Check className="h-4 w-4 text-primary shrink-0" />
@@ -47,6 +57,11 @@ const Rates = () => {
                     </li>
                   ))}
                 </ul>
+                {plan.id === "pack-48h" && (
+                  <p className="text-xs text-muted-foreground italic mb-4">
+                    {t("rates.packAntiCompare")}
+                  </p>
+                )}
                 <Link to="/reservation" className="block">
                   <Button variant="petrol" className="w-full">{t("nav.book")}</Button>
                 </Link>
