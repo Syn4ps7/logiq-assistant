@@ -37,20 +37,19 @@ const Index = () => {
         {/* Subtle animated grain overlay for premium feel */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
 
-        <div className="relative container py-20 lg:py-28">
-          <div className="max-w-xl animate-fade-in-up">
+        <div className="relative container py-20 lg:py-32">
+          <div className="max-w-2xl animate-fade-in">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 text-primary-foreground text-xs font-medium mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse-gentle" />
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               Swiss Riviera · 24/7
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight mb-4">
-              {t("hero.title1")}<br />
-              <span className="text-accent">{t("hero.title2")}</span> {t("hero.title3")}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-[1.15] mb-5">
+              {t("hero.title1")}
             </h1>
-            <p className="text-lg text-primary-foreground/80 mb-8 leading-relaxed max-w-md">
+            <p className="text-base sm:text-lg lg:text-xl text-primary-foreground/80 mb-8 leading-relaxed max-w-xl">
               {t("hero.subtitle")}
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 mb-6">
               <Link to="/reservation">
                 <Button variant="hero" size="lg" className="shadow-xl shadow-accent/20">
                   {t("hero.cta")}
@@ -61,6 +60,9 @@ const Index = () => {
                 <Button variant="hero-outline" size="lg">{t("hero.ctaRates")}</Button>
               </Link>
             </div>
+            <p className="text-xs sm:text-sm text-primary-foreground/60 tracking-wide">
+              {t("hero.reassuranceLine")}
+            </p>
           </div>
         </div>
       </section>
