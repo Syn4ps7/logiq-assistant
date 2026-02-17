@@ -30,7 +30,7 @@ const Rates = () => {
           <h2 className="text-xl font-semibold mb-6">{t("rates.normalTitle")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Semaine */}
-            <div className="p-6 bg-card rounded-lg border-2 border-border">
+            <div className="p-6 bg-card rounded-lg border-2 border-border transition-shadow hover:shadow-lg">
               <h3 className="text-lg font-bold mb-1">{t("rates.weekday")}</h3>
               <p className="text-3xl font-bold text-primary mb-2">{t("rates.weekdayPrice")}</p>
               <p className="text-sm text-muted-foreground mb-4 flex items-center gap-1.5">
@@ -49,7 +49,7 @@ const Rates = () => {
               </Link>
             </div>
             {/* Week-end */}
-            <div className="p-6 bg-card rounded-lg border-2 border-border">
+            <div className="p-6 bg-card rounded-lg border-2 border-border transition-shadow hover:shadow-lg">
               <h3 className="text-lg font-bold mb-1">{t("rates.weekend")}</h3>
               <p className="text-3xl font-bold text-primary mb-2">{t("rates.weekendPrice")}</p>
               <p className="text-sm text-muted-foreground mb-4 flex items-center gap-1.5">
@@ -77,7 +77,7 @@ const Rates = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {/* Standard */}
-            <div className="relative p-6 bg-card rounded-lg border-2 border-border">
+            <div className="relative p-6 bg-card rounded-lg border-2 border-border transition-shadow hover:shadow-lg">
               <h3 className="text-lg font-bold mb-1">{t("rates.standardName")}</h3>
               <p className="text-sm text-muted-foreground italic mb-3">{t("rates.standardHook")}</p>
               <p className="text-3xl font-bold text-primary mb-4">{t("rates.standardPrice")}</p>
@@ -95,7 +95,7 @@ const Rates = () => {
             </div>
 
             {/* Confort — mis en avant */}
-            <div className="relative p-6 bg-card rounded-lg border-2 border-accent shadow-md">
+            <div className="relative p-6 bg-card rounded-lg border-2 border-accent shadow-md transition-shadow hover:shadow-lg">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground px-3 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1">
                 <Star className="h-3 w-3" /> {t("rates.confortBadge")}
               </div>
@@ -116,7 +116,7 @@ const Rates = () => {
             </div>
 
             {/* Premium Livré */}
-            <div className="relative p-6 bg-card rounded-lg border-2 border-primary/40">
+            <div className="relative p-6 bg-card rounded-lg border-2 border-primary/40 transition-shadow hover:shadow-lg">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1">
                 <Crown className="h-3 w-3" /> {t("rates.premiumBadge")}
               </div>
@@ -203,7 +203,7 @@ const Rates = () => {
             {vehicleOptions.map((opt) => (
               <div
                 key={opt.id}
-                className={`p-4 bg-card rounded-lg border ${opt.id === "serenite" ? "border-accent border-2 relative" : ""}`}
+                className={`p-4 bg-card rounded-lg border transition-shadow hover:shadow-lg ${opt.id === "serenite" ? "border-accent border-2 relative" : ""}`}
               >
                 {opt.id === "serenite" && (
                   <span className="absolute -top-2.5 right-3 bg-accent text-accent-foreground text-xs font-semibold px-2 py-0.5 rounded-full">
@@ -223,7 +223,7 @@ const Rates = () => {
         {/* ── Section 4 : Km supplémentaires ── */}
         <section className="mb-12" aria-label="Km supplémentaires">
           <h2 className="text-xl font-semibold mb-4">{t("rates.extraKm")}</h2>
-          <div className="bg-card rounded-lg border p-6">
+          <div className="bg-card rounded-lg border p-6 transition-shadow hover:shadow-lg">
             <p className="text-sm text-muted-foreground">
               {t("rates.extraKmDesc")} <strong className="text-foreground">{EXTRA_KM_RATE.toFixed(2)} {t("rates.extraKmRate")}</strong>{t("rates.extraKmAuto")}
             </p>
@@ -235,7 +235,7 @@ const Rates = () => {
           <h2 className="text-xl font-semibold mb-4">{t("rates.availableVehicles")}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {vehicles.map((v) => (
-              <div key={v.id} className="p-4 bg-card rounded-lg border">
+              <div key={v.id} className="p-4 bg-card rounded-lg border transition-shadow hover:shadow-lg">
                 <h3 className="font-medium mb-1">{v.name}</h3>
                 <p className="text-sm text-muted-foreground">{v.specs.volume} · {v.specs.payload} · {v.specs.transmission}</p>
               </div>
@@ -246,7 +246,7 @@ const Rates = () => {
         {/* ── Section 6 : Inclus ── */}
         <section className="mb-12" aria-label="Inclus dans le tarif">
           <h2 className="text-xl font-semibold mb-4">{t("rates.included")}</h2>
-          <div className="bg-card rounded-lg border p-6">
+          <div className="bg-card rounded-lg border p-6 transition-shadow hover:shadow-lg">
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {(t("rates.includedItems", { returnObjects: true }) as string[]).map((item) => (
                 <li key={item} className="flex items-center gap-2 text-sm">
@@ -260,7 +260,7 @@ const Rates = () => {
 
         {/* ── Section 7 : Encadré Pro ── */}
         <section className="mb-12" aria-label="Pro">
-          <div className="bg-primary/5 border-2 border-primary/20 rounded-lg p-6 text-center">
+          <div className="bg-primary/5 border-2 border-primary/20 rounded-lg p-6 text-center transition-shadow hover:shadow-lg">
             <h2 className="text-xl font-bold mb-2">{t("rates.proCalloutTitle")}</h2>
             <p className="text-muted-foreground mb-4 max-w-lg mx-auto">{t("rates.proCalloutText")}</p>
             <Link to="/pro">
