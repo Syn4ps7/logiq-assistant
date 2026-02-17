@@ -18,6 +18,7 @@ export function Footer() {
               <li><Link to="/vehicles" className="opacity-80 hover:opacity-100 transition-opacity">{t("footer.ourVehicles")}</Link></li>
               <li><Link to="/rates" className="opacity-80 hover:opacity-100 transition-opacity">{t("nav.rates")}</Link></li>
               <li><Link to="/reservation" className="opacity-80 hover:opacity-100 transition-opacity">{t("footer.booking")}</Link></li>
+              <li><Link to="/pro" className="opacity-80 hover:opacity-100 transition-opacity">{t("footer.pro")}</Link></li>
             </ul>
           </div>
           <div>
