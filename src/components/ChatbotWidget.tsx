@@ -1,20 +1,23 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { MessageCircle, X, Send, Loader2, Copy, Check } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Copy, Check, Building2, User } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 
 type Msg = { role: "user" | "assistant"; content: string };
+type ClientType = "pro" | "particulier" | null;
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 async function streamChat({
   messages,
+  clientType,
   onDelta,
   onDone,
   onError,
 }: {
   messages: Msg[];
+  clientType: ClientType;
   onDelta: (t: string) => void;
   onDone: () => void;
   onError: (msg: string) => void;
@@ -25,7 +28,7 @@ async function streamChat({
       "Content-Type": "application/json",
       Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
     },
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify({ messages, clientType }),
   });
 
   if (!resp.ok) {
@@ -90,12 +93,38 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
+function ClientTypeSelector({ onSelect }: { onSelect: (type: ClientType) => void }) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-sm text-muted-foreground mb-1">{t("chatbot.clientTypeQuestion")}</p>
+      <div className="flex gap-2">
+        <button
+          onClick={() => onSelect("particulier")}
+          className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border bg-card hover:bg-accent transition-colors text-sm font-medium text-foreground"
+        >
+          <User className="h-4 w-4" />
+          {t("chatbot.particulier")}
+        </button>
+        <button
+          onClick={() => onSelect("pro")}
+          className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border bg-card hover:bg-accent transition-colors text-sm font-medium text-foreground"
+        >
+          <Building2 className="h-4 w-4" />
+          {t("chatbot.professionnel")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function ChatbotWidget() {
   const [isActive, setIsActive] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showProactive, setShowProactive] = useState(false);
+  const [clientType, setClientType] = useState<ClientType>(null);
   const proactiveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -142,7 +171,7 @@ export function ChatbotWidget() {
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages]);
+  }, [messages, clientType]);
 
   useEffect(() => {
     if (isActive) {
@@ -161,6 +190,17 @@ export function ChatbotWidget() {
       if (proactiveTimerRef.current) clearTimeout(proactiveTimerRef.current);
     };
   }, []);
+
+  const quickKeys = clientType === "pro"
+    ? (["quickPro1", "quickPro2", "quickPro3"] as const)
+    : (["quick1", "quick2", "quick3"] as const);
+
+  const handleClientTypeSelect = (type: ClientType) => {
+    setClientType(type);
+    // Add a system-like greeting based on type
+    const greetingKey = type === "pro" ? "chatbot.greetingPro" : "chatbot.greetingParticulier";
+    setMessages([{ role: "assistant", content: t(greetingKey) }]);
+  };
 
   const sendText = useCallback(async (text: string) => {
     if (!text.trim() || isLoading) return;
@@ -186,6 +226,7 @@ export function ChatbotWidget() {
     try {
       await streamChat({
         messages: allMessages,
+        clientType,
         onDelta: upsert,
         onDone: () => setIsLoading(false),
         onError: (msg) => {
@@ -197,7 +238,7 @@ export function ChatbotWidget() {
       setMessages((prev) => [...prev, { role: "assistant", content: "⚠️ Erreur de connexion." }]);
       setIsLoading(false);
     }
-  }, [isLoading, messages]);
+  }, [isLoading, messages, clientType]);
 
   const send = useCallback(() => sendText(input), [input, sendText]);
 
@@ -213,76 +254,99 @@ export function ChatbotWidget() {
           <div className="bg-primary text-primary-foreground p-4 flex items-center justify-between shrink-0">
             <div>
               <h3 className="font-semibold text-sm">{t("chatbot.title")}</h3>
-              <p className="text-xs opacity-80">{t("chatbot.online")}</p>
+              <p className="text-xs opacity-80">
+                {clientType ? (clientType === "pro" ? t("chatbot.modePro") : t("chatbot.modeParticulier")) : t("chatbot.online")}
+              </p>
             </div>
-            <button onClick={() => setIsActive(false)} className="p-1 rounded-full hover:bg-primary-foreground/10 transition-colors" aria-label="Fermer">
-              <X className="h-4 w-4" />
-            </button>
+            <div className="flex items-center gap-1">
+              {clientType && (
+                <button
+                  onClick={() => { setClientType(null); setMessages([]); }}
+                  className="px-2 py-1 rounded-md text-xs hover:bg-primary-foreground/10 transition-colors"
+                  aria-label="Changer de profil"
+                >
+                  ↩
+                </button>
+              )}
+              <button onClick={() => setIsActive(false)} className="p-1 rounded-full hover:bg-primary-foreground/10 transition-colors" aria-label="Fermer">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
           </div>
 
           {/* Messages */}
           <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto space-y-3 bg-muted/30">
-            <div className="bg-muted rounded-lg p-3 text-sm max-w-[85%]">
-              <p className="text-foreground">{t("chatbot.greeting")}</p>
-            </div>
-            {messages.length === 0 && !isLoading && (
-              <div className="flex flex-wrap gap-2">
-                {(["quick1", "quick2", "quick3"] as const).map((key) => (
-                  <button
-                    key={key}
-                    onClick={() => sendText(t(`chatbot.${key}`))}
-                    className="text-xs px-3 py-1.5 rounded-full border bg-card hover:bg-accent transition-colors text-foreground"
-                  >
-                    {t(`chatbot.${key}`)}
-                  </button>
+            {!clientType ? (
+              <>
+                <div className="bg-muted rounded-lg p-3 text-sm max-w-[85%]">
+                  <p className="text-foreground">{t("chatbot.greeting")}</p>
+                </div>
+                <ClientTypeSelector onSelect={handleClientTypeSelect} />
+              </>
+            ) : (
+              <>
+                {messages.map((m, i) => (
+                  <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div className={`group relative rounded-lg p-3 text-sm max-w-[85%] ${
+                      m.role === "user"
+                        ? "bg-primary text-primary-foreground whitespace-pre-wrap"
+                        : "bg-muted text-foreground prose prose-sm prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-headings:my-1 max-w-[85%]"
+                    }`}>
+                      {m.role === "assistant" ? (
+                        <>
+                          <ReactMarkdown>{m.content}</ReactMarkdown>
+                          <CopyButton text={m.content} />
+                        </>
+                      ) : (
+                        m.content
+                      )}
+                    </div>
+                  </div>
                 ))}
-              </div>
-            )}
-            {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`group relative rounded-lg p-3 text-sm max-w-[85%] ${
-                  m.role === "user"
-                    ? "bg-primary text-primary-foreground whitespace-pre-wrap"
-                    : "bg-muted text-foreground prose prose-sm prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-headings:my-1 max-w-[85%]"
-                }`}>
-                  {m.role === "assistant" ? (
-                    <>
-                      <ReactMarkdown>{m.content}</ReactMarkdown>
-                      <CopyButton text={m.content} />
-                    </>
-                  ) : (
-                    m.content
-                  )}
-                </div>
-              </div>
-            ))}
-            {isLoading && messages[messages.length - 1]?.role === "user" && (
-              <div className="flex justify-start">
-                <div className="bg-muted rounded-lg p-3">
-                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                </div>
-              </div>
+                {messages.length === 1 && messages[0].role === "assistant" && !isLoading && (
+                  <div className="flex flex-wrap gap-2">
+                    {quickKeys.map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => sendText(t(`chatbot.${key}`))}
+                        className="text-xs px-3 py-1.5 rounded-full border bg-card hover:bg-accent transition-colors text-foreground"
+                      >
+                        {t(`chatbot.${key}`)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {isLoading && messages[messages.length - 1]?.role === "user" && (
+                  <div className="flex justify-start">
+                    <div className="bg-muted rounded-lg p-3">
+                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
           {/* Input */}
-          <form
-            onSubmit={(e) => { e.preventDefault(); send(); }}
-            className="p-3 border-t flex gap-2 shrink-0"
-          >
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={t("chatbot.placeholder")}
-              className="flex-1 px-3 py-2 text-sm bg-muted rounded-md border-0 focus:ring-2 focus:ring-primary focus:outline-none"
-              disabled={isLoading}
-            />
-            <Button variant="petrol" size="icon" type="submit" disabled={isLoading || !input.trim()} aria-label="Envoyer">
-              <Send className="h-4 w-4" />
-            </Button>
-          </form>
+          {clientType && (
+            <form
+              onSubmit={(e) => { e.preventDefault(); send(); }}
+              className="p-3 border-t flex gap-2 shrink-0"
+            >
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={t("chatbot.placeholder")}
+                className="flex-1 px-3 py-2 text-sm bg-muted rounded-md border-0 focus:ring-2 focus:ring-primary focus:outline-none"
+                disabled={isLoading}
+              />
+              <Button variant="petrol" size="icon" type="submit" disabled={isLoading || !input.trim()} aria-label="Envoyer">
+                <Send className="h-4 w-4" />
+              </Button>
+            </form>
+          )}
         </div>
       )}
       {/* Proactive bubble */}
