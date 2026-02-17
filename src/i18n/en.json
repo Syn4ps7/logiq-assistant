@@ -61,6 +61,11 @@
     "bestMoving": "Best choice for moving",
     "packBullets": ["Dolly + straps included"],
     "packAntiCompare": "Designed for moving: kit included + more km, to avoid surcharges.",
+    "planFeatures": {
+      "week": ["120 CHF / day", "100 km included / day", "Standard insurance", "24/7 assistance"],
+      "weekend": ["140 CHF / day", "100 km included / day", "Standard insurance", "24/7 assistance"],
+      "pack-48h": ["340 CHF flat fee", "200 km included (total)", "Standard insurance", "Flexibility"]
+    },
     "availableVehicles": "Available vehicles",
     "options": "Options",
     "recommended": "Recommended",
@@ -193,10 +198,11 @@
     "online": "Online — Ready to help",
     "greeting": "Hello — I can check availability, estimate prices, or explain our Terms & Conditions. How can I help you?",
     "placeholder": "Type your message…",
+    "proactive": "Need help choosing your van or estimating a price? 💬",
     "quick1": "💰 What are your rates?",
     "quick2": "🚛 What vehicles do you have?",
     "quick3": "📦 What's the 48h Pack?",
-    "integrating": "Chatbot integration in progress — Coming soon"
+    "integrating": "Powered by LogIQ Transport"
   },
   "notFound": {
     "title": "404",

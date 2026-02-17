@@ -61,6 +61,11 @@
     "bestMoving": "Meilleur choix pour déménagement",
     "packBullets": ["Diable + sangles inclus"],
     "packAntiCompare": "Pensé pour un déménagement : kit inclus + plus de km, pour éviter les suppléments.",
+    "planFeatures": {
+      "week": ["120 CHF / jour", "100 km inclus / jour", "Assurance standard", "Assistance 24/7"],
+      "weekend": ["140 CHF / jour", "100 km inclus / jour", "Assurance standard", "Assistance 24/7"],
+      "pack-48h": ["340 CHF forfait", "200 km inclus (total)", "Assurance standard", "Flexibilité"]
+    },
     "availableVehicles": "Véhicules disponibles",
     "options": "Options",
     "recommended": "Recommandé",
