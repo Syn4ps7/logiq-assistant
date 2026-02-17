@@ -140,6 +140,9 @@
     "greeting": "Bonjour — Je peux vérifier la disponibilité, estimer un prix, ou vous expliquer nos Conditions Générales. Comment puis-je vous aider ?",
     "placeholder": "Écrivez votre message…",
     "proactive": "Besoin d'aide pour choisir votre utilitaire ou estimer un prix ? 💬",
+    "quick1": "💰 Quels sont vos tarifs ?",
+    "quick2": "🚛 Quels véhicules avez-vous ?",
+    "quick3": "📦 C'est quoi le Pack 48h ?",
     "integrating": "Propulsé par LogIQ Transport"
   },
   "notFound": {

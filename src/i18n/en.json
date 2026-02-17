@@ -139,6 +139,9 @@
     "online": "Online — Ready to help",
     "greeting": "Hello — I can check availability, estimate prices, or explain our Terms & Conditions. How can I help you?",
     "placeholder": "Type your message…",
+    "quick1": "💰 What are your rates?",
+    "quick2": "🚛 What vehicles do you have?",
+    "quick3": "📦 What's the 48h Pack?",
     "integrating": "Chatbot integration in progress — Coming soon"
   },
   "notFound": {

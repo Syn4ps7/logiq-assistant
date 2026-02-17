@@ -123,14 +123,12 @@ export function ChatbotWidget() {
     };
   }, []);
 
-  const send = useCallback(async () => {
-    const text = input.trim();
-    if (!text || isLoading) return;
-    setInput("");
-
-    const userMsg: Msg = { role: "user", content: text };
+  const sendText = useCallback(async (text: string) => {
+    if (!text.trim() || isLoading) return;
+    const userMsg: Msg = { role: "user", content: text.trim() };
     setMessages((prev) => [...prev, userMsg]);
     setIsLoading(true);
+    setInput("");
 
     let assistantSoFar = "";
     const allMessages = [...messages, userMsg];
@@ -160,7 +158,9 @@ export function ChatbotWidget() {
       setMessages((prev) => [...prev, { role: "assistant", content: "⚠️ Erreur de connexion." }]);
       setIsLoading(false);
     }
-  }, [input, isLoading, messages]);
+  }, [isLoading, messages]);
+
+  const send = useCallback(() => sendText(input), [input, sendText]);
 
   return (
     <div id="logiq-chatbot" className="fixed bottom-6 right-6 z-50">
@@ -183,6 +183,19 @@ export function ChatbotWidget() {
             <div className="bg-muted rounded-lg p-3 text-sm max-w-[85%]">
               <p className="text-foreground">{t("chatbot.greeting")}</p>
             </div>
+            {messages.length === 0 && !isLoading && (
+              <div className="flex flex-wrap gap-2">
+                {(["quick1", "quick2", "quick3"] as const).map((key) => (
+                  <button
+                    key={key}
+                    onClick={() => sendText(t(`chatbot.${key}`))}
+                    className="text-xs px-3 py-1.5 rounded-full border bg-card hover:bg-accent transition-colors text-foreground"
+                  >
+                    {t(`chatbot.${key}`)}
+                  </button>
+                ))}
+              </div>
+            )}
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div className={`group relative rounded-lg p-3 text-sm max-w-[85%] ${
