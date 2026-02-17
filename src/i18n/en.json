@@ -10,12 +10,11 @@
     "openChat": "Open chat"
   },
   "hero": {
-    "title1": "Utility van rental",
-    "title2": "connected",
-    "title3": "& reliable",
-    "subtitle": "Modern utility vehicles on the Swiss Riviera. Online booking, transparent pricing, professional support.",
+    "title1": "Book your utility van in a few clicks, 24/7",
+    "subtitle": "Modern fleet & 100% digital service on the Swiss Riviera — transparent rates, Sérénité+ options.",
     "cta": "Book now",
-    "ctaRates": "View rates"
+    "ctaRates": "View rates",
+    "reassuranceLine": "24/7 assistance • Insurance included • Contactless return"
   },
   "reassurance": {
     "insurance": "Full insurance",

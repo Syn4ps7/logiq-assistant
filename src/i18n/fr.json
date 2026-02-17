@@ -10,12 +10,11 @@
     "openChat": "Ouvrir le chat"
   },
   "hero": {
-    "title1": "Location utilitaire",
-    "title2": "connectée",
-    "title3": "& fiable",
-    "subtitle": "Véhicules utilitaires modernes sur la Riviera Vaudoise. Réservation en ligne, tarifs transparents, support professionnel.",
+    "title1": "Réservez votre utilitaire en quelques clics, 24h/24",
+    "subtitle": "Flotte moderne et service 100 % digital sur la Riviera vaudoise — tarifs transparents, options Sérénité+.",
     "cta": "Réserver maintenant",
-    "ctaRates": "Voir les tarifs"
+    "ctaRates": "Voir les tarifs",
+    "reassuranceLine": "Assistance 7j/7 • Assurance incluse • Retour sans contact"
   },
   "reassurance": {
     "insurance": "Assurance complète",
