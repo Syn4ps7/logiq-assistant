@@ -3,8 +3,10 @@ import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { vehicles, vehicleOptions, ratePlans, EXTRA_KM_RATE } from "@/data/vehicles";
 import { updateBookingDraft, dispatchLogiqEvent } from "@/lib/logiq";
-import { Check, ChevronRight, Info, Truck } from "lucide-react";
+import { Check, ChevronRight, Info, Truck, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import emailjs from "@emailjs/browser";
+import { toast } from "sonner";
 
 const TVA_RATE = 0.081;
 const roundCHF = (v: number) => Math.round(v / 0.05) * 0.05;
@@ -39,6 +41,11 @@ const Reservation = () => {
   const [deliveryPhone, setDeliveryPhone] = useState("");
   const [deliveryInstructions, setDeliveryInstructions] = useState("");
 
+  // Contact fields for email
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [isSending, setIsSending] = useState(false);
   const isProCheckout = searchParams.get("source") === "pro";
 
   // Pre-fill from query params (from Rates page links)
@@ -141,9 +148,54 @@ const Reservation = () => {
     }
   }, [price?.total]);
 
+  const premiumDeliveryValid = !isPremium || (deliveryAddress && deliveryNpa && deliveryCity && deliveryPhone);
+
   const canProceedStep0 = isWeekendPack || (selectedPlan && (isPack || (startDate && endDate)));
 
-  const premiumDeliveryValid = !isPremium || (deliveryAddress && deliveryNpa && deliveryCity && deliveryPhone);
+  const canConfirm = premiumDeliveryValid && contactName && contactEmail && contactPhone;
+
+  const handleConfirm = async () => {
+    if (!price || !canConfirm) return;
+    setIsSending(true);
+    const vehicle = vehicles.find((v) => v.id === selectedVehicle);
+    const optionNames = selectedOptions
+      .map((id) => vehicleOptions.find((o) => o.id === id)?.name)
+      .filter(Boolean)
+      .join(", ");
+
+    try {
+      await emailjs.send(
+        "service_g37dgi8",
+        "template_yn1y3yj",
+        {
+          client_name: contactName,
+          client_email: contactEmail,
+          client_phone: contactPhone,
+          vehicle: vehicle?.name || "",
+          plan: price.planName,
+          days: price.days,
+          start_date: startDate || "Pack",
+          end_date: endDate || "Pack",
+          options: optionNames || "Aucune",
+          km_estimated: estKm,
+          km_included: price.includedKm,
+          extra_km: price.extraKm,
+          total: price.total.toFixed(2) + " CHF",
+          delivery_address: isPremium ? `${deliveryAddress}, ${deliveryNpa} ${deliveryCity}` : "N/A",
+          delivery_phone: isPremium ? deliveryPhone : "",
+          delivery_instructions: deliveryInstructions || "",
+        },
+        "txxckOr0_mZu2OaXQ"
+      );
+      toast.success(t("reservation.emailSent"));
+    } catch (err) {
+      console.error("EmailJS error:", err);
+      toast.error(t("reservation.emailError"));
+    } finally {
+      setIsSending(false);
+    }
+  };
+
 
   return (
     <main className="py-12">
@@ -452,9 +504,31 @@ const Reservation = () => {
                 </div>
               )}
 
+              {/* Contact info */}
+              <div className="bg-muted/30 rounded-lg p-4 space-y-3 border">
+                <h3 className="font-semibold">{t("reservation.contactInfo")}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium mb-1">{t("reservation.contactName")} *</label>
+                    <input type="text" value={contactName} onChange={(e) => setContactName(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" required />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">{t("reservation.contactEmail")} *</label>
+                    <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" required />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">{t("reservation.contactPhoneLabel")} *</label>
+                    <input type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" required />
+                  </div>
+                </div>
+              </div>
+
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setStep(1)}>{t("reservation.back")}</Button>
-                <Button variant="hero" disabled={!premiumDeliveryValid}>{t("reservation.confirm")}</Button>
+                <Button variant="hero" onClick={handleConfirm} disabled={!canConfirm || isSending}>
+                  {isSending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
+                  {t("reservation.confirm")}
+                </Button>
               </div>
               <p className="text-xs text-muted-foreground">{t("reservation.microlegal")}</p>
             </div>
