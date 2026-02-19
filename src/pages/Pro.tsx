@@ -257,10 +257,17 @@ const Pro = () => {
           <p className="text-muted-foreground mb-8">{t("pro.formSubtitle")}</p>
 
           {submitted ? (
-            <div className="p-8 bg-primary/5 rounded-xl border border-primary/20 text-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="py-12 text-center space-y-4"
+            >
+              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <ShieldCheck className="h-8 w-8 text-primary" />
+              </div>
               <p className="font-semibold text-primary text-lg">{t("pro.formThanks")}</p>
-              <p className="text-sm text-muted-foreground mt-2">{t("pro.formThanksDesc")}</p>
-            </div>
+              <p className="text-sm text-muted-foreground">{t("pro.formThanksDesc")}</p>
+            </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
