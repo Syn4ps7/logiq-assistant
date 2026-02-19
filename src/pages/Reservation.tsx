@@ -166,7 +166,7 @@ const Reservation = () => {
     try {
       await emailjs.send(
         "service_g37dgi8",
-        "template_yn1y3yj",
+        "template_51gqxra",
         {
           reference: Date.now().toString(36).toUpperCase(),
           prenom: contactName,
