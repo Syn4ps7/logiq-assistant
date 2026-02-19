@@ -154,6 +154,8 @@
     "contactPhoneLabel": "Téléphone",
     "emailSent": "Demande de réservation envoyée avec succès !",
     "emailError": "Erreur lors de l'envoi. Veuillez réessayer.",
+    "successTitle": "Réservation confirmée !",
+    "successDesc": "Votre demande de réservation a bien été envoyée. Nous reviendrons vers vous rapidement par e-mail pour confirmer les détails.",
     "sereniteRecommended": "Recommandé",
     "sereniteInfo": "Réduit la franchise standard de 2'000 CHF à 500 CHF par sinistre",
     "deliveryTitle": "Adresse de livraison",

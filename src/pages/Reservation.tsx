@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { vehicles, vehicleOptions, ratePlans, EXTRA_KM_RATE } from "@/data/vehicles";
@@ -46,6 +47,7 @@ const Reservation = () => {
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
   const isProCheckout = searchParams.get("source") === "pro";
 
   // Pre-fill from query params (from Rates page links)
@@ -182,7 +184,7 @@ const Reservation = () => {
         },
         "txxckOr0_mZu2OaXQ"
       );
-      toast.success(t("reservation.emailSent"));
+      setConfirmed(true);
     } catch (err) {
       console.error("EmailJS error:", err);
       toast.error(t("reservation.emailError"));
@@ -198,6 +200,23 @@ const Reservation = () => {
         <h1 className="text-3xl font-bold mb-2">{t("reservation.title")}</h1>
         <p className="text-muted-foreground mb-8">{t("reservation.subtitle")}</p>
 
+        {confirmed ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="py-16 text-center space-y-4"
+          >
+            <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <Check className="h-8 w-8 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold text-foreground">{t("reservation.successTitle")}</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">{t("reservation.successDesc")}</p>
+            <Button variant="outline" className="mt-4" onClick={() => window.location.href = "/"}>
+              {t("notFound.backHome")}
+            </Button>
+          </motion.div>
+        ) : (
+        <>
         {/* Stepper */}
         <div className="flex items-center gap-2 mb-10">
           {steps.map((s, i) => (
@@ -529,6 +548,8 @@ const Reservation = () => {
             </div>
           )}
         </div>
+        </>
+        )}
       </div>
     </main>
   );

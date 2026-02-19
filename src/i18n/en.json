@@ -154,6 +154,8 @@
     "contactPhoneLabel": "Phone",
     "emailSent": "Booking request sent successfully!",
     "emailError": "Error sending. Please try again.",
+    "successTitle": "Booking confirmed!",
+    "successDesc": "Your booking request has been sent successfully. We'll get back to you shortly by email to confirm the details.",
     "sereniteRecommended": "Recommended",
     "sereniteInfo": "Reduces the standard deductible from CHF 2,000 to CHF 500 per claim",
     "deliveryTitle": "Delivery address",
