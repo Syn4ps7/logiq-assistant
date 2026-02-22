@@ -20,12 +20,11 @@ const Contact = () => {
     try {
       await emailjs.send(
         "service_g37dgi8",
-        "template_contact",
+        "template_51gqxra",
         {
           from_name: name,
           from_email: email,
           message: message,
-          to_email: "contact@logiq-transport.ch",
         },
         "txxckOr0_mZu2OaXQ"
       );
