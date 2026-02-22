@@ -171,8 +171,8 @@ const Admin = () => {
                     <TableHead>Email</TableHead>
                     <TableHead>Ville</TableHead>
                     <TableHead>Volume</TableHead>
-                    <TableHead>Besoin</TableHead>
-                    <TableHead className="w-10"></TableHead>
+                      <TableHead className="min-w-[250px]">Besoin</TableHead>
+                     <TableHead className="w-10"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -191,7 +191,7 @@ const Admin = () => {
                       <TableCell className="text-sm">{lead.email}</TableCell>
                       <TableCell className="text-sm text-muted-foreground">{lead.city || "—"}</TableCell>
                       <TableCell className="text-sm text-muted-foreground">{lead.estimated_volume || "—"}</TableCell>
-                      <TableCell className="text-sm max-w-[200px] truncate">{lead.need}</TableCell>
+                      <TableCell className="text-sm max-w-[400px] whitespace-pre-wrap">{lead.need}</TableCell>
                       <TableCell>
                         <button
                           onClick={() => deleteLead(lead.id)}

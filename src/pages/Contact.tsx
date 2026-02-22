@@ -1,11 +1,42 @@
-import { Phone, Mail, Clock } from "lucide-react";
+import { Phone, Mail, Clock, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
+import emailjs from "@emailjs/browser";
+import { toast } from "sonner";
 
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
   const { t } = useTranslation();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+    try {
+      await emailjs.send(
+        "service_g37dgi8",
+        "template_contact",
+        {
+          from_name: name,
+          from_email: email,
+          message: message,
+          to_email: "contact@logiq-transport.ch",
+        },
+        "txxckOr0_mZu2OaXQ"
+      );
+      setSubmitted(true);
+    } catch (err) {
+      console.error("EmailJS error:", err);
+      toast.error(t("contact.sendError", "Erreur lors de l'envoi. Veuillez réessayer."));
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
     <main className="py-12">
@@ -44,25 +75,35 @@ const Contact = () => {
           <div>
             <h2 className="text-lg font-semibold mb-4">{t("contact.form")}</h2>
             {submitted ? (
-              <div className="p-6 bg-primary/5 rounded-lg border border-primary/20 text-center">
-                <p className="font-medium text-primary">{t("contact.thanks")}</p>
-                <p className="text-sm text-muted-foreground mt-1">{t("contact.thanksDesc")}</p>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="py-8 text-center space-y-3"
+              >
+                <div className="mx-auto w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Check className="h-7 w-7 text-primary" />
+                </div>
+                <p className="font-semibold text-primary text-lg">{t("contact.thanks")}</p>
+                <p className="text-sm text-muted-foreground">{t("contact.thanksDesc")}</p>
+              </motion.div>
             ) : (
-              <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("contact.name")}</label>
-                  <input required type="text" maxLength={100} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                  <input required type="text" maxLength={100} value={name} onChange={(e) => setName(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("contact.emailLabel")}</label>
-                  <input required type="email" maxLength={255} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                  <input required type="email" maxLength={255} value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("contact.message")}</label>
-                  <textarea required rows={4} maxLength={1000} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none resize-none" />
+                  <textarea required rows={4} maxLength={1000} value={message} onChange={(e) => setMessage(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none resize-none" />
                 </div>
-                <Button variant="petrol" type="submit">{t("contact.send")}</Button>
+                <Button variant="petrol" type="submit" disabled={sending}>
+                  {sending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                  {t("contact.send")}
+                </Button>
               </form>
             )}
           </div>
