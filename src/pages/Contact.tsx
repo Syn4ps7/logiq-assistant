@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -18,16 +19,23 @@ const Contact = () => {
     e.preventDefault();
     setSending(true);
     try {
-      await emailjs.send(
+      // Save to database
+      const { error: dbError } = await supabase
+        .from("contact_leads")
+        .insert({ name, email, message });
+
+      if (dbError) {
+        console.error("DB error:", dbError);
+      }
+
+      // Also try EmailJS (non-blocking)
+      emailjs.send(
         "service_g37dgi8",
         "template_51gqxra",
-        {
-          from_name: name,
-          from_email: email,
-          message: message,
-        },
+        { from_name: name, from_email: email, message },
         "txxckOr0_mZu2OaXQ"
-      );
+      ).catch((err) => console.error("EmailJS error:", err));
+
       setSubmitted(true);
     } catch (err) {
       console.error("EmailJS error:", err);
