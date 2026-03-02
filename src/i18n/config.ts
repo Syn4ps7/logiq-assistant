@@ -2,11 +2,12 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import fr from "./fr.json";
 import en from "./en.json";
+import de from "./de.json";
 
 const savedLang = localStorage.getItem("logiq-lang") || "fr";
 
 i18n.use(initReactI18next).init({
-  resources: { fr: { translation: fr }, en: { translation: en } },
+  resources: { fr: { translation: fr }, en: { translation: en }, de: { translation: de } },
   lng: savedLang,
   fallbackLng: "fr",
   interpolation: { escapeValue: false },
