@@ -18,11 +18,15 @@ export function Header() {
   const location = useLocation();
   const { t, i18n } = useTranslation();
 
-  const toggleLang = () => {
-    const next = i18n.language === "fr" ? "en" : "fr";
+  const LANGS = ["fr", "en", "de"] as const;
+  const cycleLang = () => {
+    const idx = LANGS.indexOf(i18n.language as any);
+    const next = LANGS[(idx + 1) % LANGS.length];
     i18n.changeLanguage(next);
     localStorage.setItem("logiq-lang", next);
   };
+
+  const langLabel = i18n.language === "fr" ? "EN" : i18n.language === "en" ? "DE" : "FR";
 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b" role="banner">
@@ -49,12 +53,12 @@ export function Header() {
 
         <div className="hidden md:flex items-center gap-3">
           <button
-            onClick={toggleLang}
+            onClick={cycleLang}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             aria-label="Toggle language"
           >
             <Globe className="h-3.5 w-3.5" />
-            {i18n.language === "fr" ? "EN" : "FR"}
+            {langLabel}
           </button>
           <Link to="/rates">
             <Button variant="outline" size="sm">{t("nav.viewRates")}</Button>
@@ -77,12 +81,12 @@ export function Header() {
         {/* Mobile toggle */}
         <div className="flex md:hidden items-center gap-2">
           <button
-            onClick={toggleLang}
+            onClick={cycleLang}
             className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             aria-label="Toggle language"
           >
             <Globe className="h-3.5 w-3.5" />
-            {i18n.language === "fr" ? "EN" : "FR"}
+            {langLabel}
           </button>
           <button
             className="p-2"
