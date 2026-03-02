@@ -157,15 +157,15 @@ const Rates = () => {
               <TableBody>
                 <TableRow>
                   <TableCell className="font-medium">{t("rates.comparePriceTTC")}</TableCell>
-                  <TableCell className="text-center">280 CHF</TableCell>
-                  <TableCell className="text-center font-semibold">340 CHF</TableCell>
-                  <TableCell className="text-center">380 CHF</TableCell>
+                  <TableCell className="text-center">298 CHF</TableCell>
+                  <TableCell className="text-center font-semibold">399 CHF</TableCell>
+                  <TableCell className="text-center">429 CHF</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">{t("rates.compareRetrait")}</TableCell>
                   <TableCell className="text-center">{t("rates.compareHubVevey")}</TableCell>
                   <TableCell className="text-center">{t("rates.compareHubVevey")}</TableCell>
-                  <TableCell className="text-center">{t("rates.compareLivraison")}</TableCell>
+                  <TableCell className="text-center">{t("rates.compareHubVevey")}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">{t("rates.compareRetour")}</TableCell>

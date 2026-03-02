@@ -125,14 +125,14 @@ const Pro = () => {
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.flexWeekday")}</TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ttcVal={149} suffix={` / ${t("pro.day")}`} />
+                    <PriceHT ttcVal={139} suffix={` / ${t("pro.day")}`} />
                   </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.flexWeekend")}</TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ttcVal={179} suffix={` / ${t("pro.day")}`} />
+                    <PriceHT ttcVal={169} suffix={` / ${t("pro.day")}`} />
                   </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
@@ -175,30 +175,30 @@ const Pro = () => {
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.carnet10")}</TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ttcVal={1290} />
+                    <PriceHT ttcVal={1190} />
                   </TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ttcVal={129} suffix={`/${t("pro.day")}`} />
+                    <PriceHT ttcVal={119} suffix={`/${t("pro.day")}`} />
                   </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">{t("pro.carnet20")}</TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ttcVal={2440} />
+                    <PriceHT ttcVal={2240} />
                   </TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ttcVal={122} suffix={`/${t("pro.day")}`} />
+                    <PriceHT ttcVal={112} suffix={`/${t("pro.day")}`} />
                   </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>
                 <TableRow className="bg-accent/5">
                   <TableCell className="font-medium">{t("pro.carnet40")}</TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ttcVal={4600} />
+                    <PriceHT ttcVal={4240} />
                   </TableCell>
                   <TableCell className="text-right">
-                    <PriceHT ttcVal={115} suffix={`/${t("pro.day")}`} />
+                    <PriceHT ttcVal={106} suffix={`/${t("pro.day")}`} />
                   </TableCell>
                   <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
                 </TableRow>

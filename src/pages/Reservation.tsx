@@ -17,9 +17,9 @@ type RatePlanId = "week" | "weekend" | "pack-48h";
 type WeekendPack = "standard" | "confort" | "premium";
 
 const WEEKEND_PACKS: Record<WeekendPack, { price: number; label: string }> = {
-  standard: { price: 280, label: "Week-end Standard" },
-  confort: { price: 340, label: "Week-end Confort" },
-  premium: { price: 380, label: "Week-end+ Premium (Livré)" },
+  standard: { price: 298, label: "Week-end Standard" },
+  confort: { price: 399, label: "Pack Déménagement 48h" },
+  premium: { price: 429, label: "Pack Déménagement Premium 48h" },
 };
 
 const Reservation = () => {
