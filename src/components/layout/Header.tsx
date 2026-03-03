@@ -3,6 +3,12 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, MessageCircle, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { labelKey: "nav.vehicles", href: "/vehicles" },
@@ -13,20 +19,23 @@ const navLinks = [
   { labelKey: "nav.contact", href: "/contact" },
 ];
 
+const LANGS = [
+  { code: "fr", label: "Français", flag: "🇫🇷" },
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "de", label: "Deutsch", flag: "🇩🇪" },
+] as const;
+
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { t, i18n } = useTranslation();
 
-  const LANGS = ["fr", "en", "de"] as const;
-  const cycleLang = () => {
-    const idx = LANGS.indexOf(i18n.language as any);
-    const next = LANGS[(idx + 1) % LANGS.length];
-    i18n.changeLanguage(next);
-    localStorage.setItem("logiq-lang", next);
+  const setLang = (code: string) => {
+    i18n.changeLanguage(code);
+    localStorage.setItem("logiq-lang", code);
   };
 
-  const langLabel = i18n.language === "fr" ? "EN" : i18n.language === "en" ? "DE" : "FR";
+  const currentLang = LANGS.find((l) => l.code === i18n.language) || LANGS[0];
 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b" role="banner">
@@ -52,14 +61,24 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
-          <button
-            onClick={cycleLang}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-            aria-label="Toggle language"
-          >
-            <Globe className="h-3.5 w-3.5" />
-            {langLabel}
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none">
+              <Globe className="h-3.5 w-3.5" />
+              {currentLang.flag} {currentLang.code.toUpperCase()}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {LANGS.map((lang) => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  onClick={() => setLang(lang.code)}
+                  className={i18n.language === lang.code ? "bg-accent" : ""}
+                >
+                  <span className="mr-2">{lang.flag}</span>
+                  {lang.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Link to="/rates">
             <Button variant="outline" size="sm">{t("nav.viewRates")}</Button>
           </Link>
@@ -80,14 +99,24 @@ export function Header() {
 
         {/* Mobile toggle */}
         <div className="flex md:hidden items-center gap-2">
-          <button
-            onClick={cycleLang}
-            className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-            aria-label="Toggle language"
-          >
-            <Globe className="h-3.5 w-3.5" />
-            {langLabel}
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none">
+              <Globe className="h-3.5 w-3.5" />
+              {currentLang.flag}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {LANGS.map((lang) => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  onClick={() => setLang(lang.code)}
+                  className={i18n.language === lang.code ? "bg-accent" : ""}
+                >
+                  <span className="mr-2">{lang.flag}</span>
+                  {lang.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <button
             className="p-2"
             onClick={() => setIsOpen(!isOpen)}
