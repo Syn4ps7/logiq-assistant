@@ -36,8 +36,8 @@ const Index = () => {
           style={{ y: imgY, scale: imgScale }}
           className="absolute inset-0 w-full h-full object-cover"
         />
-        {/* Dark overlay 70% */}
-        <div className="absolute inset-0 bg-background/70" />
+        {/* Light overlay for readability */}
+        <div className="absolute inset-0 bg-background/40" />
         <div className="absolute inset-0 gradient-hero" />
 
         <motion.div style={{ opacity: heroOpacity }} className="relative container py-20 lg:py-32">
@@ -155,8 +155,8 @@ const Index = () => {
       {/* CTA */}
       <section className="py-16 gradient-industrial border-t border-border" aria-label="Appel à l'action">
         <div className="container text-center max-w-2xl">
-          <h2 className="text-3xl font-bold mb-4">{t("cta.title")}</h2>
-          <p className="text-lg text-muted-foreground mb-8">{t("cta.subtitle")}</p>
+          <h2 className="text-3xl font-bold mb-4 text-white">{t("cta.title")}</h2>
+          <p className="text-lg text-white/70 mb-8">{t("cta.subtitle")}</p>
           <div className="flex justify-center gap-3">
             <Link to="/reservation">
               <Button variant="hero" size="lg">{t("cta.book")}</Button>
