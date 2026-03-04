@@ -50,15 +50,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        petrol: {
-          DEFAULT: "hsl(var(--petrol))",
-          light: "hsl(var(--petrol-light))",
-          dark: "hsl(var(--petrol-dark))",
-        },
-        orange: {
-          DEFAULT: "hsl(var(--orange))",
-          light: "hsl(var(--orange-light))",
-          dark: "hsl(var(--orange-dark))",
+        logiq: {
+          black: "hsl(var(--logiq-black))",
+          graphite: "hsl(var(--logiq-graphite))",
+          yellow: "hsl(var(--logiq-yellow))",
+          "yellow-dark": "hsl(var(--logiq-yellow-dark))",
+          "yellow-glow": "hsl(var(--logiq-yellow-glow))",
+          offwhite: "hsl(var(--logiq-offwhite))",
+          metal: "hsl(var(--logiq-metal))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

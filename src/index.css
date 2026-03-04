@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,85 +6,54 @@
 
 @layer base {
   :root {
-    --background: 210 11% 97%;
-    --foreground: 0 0% 13%;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 96%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 13%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 13%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 96%;
 
-    --primary: 215 80% 28%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 50 100% 50%;
+    --primary-foreground: 0 0% 4%;
 
-    --secondary: 210 11% 93%;
-    --secondary-foreground: 0 0% 13%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 96%;
 
-    --muted: 210 11% 93%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 29 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 50 100% 50%;
+    --accent-foreground: 0 0% 4%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 11% 88%;
-    --input: 210 11% 88%;
-    --ring: 215 80% 28%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 50 100% 50%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 40%;
-    --sidebar-primary: 215 80% 28%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 11% 95%;
-    --sidebar-accent-foreground: 0 0% 13%;
-    --sidebar-border: 210 11% 88%;
-    --sidebar-ring: 215 80% 28%;
+    --sidebar-background: 0 0% 7%;
+    --sidebar-foreground: 0 0% 45%;
+    --sidebar-primary: 50 100% 50%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 50 100% 50%;
 
-    /* Custom LogIQ tokens */
-    --petrol: 215 80% 28%;
-    --petrol-light: 215 65% 42%;
-    --petrol-dark: 215 85% 20%;
-    --orange: 29 100% 50%;
-    --orange-light: 29 100% 60%;
-    --orange-dark: 29 100% 40%;
-    --surface: 210 11% 97%;
-    --heading: 0 0% 13%;
-    --body: 0 0% 40%;
-  }
-
-  .dark {
-    --background: 200 15% 8%;
-    --foreground: 210 11% 95%;
-    --card: 200 15% 11%;
-    --card-foreground: 210 11% 95%;
-    --popover: 200 15% 11%;
-    --popover-foreground: 210 11% 95%;
-    --primary: 215 70% 45%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 200 15% 16%;
-    --secondary-foreground: 210 11% 95%;
-    --muted: 200 15% 16%;
-    --muted-foreground: 210 11% 60%;
-    --accent: 29 100% 50%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 210 11% 95%;
-    --border: 200 15% 20%;
-    --input: 200 15% 20%;
-    --ring: 215 70% 45%;
-    --sidebar-background: 200 15% 10%;
-    --sidebar-foreground: 210 11% 80%;
-    --sidebar-primary: 215 70% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 200 15% 16%;
-    --sidebar-accent-foreground: 210 11% 95%;
-    --sidebar-border: 200 15% 20%;
-    --sidebar-ring: 215 70% 45%;
+    /* LogIQ Industrial tokens */
+    --logiq-black: 0 0% 4%;
+    --logiq-graphite: 0 0% 11%;
+    --logiq-yellow: 50 100% 50%;
+    --logiq-yellow-dark: 50 100% 42%;
+    --logiq-yellow-glow: 50 100% 58%;
+    --logiq-offwhite: 0 0% 96%;
+    --logiq-metal: 0 0% 45%;
+    --surface: 0 0% 7%;
   }
 }
 
@@ -99,57 +68,34 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply text-foreground font-semibold tracking-tight;
+    @apply text-foreground font-bold tracking-tight;
   }
 }
 
 @layer utilities {
-  .text-body {
-    color: hsl(var(--body));
-  }
-
   .bg-surface {
     background-color: hsl(var(--surface));
-  }
-
-  .bg-petrol {
-    background-color: hsl(var(--petrol));
-  }
-
-  .bg-petrol-dark {
-    background-color: hsl(var(--petrol-dark));
-  }
-
-  .text-petrol {
-    color: hsl(var(--petrol));
-  }
-
-  .text-orange {
-    color: hsl(var(--orange));
-  }
-
-  .bg-orange {
-    background-color: hsl(var(--orange));
-  }
-
-  .border-petrol {
-    border-color: hsl(var(--petrol));
-  }
-
-  .hover\:bg-petrol-light:hover {
-    background-color: hsl(var(--petrol-light));
-  }
-
-  .gradient-petrol {
-    background: linear-gradient(135deg, hsl(var(--petrol)) 0%, hsl(var(--petrol-dark)) 100%);
   }
 
   .gradient-hero {
     background: linear-gradient(
       to right,
-      hsl(var(--petrol) / 0.92) 0%,
-      hsl(var(--petrol) / 0.6) 60%,
-      transparent 100%
+      hsl(var(--logiq-black) / 0.85) 0%,
+      hsl(var(--logiq-black) / 0.7) 50%,
+      hsl(var(--logiq-black) / 0.4) 100%
     );
+  }
+
+  .gradient-industrial {
+    background: linear-gradient(135deg, hsl(var(--logiq-graphite)) 0%, hsl(var(--logiq-black)) 100%);
+  }
+
+  .text-yellow-glow {
+    color: hsl(var(--logiq-yellow));
+    text-shadow: 0 0 20px hsl(var(--logiq-yellow) / 0.3);
+  }
+
+  .shadow-yellow {
+    box-shadow: 0 0 30px -5px hsl(var(--logiq-yellow) / 0.2);
   }
 }

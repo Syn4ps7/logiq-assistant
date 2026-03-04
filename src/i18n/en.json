@@ -11,11 +11,19 @@
     "openChat": "Open chat"
   },
   "hero": {
-    "title1": "Book your utility van in a few clicks, 24/7",
-    "subtitle": "Modern fleet & 100% digital service on the Swiss Riviera — transparent rates, Sérénité+ options.",
+    "title1": "Book your utility van in seconds",
+    "subtitle": "Smart rental.\nAvailable 24/7 on the Swiss Riviera.",
     "cta": "Book now",
     "ctaRates": "View rates",
     "reassuranceLine": "24/7 assistance • Insurance included • Contactless return"
+  },
+  "why": {
+    "digital": "Digital access",
+    "digitalDesc": "100% online booking and access, no paperwork.",
+    "geolocated": "Geolocated vehicles",
+    "geolocatedDesc": "Track availability in real time.",
+    "fast": "Book in 30 seconds",
+    "fastDesc": "Streamlined process, instant confirmation."
   },
   "reassurance": {
     "insurance": "Full insurance",

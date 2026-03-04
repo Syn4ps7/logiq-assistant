@@ -11,11 +11,19 @@
     "openChat": "Ouvrir le chat"
   },
   "hero": {
-    "title1": "Réservez votre utilitaire en quelques clics, 24h/24",
-    "subtitle": "Flotte moderne et service 100 % digital sur la Riviera vaudoise — tarifs transparents, options Sérénité+.",
+    "title1": "Réservez votre utilitaire en quelques secondes",
+    "subtitle": "Location intelligente.\nDisponible 24h/24 sur la Riviera Vaudoise.",
     "cta": "Réserver maintenant",
     "ctaRates": "Voir les tarifs",
     "reassuranceLine": "Assistance 7j/7 • Assurance incluse • Retour sans contact"
+  },
+  "why": {
+    "digital": "Accès digital",
+    "digitalDesc": "Réservation et accès 100% en ligne, sans paperasse.",
+    "geolocated": "Véhicules géolocalisés",
+    "geolocatedDesc": "Suivez la disponibilité en temps réel.",
+    "fast": "Réservation en 30 secondes",
+    "fastDesc": "Processus simplifié, confirmation instantanée."
   },
   "reassurance": {
     "insurance": "Assurance complète",
