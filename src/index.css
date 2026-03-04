@@ -6,23 +6,23 @@
 
 @layer base {
   :root {
-    --background: 0 0% 10%;
-    --foreground: 0 0% 96%;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 6%;
 
-    --card: 0 0% 15%;
-    --card-foreground: 0 0% 96%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 6%;
 
-    --popover: 0 0% 15%;
-    --popover-foreground: 0 0% 96%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 6%;
 
     --primary: 50 100% 50%;
     --primary-foreground: 0 0% 4%;
 
-    --secondary: 0 0% 20%;
-    --secondary-foreground: 0 0% 96%;
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 6%;
 
-    --muted: 0 0% 22%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 40%;
 
     --accent: 50 100% 50%;
     --accent-foreground: 0 0% 4%;
@@ -30,30 +30,30 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 22%;
-    --input: 0 0% 22%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
     --ring: 50 100% 50%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 12%;
-    --sidebar-foreground: 0 0% 55%;
+    --sidebar-background: 0 0% 96%;
+    --sidebar-foreground: 0 0% 40%;
     --sidebar-primary: 50 100% 50%;
     --sidebar-primary-foreground: 0 0% 4%;
-    --sidebar-accent: 0 0% 20%;
-    --sidebar-accent-foreground: 0 0% 96%;
-    --sidebar-border: 0 0% 22%;
+    --sidebar-accent: 0 0% 94%;
+    --sidebar-accent-foreground: 0 0% 6%;
+    --sidebar-border: 0 0% 88%;
     --sidebar-ring: 50 100% 50%;
 
     /* LogIQ Industrial tokens */
-    --logiq-black: 0 0% 10%;
+    --logiq-black: 0 0% 6%;
     --logiq-graphite: 0 0% 15%;
     --logiq-yellow: 50 100% 50%;
     --logiq-yellow-dark: 50 100% 42%;
     --logiq-yellow-glow: 50 100% 58%;
     --logiq-offwhite: 0 0% 96%;
-    --logiq-metal: 0 0% 55%;
-    --surface: 0 0% 12%;
+    --logiq-metal: 0 0% 45%;
+    --surface: 0 0% 96%;
   }
 }
 
@@ -80,14 +80,14 @@
   .gradient-hero {
     background: linear-gradient(
       to right,
-      hsl(var(--logiq-black) / 0.85) 0%,
-      hsl(var(--logiq-black) / 0.7) 50%,
-      hsl(var(--logiq-black) / 0.4) 100%
+      hsl(0 0% 100% / 0.8) 0%,
+      hsl(0 0% 100% / 0.5) 50%,
+      hsl(0 0% 100% / 0.1) 100%
     );
   }
 
   .gradient-industrial {
-    background: linear-gradient(135deg, hsl(var(--logiq-graphite)) 0%, hsl(var(--logiq-black)) 100%);
+    background: linear-gradient(135deg, hsl(var(--logiq-graphite)) 0%, hsl(0 0% 8%) 100%);
   }
 
   .text-yellow-glow {
@@ -96,6 +96,6 @@
   }
 
   .shadow-yellow {
-    box-shadow: 0 0 30px -5px hsl(var(--logiq-yellow) / 0.2);
+    box-shadow: 0 0 30px -5px hsl(var(--logiq-yellow) / 0.25);
   }
 }
