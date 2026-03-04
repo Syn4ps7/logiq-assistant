@@ -6,7 +6,7 @@ import { Key, MapPin, Zap, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import heroDark from "@/assets/hero-dark.jpg";
+import heroFleet from "@/assets/hero-fleet.png";
 
 const Index = () => {
   const { t } = useTranslation();
@@ -31,8 +31,8 @@ const Index = () => {
       {/* Hero – dark industrial */}
       <section ref={heroRef} className="relative min-h-[600px] lg:min-h-[700px] flex items-center overflow-hidden bg-background" aria-label="Présentation">
         <motion.img
-          src={heroDark}
-          alt="LogIQ Transport — utilitaire premium"
+          src={heroFleet}
+          alt="LogIQ Transport — flotte utilitaires premium"
           style={{ y: imgY, scale: imgScale }}
           className="absolute inset-0 w-full h-full object-cover"
         />
