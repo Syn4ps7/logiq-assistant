@@ -38,10 +38,10 @@ export function Header() {
   const currentLang = LANGS.find((l) => l.code === i18n.language) || LANGS[0];
 
   return (
-    <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b" role="banner">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border" role="banner">
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2" aria-label="LogIQ Transport - Accueil">
-          <span className="text-xl font-bold text-primary tracking-tight">LogIQ</span>
+          <span className="text-xl font-extrabold text-primary tracking-tight">LogIQ</span>
           <span className="text-sm font-medium text-muted-foreground">Transport</span>
         </Link>
 
@@ -62,7 +62,7 @@ export function Header() {
 
         <div className="hidden md:flex items-center gap-3">
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none">
+            <DropdownMenuTrigger className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors outline-none">
               <Globe className="h-3.5 w-3.5" />
               {currentLang.flag} {currentLang.code.toUpperCase()}
             </DropdownMenuTrigger>
@@ -71,7 +71,7 @@ export function Header() {
                 <DropdownMenuItem
                   key={lang.code}
                   onClick={() => setLang(lang.code)}
-                  className={i18n.language === lang.code ? "bg-accent" : ""}
+                  className={i18n.language === lang.code ? "bg-secondary" : ""}
                 >
                   <span className="mr-2">{lang.flag}</span>
                   {lang.label}
@@ -83,10 +83,10 @@ export function Header() {
             <Button variant="outline" size="sm">{t("nav.viewRates")}</Button>
           </Link>
           <Link to="/reservation">
-            <Button variant="petrol" size="sm">{t("nav.book")}</Button>
+            <Button variant="default" size="sm">{t("nav.book")}</Button>
           </Link>
           <button
-            className="ml-2 p-2 rounded-full bg-accent text-accent-foreground hover:bg-orange-light transition-colors"
+            className="ml-2 p-2 rounded-full bg-primary text-primary-foreground hover:bg-logiq-yellow-dark transition-colors"
             aria-label={t("nav.openChat")}
             onClick={() => {
               const el = document.getElementById("logiq-chatbot");
@@ -100,7 +100,7 @@ export function Header() {
         {/* Mobile toggle */}
         <div className="flex md:hidden items-center gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none">
+            <DropdownMenuTrigger className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors outline-none">
               <Globe className="h-3.5 w-3.5" />
               {currentLang.flag}
             </DropdownMenuTrigger>
@@ -109,7 +109,7 @@ export function Header() {
                 <DropdownMenuItem
                   key={lang.code}
                   onClick={() => setLang(lang.code)}
-                  className={i18n.language === lang.code ? "bg-accent" : ""}
+                  className={i18n.language === lang.code ? "bg-secondary" : ""}
                 >
                   <span className="mr-2">{lang.flag}</span>
                   {lang.label}
@@ -130,7 +130,7 @@ export function Header() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <nav className="md:hidden border-t bg-card p-4" role="navigation" aria-label="Navigation mobile">
+        <nav className="md:hidden border-t border-border bg-background p-4" role="navigation" aria-label="Navigation mobile">
           <div className="flex flex-col gap-3">
             {navLinks.map((link) => (
               <Link
@@ -140,18 +140,18 @@ export function Header() {
                 className={`text-sm font-medium py-2 px-3 rounded-md transition-colors ${
                   location.pathname === link.href
                     ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted"
+                    : "text-muted-foreground hover:bg-secondary"
                 }`}
               >
                 {t(link.labelKey)}
               </Link>
             ))}
-            <div className="flex gap-2 pt-2 border-t">
+            <div className="flex gap-2 pt-2 border-t border-border">
               <Link to="/rates" className="flex-1" onClick={() => setIsOpen(false)}>
                 <Button variant="outline" className="w-full" size="sm">{t("nav.rates")}</Button>
               </Link>
               <Link to="/reservation" className="flex-1" onClick={() => setIsOpen(false)}>
-                <Button variant="petrol" className="w-full" size="sm">{t("nav.book")}</Button>
+                <Button variant="default" className="w-full" size="sm">{t("nav.book")}</Button>
               </Link>
             </div>
           </div>

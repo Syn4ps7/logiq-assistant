@@ -11,11 +11,19 @@
     "openChat": "Chat öffnen"
   },
   "hero": {
-    "title1": "Buchen Sie Ihren Transporter in wenigen Klicks, rund um die Uhr",
-    "subtitle": "Moderne Flotte und 100 % digitaler Service an der Waadtländer Riviera — transparente Tarife, Sérénité+ Optionen.",
+    "title1": "Buchen Sie Ihren Transporter in Sekunden",
+    "subtitle": "Intelligente Vermietung.\nRund um die Uhr an der Waadtländer Riviera.",
     "cta": "Jetzt buchen",
     "ctaRates": "Tarife ansehen",
     "reassuranceLine": "24/7 Pannenhilfe • Versicherung inklusive • Kontaktlose Rückgabe"
+  },
+  "why": {
+    "digital": "Digitaler Zugang",
+    "digitalDesc": "100% Online-Buchung und Zugang, ohne Papierkram.",
+    "geolocated": "Geolokalisierte Fahrzeuge",
+    "geolocatedDesc": "Verfügbarkeit in Echtzeit verfolgen.",
+    "fast": "Buchung in 30 Sekunden",
+    "fastDesc": "Vereinfachter Prozess, sofortige Bestätigung."
   },
   "reassurance": {
     "insurance": "Vollversicherung",
