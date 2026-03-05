@@ -46,7 +46,7 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-foreground/10 border border-foreground/30 text-foreground text-xs font-semibold mb-6"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               Riviera Vaudoise · 24/7
