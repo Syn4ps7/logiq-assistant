@@ -44,7 +44,7 @@ const Rates = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/reservation">
+              <Link to="/reservation?plan=week">
                 <Button variant="petrol" className="w-full">{t("nav.book")}</Button>
               </Link>
             </div>
@@ -63,7 +63,7 @@ const Rates = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/reservation">
+              <Link to="/reservation?plan=weekend">
                 <Button variant="petrol" className="w-full">{t("nav.book")}</Button>
               </Link>
             </div>
