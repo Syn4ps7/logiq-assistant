@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { vehicles, vehicleOptions, ratePlans, EXTRA_KM_RATE } from "@/data/vehicles";
 import { updateBookingDraft, dispatchLogiqEvent } from "@/lib/logiq";
@@ -167,13 +168,39 @@ const Reservation = () => {
       .map((id) => vehicleOptions.find((o) => o.id === id)?.name)
       .filter(Boolean)
       .join(", ");
+    const reference = Date.now().toString(36).toUpperCase();
 
     try {
+      // Save to database
+      await supabase.from("reservations").insert({
+        reference,
+        source: isProCheckout ? "b2b" : "b2c",
+        contact_name: contactName,
+        contact_email: contactEmail,
+        contact_phone: contactPhone,
+        plan: selectedPlan,
+        pack: weekendPack || null,
+        vehicle_name: vehicle?.name || "",
+        vehicle_id: selectedVehicle,
+        start_date: startDate || null,
+        end_date: endDate || null,
+        days: price.days,
+        options: optionNames || null,
+        est_km: estKm,
+        total_chf: price.total,
+        delivery_address: deliveryAddress || null,
+        delivery_npa: deliveryNpa || null,
+        delivery_city: deliveryCity || null,
+        delivery_phone: deliveryPhone || null,
+        delivery_instructions: deliveryInstructions || null,
+      });
+
+      // Send email notification
       await emailjs.send(
         "service_g37dgi8",
         "template_51gqxra",
         {
-          reference: Date.now().toString(36).toUpperCase(),
+          reference,
           prenom: contactName,
           email_client: contactEmail,
           date_debut: startDate || "Pack 48h",
@@ -189,7 +216,7 @@ const Reservation = () => {
       );
       setConfirmed(true);
     } catch (err) {
-      console.error("EmailJS error:", err);
+      console.error("Reservation error:", err);
       toast.error(t("reservation.emailError"));
     } finally {
       setIsSending(false);

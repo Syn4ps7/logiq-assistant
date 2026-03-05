@@ -74,6 +74,81 @@ export type Database = {
         }
         Relationships: []
       }
+      reservations: {
+        Row: {
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at: string
+          days: number
+          delivery_address: string | null
+          delivery_city: string | null
+          delivery_instructions: string | null
+          delivery_npa: string | null
+          delivery_phone: string | null
+          end_date: string | null
+          est_km: number
+          id: string
+          options: string | null
+          pack: string | null
+          plan: string
+          reference: string
+          source: string
+          start_date: string | null
+          total_chf: number
+          vehicle_id: string
+          vehicle_name: string
+        }
+        Insert: {
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at?: string
+          days?: number
+          delivery_address?: string | null
+          delivery_city?: string | null
+          delivery_instructions?: string | null
+          delivery_npa?: string | null
+          delivery_phone?: string | null
+          end_date?: string | null
+          est_km?: number
+          id?: string
+          options?: string | null
+          pack?: string | null
+          plan: string
+          reference: string
+          source?: string
+          start_date?: string | null
+          total_chf: number
+          vehicle_id: string
+          vehicle_name: string
+        }
+        Update: {
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string
+          created_at?: string
+          days?: number
+          delivery_address?: string | null
+          delivery_city?: string | null
+          delivery_instructions?: string | null
+          delivery_npa?: string | null
+          delivery_phone?: string | null
+          end_date?: string | null
+          est_km?: number
+          id?: string
+          options?: string | null
+          pack?: string | null
+          plan?: string
+          reference?: string
+          source?: string
+          start_date?: string | null
+          total_chf?: number
+          vehicle_id?: string
+          vehicle_name?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string

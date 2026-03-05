@@ -6,7 +6,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User } from "lucide-react";
+import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface ProLead {
@@ -29,9 +29,35 @@ interface ContactLead {
   created_at: string;
 }
 
+interface Reservation {
+  id: string;
+  reference: string;
+  source: string;
+  contact_name: string;
+  contact_email: string;
+  contact_phone: string;
+  plan: string;
+  pack: string | null;
+  vehicle_name: string;
+  vehicle_id: string;
+  start_date: string | null;
+  end_date: string | null;
+  days: number;
+  options: string | null;
+  est_km: number;
+  total_chf: number;
+  delivery_address: string | null;
+  delivery_npa: string | null;
+  delivery_city: string | null;
+  delivery_phone: string | null;
+  delivery_instructions: string | null;
+  created_at: string;
+}
+
 const Admin = () => {
   const [leads, setLeads] = useState<ProLead[]>([]);
   const [contactLeads, setContactLeads] = useState<ContactLead[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const navigate = useNavigate();
@@ -68,14 +94,17 @@ const Admin = () => {
 
   const fetchAll = async () => {
     setLoading(true);
-    const [proRes, contactRes] = await Promise.all([
+    const [proRes, contactRes, reservationRes] = await Promise.all([
       supabase.from("pro_leads").select("*").order("created_at", { ascending: false }),
       supabase.from("contact_leads").select("*").order("created_at", { ascending: false }),
+      supabase.from("reservations").select("*").order("created_at", { ascending: false }),
     ]);
     if (proRes.error) toast({ title: "Erreur", description: proRes.error.message, variant: "destructive" });
     else setLeads(proRes.data || []);
     if (contactRes.error) toast({ title: "Erreur", description: contactRes.error.message, variant: "destructive" });
     else setContactLeads(contactRes.data || []);
+    if (reservationRes.error) toast({ title: "Erreur", description: reservationRes.error.message, variant: "destructive" });
+    else setReservations(reservationRes.data || []);
     setLoading(false);
   };
 
@@ -89,6 +118,12 @@ const Admin = () => {
     const { error } = await supabase.from("contact_leads").delete().eq("id", id);
     if (error) toast({ title: "Erreur", description: error.message, variant: "destructive" });
     else { setContactLeads((p) => p.filter((l) => l.id !== id)); toast({ title: "Message supprimé" }); }
+  };
+
+  const deleteReservation = async (id: string) => {
+    const { error } = await supabase.from("reservations").delete().eq("id", id);
+    if (error) toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    else { setReservations((p) => p.filter((r) => r.id !== id)); toast({ title: "Réservation supprimée" }); }
   };
 
   const exportProCsv = () => {
@@ -106,6 +141,17 @@ const Admin = () => {
       new Date(l.created_at).toLocaleString("fr-CH"), l.name, l.email, `"${l.message.replace(/"/g, '""')}"`,
     ]);
     downloadCsv(headers, rows, "leads-particuliers");
+  };
+
+  const exportReservationsCsv = (source: "b2c" | "b2b") => {
+    const filtered = reservations.filter((r) => r.source === source);
+    const headers = ["Date", "Référence", "Nom", "Email", "Téléphone", "Formule", "Pack", "Véhicule", "Début", "Fin", "Jours", "Options", "Km estimés", "Total CHF"];
+    const rows = filtered.map((r) => [
+      new Date(r.created_at).toLocaleString("fr-CH"), r.reference, r.contact_name, r.contact_email, r.contact_phone,
+      r.plan, r.pack || "", r.vehicle_name, r.start_date || "Pack", r.end_date || "Pack",
+      String(r.days), r.options || "Aucune", String(r.est_km), String(r.total_chf),
+    ]);
+    downloadCsv(headers, rows, `reservations-${source}`);
   };
 
   const downloadCsv = (headers: string[], rows: string[][], prefix: string) => {
@@ -139,6 +185,123 @@ const Admin = () => {
   const fmtDate = (d: string) => new Date(d).toLocaleDateString("fr-CH", { day: "2-digit", month: "2-digit", year: "numeric" });
   const fmtTime = (d: string) => new Date(d).toLocaleTimeString("fr-CH", { hour: "2-digit", minute: "2-digit" });
 
+  const b2cReservations = reservations.filter((r) => r.source === "b2c");
+  const b2bReservations = reservations.filter((r) => r.source === "b2b");
+
+  const planLabel = (r: Reservation) => {
+    if (r.pack) {
+      const packLabels: Record<string, string> = {
+        standard: "Week-end Standard",
+        confort: "Pack Déménagement 48h",
+        premium: "Pack Premium 48h",
+      };
+      return packLabels[r.pack] || r.pack;
+    }
+    const planLabels: Record<string, string> = { week: "Semaine", weekend: "Week-End", "pack-48h": "Pack 48h" };
+    return planLabels[r.plan] || r.plan;
+  };
+
+  const ReservationTable = ({ items, source }: { items: Reservation[]; source: "b2c" | "b2b" }) => (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-muted-foreground text-sm">{items.length} réservation{items.length !== 1 ? "s" : ""}</p>
+        {items.length > 0 && (
+          <Button variant="outline" size="sm" onClick={() => exportReservationsCsv(source)}><Download className="h-4 w-4 mr-1" /> CSV</Button>
+        )}
+      </div>
+
+      {loading && items.length === 0 ? (
+        <div className="text-center py-20 text-muted-foreground">Chargement…</div>
+      ) : items.length === 0 ? (
+        <div className="text-center py-20">
+          <ShoppingCart className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
+          <p className="text-muted-foreground">Aucune réservation {source === "b2b" ? "pro" : "particulier"} pour le moment.</p>
+        </div>
+      ) : (
+        <>
+          {/* Desktop */}
+          <div className="hidden md:block rounded-xl border overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/50">
+                  <TableHead>Date</TableHead>
+                  <TableHead>Réf.</TableHead>
+                  <TableHead>Client</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Formule</TableHead>
+                  <TableHead>Véhicule</TableHead>
+                  <TableHead>Dates</TableHead>
+                  <TableHead>Options</TableHead>
+                  <TableHead>Km</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead className="w-10"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {items.map((r) => (
+                  <TableRow key={r.id}>
+                    <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                      {fmtDate(r.created_at)}<br /><span className="opacity-60">{fmtTime(r.created_at)}</span>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs">{r.reference}</TableCell>
+                    <TableCell>
+                      <div className="font-medium text-sm">{r.contact_name}</div>
+                      <div className="text-xs text-muted-foreground">{r.contact_email}</div>
+                    </TableCell>
+                    <TableCell className="text-sm">{r.contact_phone}</TableCell>
+                    <TableCell className="text-sm font-medium">{planLabel(r)}</TableCell>
+                    <TableCell className="text-sm">{r.vehicle_name}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                      {r.start_date && r.end_date ? `${r.start_date} → ${r.end_date}` : `${r.days}j (Pack)`}
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground max-w-[150px] truncate">{r.options || "—"}</TableCell>
+                    <TableCell className="text-sm">{r.est_km}</TableCell>
+                    <TableCell className="text-sm font-bold text-primary whitespace-nowrap">{Number(r.total_chf).toFixed(2)} CHF</TableCell>
+                    <TableCell>
+                      <button onClick={() => deleteReservation(r.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" aria-label="Supprimer">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          {/* Mobile */}
+          <div className="md:hidden space-y-4">
+            {items.map((r) => (
+              <div key={r.id} className="p-4 border rounded-xl bg-card space-y-3">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="font-semibold">{r.contact_name}</p>
+                    <p className="text-xs text-muted-foreground font-mono">{r.reference}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-primary">{Number(r.total_chf).toFixed(2)} CHF</span>
+                    <button onClick={() => deleteReservation(r.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 gap-1.5 text-sm">
+                  <div className="flex items-center gap-2 text-muted-foreground"><Phone className="h-3.5 w-3.5" /> {r.contact_phone}</div>
+                  <div className="flex items-center gap-2 text-muted-foreground"><Mail className="h-3.5 w-3.5" /> {r.contact_email}</div>
+                  <div className="flex items-center gap-2 text-muted-foreground"><Calendar className="h-3.5 w-3.5" /> {fmtDate(r.created_at)}</div>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">{planLabel(r)}</span>
+                  <span className="text-xs bg-muted px-2 py-0.5 rounded-full">{r.vehicle_name}</span>
+                  <span className="text-xs bg-muted px-2 py-0.5 rounded-full">{r.est_km} km</span>
+                </div>
+                {r.options && <p className="text-xs text-muted-foreground">Options : {r.options}</p>}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+
   return (
     <main className="py-8">
       <div className="container max-w-6xl">
@@ -154,8 +317,16 @@ const Admin = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="pro" className="space-y-6">
-          <TabsList>
+        <Tabs defaultValue="reservations-b2c" className="space-y-6">
+          <TabsList className="flex-wrap">
+            <TabsTrigger value="reservations-b2c" className="gap-1.5">
+              <ShoppingCart className="h-4 w-4" /> Réservations B2C
+              {b2cReservations.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{b2cReservations.length}</span>}
+            </TabsTrigger>
+            <TabsTrigger value="reservations-b2b" className="gap-1.5">
+              <Building2 className="h-4 w-4" /> Réservations B2B
+              {b2bReservations.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{b2bReservations.length}</span>}
+            </TabsTrigger>
             <TabsTrigger value="pro" className="gap-1.5">
               <Building2 className="h-4 w-4" /> Leads Pro
               {leads.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{leads.length}</span>}
@@ -165,6 +336,16 @@ const Admin = () => {
               {contactLeads.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{contactLeads.length}</span>}
             </TabsTrigger>
           </TabsList>
+
+          {/* ========== RESERVATIONS B2C ========== */}
+          <TabsContent value="reservations-b2c">
+            <ReservationTable items={b2cReservations} source="b2c" />
+          </TabsContent>
+
+          {/* ========== RESERVATIONS B2B ========== */}
+          <TabsContent value="reservations-b2b">
+            <ReservationTable items={b2bReservations} source="b2b" />
+          </TabsContent>
 
           {/* ========== PRO LEADS TAB ========== */}
           <TabsContent value="pro" className="space-y-4">
