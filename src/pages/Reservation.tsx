@@ -55,7 +55,7 @@ const Reservation = () => {
     const pack = searchParams.get("pack") as WeekendPack | null;
     const plan = searchParams.get("plan") as RatePlanId | null;
     if (pack && pack in WEEKEND_PACKS) {
-      setSelectedPlan("weekend");
+      setSelectedPlan("pack-48h");
       setWeekendPack(pack);
     } else if (plan && ["week", "weekend", "pack-48h"].includes(plan)) {
       setSelectedPlan(plan);
@@ -83,14 +83,14 @@ const Reservation = () => {
   }, [startDate, endDate, selectedVehicle, selectedOptions, estKm]);
 
   const isPack = selectedPlan === "pack-48h";
-  const isWeekendPack = selectedPlan === "weekend" && weekendPack !== "";
+  const isPackWithSub = isPack && weekendPack !== "";
   const isPremium = weekendPack === "premium";
 
   const price = useMemo(() => {
     if (!selectedVehicle) return null;
 
     // Weekend pack flow
-    if (isWeekendPack && weekendPack) {
+    if (isPackWithSub && weekendPack) {
       const pack = WEEKEND_PACKS[weekendPack];
       const baseTotal = pack.price;
       const includedKm = 200;
@@ -144,7 +144,7 @@ const Reservation = () => {
     const total = Math.round((baseTotal + optionsCost + extraKmCost) * 100) / 100;
 
     return { days, baseTotal, includedKm, optionsCost, extraKm, extraKmCost, total, planName: plan.name };
-  }, [selectedPlan, weekendPack, startDate, endDate, selectedVehicle, selectedOptions, estKm, isWeekendPack]);
+  }, [selectedPlan, weekendPack, startDate, endDate, selectedVehicle, selectedOptions, estKm, isPackWithSub]);
 
   useEffect(() => {
     if (price) {
@@ -155,7 +155,7 @@ const Reservation = () => {
 
   const premiumDeliveryValid = !isPremium || (deliveryAddress && deliveryNpa && deliveryCity && deliveryPhone);
 
-  const canProceedStep0 = isWeekendPack || (selectedPlan && (isPack || (startDate && endDate)));
+  const canProceedStep0 = isPackWithSub || (selectedPlan && (selectedPlan === "week" || selectedPlan === "weekend") && startDate && endDate);
 
   const canConfirm = premiumDeliveryValid && contactName && contactEmail && contactPhone;
 
@@ -252,7 +252,7 @@ const Reservation = () => {
                     <div>
                       <p className="text-xs text-muted-foreground">Formule</p>
                       <p className="text-sm font-semibold">
-                        {isWeekendPack && weekendPack
+                        {isPackWithSub && weekendPack
                           ? WEEKEND_PACKS[weekendPack].label
                           : ratePlans.find((p) => p.id === selectedPlan)?.name || selectedPlan}
                       </p>
@@ -261,7 +261,7 @@ const Reservation = () => {
                 )}
 
                 {/* Dates (si pas pack) */}
-                {!isPack && !isWeekendPack && startDate && endDate && (
+                {!isPack && startDate && endDate && (
                   <div className="flex items-center gap-2 bg-background rounded-lg px-3 py-2 border border-border">
                     <CalendarDays className="h-4 w-4 text-primary shrink-0" />
                     <div>
@@ -311,7 +311,7 @@ const Reservation = () => {
                 {ratePlans.map((plan) => (
                   <button
                     key={plan.id}
-                    onClick={() => { setSelectedPlan(plan.id as RatePlanId); if (plan.id !== "weekend") setWeekendPack(""); }}
+                    onClick={() => { setSelectedPlan(plan.id as RatePlanId); if (plan.id !== "pack-48h") setWeekendPack(""); }}
                     className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
                       selectedPlan === plan.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"
                     }`}
@@ -327,10 +327,10 @@ const Reservation = () => {
                 ))}
               </div>
 
-              {/* Weekend pack selection */}
-              {selectedPlan === "weekend" && (
+              {/* Pack 48h sub-selection */}
+              {selectedPlan === "pack-48h" && (
                 <div className="space-y-3 bg-muted/30 rounded-lg p-4">
-                  <h3 className="font-medium text-sm">Choisissez votre Pack Week-end+ :</h3>
+                  <h3 className="font-medium text-sm">Choisissez votre Pack 48h :</h3>
                   {(Object.entries(WEEKEND_PACKS) as [WeekendPack, { price: number; label: string }][]).map(([key, pack]) => (
                     <button
                       key={key}
@@ -351,7 +351,7 @@ const Reservation = () => {
                 </div>
               )}
 
-              {selectedPlan && !isPack && !isWeekendPack && (
+              {selectedPlan && !isPack && (
                 <div className="space-y-4">
                   <h3 className="font-medium">{t("reservation.rentalDates")}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -371,7 +371,7 @@ const Reservation = () => {
                 <label className="block text-sm font-medium mb-1">{t("reservation.estKm")}</label>
                 <input type="number" value={estKm} onChange={(e) => setEstKm(Number(e.target.value))} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" min={0} />
                 <p className="text-xs text-muted-foreground mt-1">
-                  {isPack || isWeekendPack ? t("reservation.kmIncludedPack") : t("reservation.kmIncludedDay")}
+                  {isPack ? t("reservation.kmIncludedPack") : t("reservation.kmIncludedDay")}
                   {" · "}{EXTRA_KM_RATE.toFixed(2)} {t("reservation.extraKmRate")}
                 </p>
               </div>
@@ -520,7 +520,7 @@ const Reservation = () => {
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
                       <span>
-                        {isWeekendPack
+                        {isPackWithSub
                           ? price.planName
                           : isPack
                             ? t("reservation.packFlat")
