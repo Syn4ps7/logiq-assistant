@@ -53,9 +53,12 @@ const Reservation = () => {
   // Pre-fill from query params (from Rates page links)
   useEffect(() => {
     const pack = searchParams.get("pack") as WeekendPack | null;
+    const plan = searchParams.get("plan") as RatePlanId | null;
     if (pack && pack in WEEKEND_PACKS) {
       setSelectedPlan("weekend");
       setWeekendPack(pack);
+    } else if (plan && ["week", "weekend", "pack-48h"].includes(plan)) {
+      setSelectedPlan(plan);
     }
   }, [searchParams]);
 
