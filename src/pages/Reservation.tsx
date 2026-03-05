@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { vehicles, vehicleOptions, ratePlans, EXTRA_KM_RATE } from "@/data/vehicles";
 import { updateBookingDraft, dispatchLogiqEvent } from "@/lib/logiq";
-import { Check, ChevronRight, Info, Truck, Loader2 } from "lucide-react";
+import { Check, ChevronRight, Info, Truck, Loader2, CalendarDays, Car, Package } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import emailjs from "@emailjs/browser";
 import { toast } from "sonner";
@@ -238,7 +238,71 @@ const Reservation = () => {
           ))}
         </div>
 
-        <div id="logiq-reservation-widget" data-env="staging" className="bg-card rounded-lg border p-6">
+        <div id="logiq-reservation-widget" data-env="staging" className="bg-card rounded-lg border p-6 space-y-6">
+
+          {/* ── Récapitulatif visuel ── */}
+          {step > 0 && (
+            <div className="bg-muted/40 rounded-lg p-4 border border-border">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Votre sélection</h3>
+              <div className="flex flex-wrap gap-3">
+                {/* Plan sélectionné */}
+                {selectedPlan && (
+                  <div className="flex items-center gap-2 bg-background rounded-lg px-3 py-2 border border-border">
+                    <CalendarDays className="h-4 w-4 text-primary shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Formule</p>
+                      <p className="text-sm font-semibold">
+                        {isWeekendPack && weekendPack
+                          ? WEEKEND_PACKS[weekendPack].label
+                          : ratePlans.find((p) => p.id === selectedPlan)?.name || selectedPlan}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Dates (si pas pack) */}
+                {!isPack && !isWeekendPack && startDate && endDate && (
+                  <div className="flex items-center gap-2 bg-background rounded-lg px-3 py-2 border border-border">
+                    <CalendarDays className="h-4 w-4 text-primary shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Dates</p>
+                      <p className="text-sm font-semibold">{new Date(startDate).toLocaleDateString("fr-CH")} → {new Date(endDate).toLocaleDateString("fr-CH")}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Véhicule */}
+                {selectedVehicle && step >= 2 && (
+                  <div className="flex items-center gap-2 bg-background rounded-lg px-3 py-2 border border-border">
+                    <Car className="h-4 w-4 text-primary shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Véhicule</p>
+                      <p className="text-sm font-semibold">{vehicles.find((v) => v.id === selectedVehicle)?.name}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Km estimés */}
+                <div className="flex items-center gap-2 bg-background rounded-lg px-3 py-2 border border-border">
+                  <Package className="h-4 w-4 text-primary shrink-0" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Km estimés</p>
+                    <p className="text-sm font-semibold">{estKm} km</p>
+                  </div>
+                </div>
+
+                {/* Prix estimé */}
+                {price && (
+                  <div className="flex items-center gap-2 bg-primary/10 rounded-lg px-3 py-2 border border-primary/20 ml-auto">
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground">Estimation</p>
+                      <p className="text-sm font-bold text-primary">{price.total.toFixed(2)} CHF</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           {/* Step 0 */}
           {step === 0 && (
             <div className="space-y-6">
