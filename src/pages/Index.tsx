@@ -162,7 +162,7 @@ const Index = () => {
               <Button variant="hero" size="lg">{t("cta.book")}</Button>
             </Link>
             <Link to="/contact">
-              <Button variant="hero-outline" size="lg">{t("cta.contact")}</Button>
+              <Button variant="hero-outline" size="lg" className="border-white text-white hover:bg-white hover:text-background">{t("cta.contact")}</Button>
             </Link>
           </div>
         </div>
