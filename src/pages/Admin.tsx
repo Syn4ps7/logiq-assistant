@@ -35,6 +35,7 @@ interface Reservation {
   id: string;
   reference: string;
   source: string;
+  status: string;
   contact_name: string;
   contact_email: string;
   contact_phone: string;
@@ -55,6 +56,17 @@ interface Reservation {
   delivery_instructions: string | null;
   created_at: string;
 }
+
+const statusConfig: Record<string, { label: string; className: string }> = {
+  pending: { label: "En attente", className: "bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-700" },
+  paid: { label: "Payé", className: "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700" },
+  canceled: { label: "Annulé", className: "bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700" },
+};
+
+const StatusBadge = ({ status }: { status: string }) => {
+  const config = statusConfig[status] || statusConfig.pending;
+  return <Badge variant="outline" className={`text-xs font-medium ${config.className}`}>{config.label}</Badge>;
+};
 
 const Admin = () => {
   const [leads, setLeads] = useState<ProLead[]>([]);
