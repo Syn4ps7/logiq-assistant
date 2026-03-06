@@ -44,7 +44,9 @@ interface Reservation {
   vehicle_name: string;
   vehicle_id: string;
   start_date: string | null;
+  start_time: string | null;
   end_date: string | null;
+  end_time: string | null;
   days: number;
   options: string | null;
   est_km: number;
@@ -161,10 +163,10 @@ const Admin = () => {
 
   const exportReservationsCsv = (source: "b2c" | "b2b") => {
     const filtered = reservations.filter((r) => r.source === source);
-    const headers = ["Date", "Référence", "Nom", "Email", "Téléphone", "Formule", "Pack", "Véhicule", "Début", "Fin", "Jours", "Options", "Km estimés", "Total CHF"];
+    const headers = ["Date", "Référence", "Nom", "Email", "Téléphone", "Formule", "Pack", "Véhicule", "Début", "Heure début", "Fin", "Heure fin", "Jours", "Options", "Km estimés", "Total CHF"];
     const rows = filtered.map((r) => [
       new Date(r.created_at).toLocaleString("fr-CH"), r.reference, r.contact_name, r.contact_email, r.contact_phone,
-      r.plan, r.pack || "", r.vehicle_name, r.start_date || "Pack", r.end_date || "Pack",
+      r.plan, r.pack || "", r.vehicle_name, r.start_date || "Pack", r.start_time || "", r.end_date || "Pack", r.end_time || "",
       String(r.days), r.options || "Aucune", String(r.est_km), String(r.total_chf),
     ]);
     downloadCsv(headers, rows, `reservations-${source}`);
@@ -286,7 +288,9 @@ const Admin = () => {
                     <TableCell className="text-sm font-medium">{planLabel(r)}</TableCell>
                     <TableCell className="text-sm">{r.vehicle_name}</TableCell>
                     <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
-                      {r.start_date && r.end_date ? `${r.start_date} → ${r.end_date}` : `${r.days}j (Pack)`}
+                      {r.start_date && r.end_date
+                        ? <>{r.start_date}{r.start_time ? ` ${r.start_time}` : ""} → {r.end_date}{r.end_time ? ` ${r.end_time}` : ""}</>
+                        : `${r.days}j (Pack)`}
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground max-w-[150px] truncate">{r.options || "—"}</TableCell>
                     <TableCell className="text-sm">{r.est_km}</TableCell>
