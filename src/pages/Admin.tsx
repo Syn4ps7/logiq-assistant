@@ -74,6 +74,8 @@ const Admin = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [statusFilterB2c, setStatusFilterB2c] = useState<string>("all");
+  const [statusFilterB2b, setStatusFilterB2b] = useState<string>("all");
   const navigate = useNavigate();
 
   useEffect(() => {
