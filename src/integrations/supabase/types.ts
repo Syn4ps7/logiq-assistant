@@ -95,6 +95,7 @@ export type Database = {
           reference: string
           source: string
           start_date: string | null
+          status: string
           total_chf: number
           vehicle_id: string
           vehicle_name: string
@@ -119,6 +120,7 @@ export type Database = {
           reference: string
           source?: string
           start_date?: string | null
+          status?: string
           total_chf: number
           vehicle_id: string
           vehicle_name: string
@@ -143,6 +145,7 @@ export type Database = {
           reference?: string
           source?: string
           start_date?: string | null
+          status?: string
           total_chf?: number
           vehicle_id?: string
           vehicle_name?: string
