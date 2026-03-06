@@ -87,6 +87,7 @@ export type Database = {
           delivery_npa: string | null
           delivery_phone: string | null
           end_date: string | null
+          end_time: string | null
           est_km: number
           id: string
           options: string | null
@@ -95,6 +96,7 @@ export type Database = {
           reference: string
           source: string
           start_date: string | null
+          start_time: string | null
           status: string
           total_chf: number
           vehicle_id: string
@@ -112,6 +114,7 @@ export type Database = {
           delivery_npa?: string | null
           delivery_phone?: string | null
           end_date?: string | null
+          end_time?: string | null
           est_km?: number
           id?: string
           options?: string | null
@@ -120,6 +123,7 @@ export type Database = {
           reference: string
           source?: string
           start_date?: string | null
+          start_time?: string | null
           status?: string
           total_chf: number
           vehicle_id: string
@@ -137,6 +141,7 @@ export type Database = {
           delivery_npa?: string | null
           delivery_phone?: string | null
           end_date?: string | null
+          end_time?: string | null
           est_km?: number
           id?: string
           options?: string | null
@@ -145,6 +150,7 @@ export type Database = {
           reference?: string
           source?: string
           start_date?: string | null
+          start_time?: string | null
           status?: string
           total_chf?: number
           vehicle_id?: string
