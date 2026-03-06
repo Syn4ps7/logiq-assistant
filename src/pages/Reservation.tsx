@@ -160,6 +160,18 @@ const Reservation = () => {
 
   const canConfirm = premiumDeliveryValid && contactName && contactEmail && contactPhone;
 
+  // Handle Stripe success/cancel from redirect
+  useEffect(() => {
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+    if (success === "true") {
+      setConfirmed(true);
+    }
+    if (canceled === "true") {
+      toast.error(t("reservation.paymentCanceled", "Paiement annulé. Vous pouvez réessayer."));
+    }
+  }, [searchParams, t]);
+
   const handleConfirm = async () => {
     if (!price || !canConfirm) return;
     setIsSending(true);
@@ -195,8 +207,8 @@ const Reservation = () => {
         delivery_instructions: deliveryInstructions || null,
       });
 
-      // Send email notification
-      await emailjs.send(
+      // Send email notification (non-blocking)
+      emailjs.send(
         "service_g37dgi8",
         "template_51gqxra",
         {
@@ -213,12 +225,28 @@ const Reservation = () => {
           tarif: price.total.toFixed(2) + " CHF",
         },
         "txxckOr0_mZu2OaXQ"
-      );
-      setConfirmed(true);
+      ).catch((err) => console.error("EmailJS error:", err));
+
+      // Redirect to Stripe Checkout
+      const description = `${price.planName} — ${vehicle?.name || ""} — ${price.days}j`;
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          reference,
+          customerEmail: contactEmail,
+          customerName: contactName,
+          description,
+          amountCHF: price.total,
+        },
+      });
+
+      if (error || !data?.url) {
+        throw new Error(error?.message || "Impossible de créer la session de paiement");
+      }
+
+      window.location.href = data.url;
     } catch (err) {
       console.error("Reservation error:", err);
       toast.error(t("reservation.emailError"));
-    } finally {
       setIsSending(false);
     }
   };
