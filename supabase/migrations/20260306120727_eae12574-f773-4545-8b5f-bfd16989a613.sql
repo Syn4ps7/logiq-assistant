@@ -1,0 +1,1 @@
+ALTER TABLE public.reservations ADD COLUMN status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'canceled'));

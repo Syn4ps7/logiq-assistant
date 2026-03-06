@@ -1,0 +1,1 @@
+CREATE POLICY "Anyone can update reservation status by reference" ON public.reservations FOR UPDATE USING (true) WITH CHECK (true);
