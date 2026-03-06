@@ -31,7 +31,9 @@ const Reservation = () => {
   const [selectedPlan, setSelectedPlan] = useState<RatePlanId | "">("");
   const [weekendPack, setWeekendPack] = useState<WeekendPack | "">("");
   const [startDate, setStartDate] = useState("");
+  const [startTime, setStartTime] = useState("07:00");
   const [endDate, setEndDate] = useState("");
+  const [endTime, setEndTime] = useState("20:00");
   const [selectedVehicle, setSelectedVehicle] = useState(searchParams.get("vehicle") || "");
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [estKm, setEstKm] = useState(200);
