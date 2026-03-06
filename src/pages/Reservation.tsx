@@ -31,7 +31,9 @@ const Reservation = () => {
   const [selectedPlan, setSelectedPlan] = useState<RatePlanId | "">("");
   const [weekendPack, setWeekendPack] = useState<WeekendPack | "">("");
   const [startDate, setStartDate] = useState("");
+  const [startTime, setStartTime] = useState("07:00");
   const [endDate, setEndDate] = useState("");
+  const [endTime, setEndTime] = useState("20:00");
   const [selectedVehicle, setSelectedVehicle] = useState(searchParams.get("vehicle") || "");
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [estKm, setEstKm] = useState(200);
@@ -220,9 +222,9 @@ const Reservation = () => {
           prenom: contactName,
           email_client: contactEmail,
           date_debut: startDate || "Pack 48h",
-          heure_debut: startDate ? "07:00" : "",
+          heure_debut: startDate ? startTime : "",
           date_fin: endDate || "Pack 48h",
-          heure_fin: endDate ? "20:00" : "",
+          heure_fin: endDate ? endTime : "",
           duree: price.days,
           vehicule: vehicle?.name || "",
           options: optionNames || "Aucune",
@@ -325,7 +327,7 @@ const Reservation = () => {
                     <CalendarDays className="h-4 w-4 text-primary shrink-0" />
                     <div>
                       <p className="text-xs text-muted-foreground">Dates</p>
-                      <p className="text-sm font-semibold">{new Date(startDate).toLocaleDateString("fr-CH")} → {new Date(endDate).toLocaleDateString("fr-CH")}</p>
+                      <p className="text-sm font-semibold">{new Date(startDate).toLocaleDateString("fr-CH")} à {startTime} → {new Date(endDate).toLocaleDateString("fr-CH")} à {endTime}</p>
                     </div>
                   </div>
                 )}
@@ -414,13 +416,21 @@ const Reservation = () => {
                 <div className="space-y-4">
                   <h3 className="font-medium">{t("reservation.rentalDates")}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
+                    <div className="space-y-2">
                       <label className="block text-sm font-medium mb-1">{t("reservation.startDate")}</label>
                       <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      <div>
+                        <label className="block text-sm font-medium mb-1">{t("reservation.startTime", "Heure de début")}</label>
+                        <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      </div>
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <label className="block text-sm font-medium mb-1">{t("reservation.endDate")}</label>
                       <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      <div>
+                        <label className="block text-sm font-medium mb-1">{t("reservation.endTime", "Heure de fin")}</label>
+                        <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      </div>
                     </div>
                   </div>
                 </div>
