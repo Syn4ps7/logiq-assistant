@@ -164,8 +164,12 @@ const Reservation = () => {
   useEffect(() => {
     const success = searchParams.get("success");
     const canceled = searchParams.get("canceled");
-    if (success === "true") {
-      setConfirmed(true);
+    const ref = searchParams.get("ref");
+    if (success === "true" && ref) {
+      // Mark reservation as paid
+      supabase.from("reservations").update({ status: "paid" }).eq("reference", ref).then(() => {
+        setConfirmed(true);
+      });
     }
     if (canceled === "true") {
       toast.error(t("reservation.paymentCanceled", "Paiement annulé. Vous pouvez réessayer."));
