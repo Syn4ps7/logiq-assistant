@@ -380,7 +380,7 @@ const Admin = () => {
 
           {/* ========== RESERVATIONS B2B ========== */}
           <TabsContent value="reservations-b2b">
-            <ReservationTable items={b2bReservations} source="b2b" />
+            <ReservationTable items={b2bReservations} source="b2b" statusFilter={statusFilterB2b} onStatusFilterChange={setStatusFilterB2b} />
           </TabsContent>
 
           {/* ========== PRO LEADS TAB ========== */}
