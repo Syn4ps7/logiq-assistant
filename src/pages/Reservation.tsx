@@ -416,13 +416,21 @@ const Reservation = () => {
                 <div className="space-y-4">
                   <h3 className="font-medium">{t("reservation.rentalDates")}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
+                    <div className="space-y-2">
                       <label className="block text-sm font-medium mb-1">{t("reservation.startDate")}</label>
                       <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      <div>
+                        <label className="block text-sm font-medium mb-1">{t("reservation.startTime", "Heure de début")}</label>
+                        <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      </div>
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <label className="block text-sm font-medium mb-1">{t("reservation.endDate")}</label>
                       <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      <div>
+                        <label className="block text-sm font-medium mb-1">{t("reservation.endTime", "Heure de fin")}</label>
+                        <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      </div>
                     </div>
                   </div>
                 </div>
