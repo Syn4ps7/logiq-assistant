@@ -222,9 +222,9 @@ const Reservation = () => {
           prenom: contactName,
           email_client: contactEmail,
           date_debut: startDate || "Pack 48h",
-          heure_debut: startDate ? "07:00" : "",
+          heure_debut: startDate ? startTime : "",
           date_fin: endDate || "Pack 48h",
-          heure_fin: endDate ? "20:00" : "",
+          heure_fin: endDate ? endTime : "",
           duree: price.days,
           vehicule: vehicle?.name || "",
           options: optionNames || "Aucune",
@@ -327,7 +327,7 @@ const Reservation = () => {
                     <CalendarDays className="h-4 w-4 text-primary shrink-0" />
                     <div>
                       <p className="text-xs text-muted-foreground">Dates</p>
-                      <p className="text-sm font-semibold">{new Date(startDate).toLocaleDateString("fr-CH")} → {new Date(endDate).toLocaleDateString("fr-CH")}</p>
+                      <p className="text-sm font-semibold">{new Date(startDate).toLocaleDateString("fr-CH")} à {startTime} → {new Date(endDate).toLocaleDateString("fr-CH")} à {endTime}</p>
                     </div>
                   </div>
                 )}
