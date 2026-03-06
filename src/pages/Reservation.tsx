@@ -663,7 +663,7 @@ const Reservation = () => {
                 <Button variant="outline" onClick={() => setStep(1)}>{t("reservation.back")}</Button>
                 <Button variant="hero" onClick={handleConfirm} disabled={!canConfirm || isSending}>
                   {isSending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
-                  {t("reservation.confirm")}
+                  {isSending ? t("reservation.redirecting", "Redirection vers le paiement…") : t("reservation.payNow", "Payer et confirmer")}
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">{t("reservation.microlegal")}</p>
