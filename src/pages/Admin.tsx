@@ -44,7 +44,9 @@ interface Reservation {
   vehicle_name: string;
   vehicle_id: string;
   start_date: string | null;
+  start_time: string | null;
   end_date: string | null;
+  end_time: string | null;
   days: number;
   options: string | null;
   est_km: number;
@@ -286,7 +288,9 @@ const Admin = () => {
                     <TableCell className="text-sm font-medium">{planLabel(r)}</TableCell>
                     <TableCell className="text-sm">{r.vehicle_name}</TableCell>
                     <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
-                      {r.start_date && r.end_date ? `${r.start_date} → ${r.end_date}` : `${r.days}j (Pack)`}
+                      {r.start_date && r.end_date
+                        ? <>{r.start_date}{r.start_time ? ` ${r.start_time}` : ""} → {r.end_date}{r.end_time ? ` ${r.end_time}` : ""}</>
+                        : `${r.days}j (Pack)`}
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground max-w-[150px] truncate">{r.options || "—"}</TableCell>
                     <TableCell className="text-sm">{r.est_km}</TableCell>
