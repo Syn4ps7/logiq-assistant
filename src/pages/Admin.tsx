@@ -6,7 +6,9 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart } from "lucide-react";
+import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart, Filter } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 
 interface ProLead {
@@ -33,6 +35,7 @@ interface Reservation {
   id: string;
   reference: string;
   source: string;
+  status: string;
   contact_name: string;
   contact_email: string;
   contact_phone: string;
@@ -54,12 +57,25 @@ interface Reservation {
   created_at: string;
 }
 
+const statusConfig: Record<string, { label: string; className: string }> = {
+  pending: { label: "En attente", className: "bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-700" },
+  paid: { label: "Payé", className: "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700" },
+  canceled: { label: "Annulé", className: "bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700" },
+};
+
+const StatusBadge = ({ status }: { status: string }) => {
+  const config = statusConfig[status] || statusConfig.pending;
+  return <Badge variant="outline" className={`text-xs font-medium ${config.className}`}>{config.label}</Badge>;
+};
+
 const Admin = () => {
   const [leads, setLeads] = useState<ProLead[]>([]);
   const [contactLeads, setContactLeads] = useState<ContactLead[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [statusFilterB2c, setStatusFilterB2c] = useState<string>("all");
+  const [statusFilterB2b, setStatusFilterB2b] = useState<string>("all");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -201,21 +217,37 @@ const Admin = () => {
     return planLabels[r.plan] || r.plan;
   };
 
-  const ReservationTable = ({ items, source }: { items: Reservation[]; source: "b2c" | "b2b" }) => (
+  const ReservationTable = ({ items, source, statusFilter, onStatusFilterChange }: { items: Reservation[]; source: "b2c" | "b2b"; statusFilter: string; onStatusFilterChange: (v: string) => void }) => {
+    const filtered = statusFilter === "all" ? items : items.filter((r) => r.status === statusFilter);
+    return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <p className="text-muted-foreground text-sm">{items.length} réservation{items.length !== 1 ? "s" : ""}</p>
-        {items.length > 0 && (
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-3">
+          <p className="text-muted-foreground text-sm">{filtered.length} réservation{filtered.length !== 1 ? "s" : ""}</p>
+          <Select value={statusFilter} onValueChange={onStatusFilterChange}>
+            <SelectTrigger className="w-[160px] h-8 text-xs">
+              <Filter className="h-3.5 w-3.5 mr-1.5" />
+              <SelectValue placeholder="Tous les statuts" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tous les statuts</SelectItem>
+              <SelectItem value="pending">En attente</SelectItem>
+              <SelectItem value="paid">Payé</SelectItem>
+              <SelectItem value="canceled">Annulé</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {filtered.length > 0 && (
           <Button variant="outline" size="sm" onClick={() => exportReservationsCsv(source)}><Download className="h-4 w-4 mr-1" /> CSV</Button>
         )}
       </div>
 
-      {loading && items.length === 0 ? (
+      {loading && filtered.length === 0 ? (
         <div className="text-center py-20 text-muted-foreground">Chargement…</div>
-      ) : items.length === 0 ? (
+      ) : filtered.length === 0 ? (
         <div className="text-center py-20">
           <ShoppingCart className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
-          <p className="text-muted-foreground">Aucune réservation {source === "b2b" ? "pro" : "particulier"} pour le moment.</p>
+          <p className="text-muted-foreground">Aucune réservation {source === "b2b" ? "pro" : "particulier"} {statusFilter !== "all" ? "avec ce statut" : "pour le moment"}.</p>
         </div>
       ) : (
         <>
@@ -226,6 +258,7 @@ const Admin = () => {
                 <TableRow className="bg-muted/50">
                   <TableHead>Date</TableHead>
                   <TableHead>Réf.</TableHead>
+                  <TableHead>Statut</TableHead>
                   <TableHead>Client</TableHead>
                   <TableHead>Contact</TableHead>
                   <TableHead>Formule</TableHead>
@@ -238,12 +271,13 @@ const Admin = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {items.map((r) => (
+                {filtered.map((r) => (
                   <TableRow key={r.id}>
                     <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
                       {fmtDate(r.created_at)}<br /><span className="opacity-60">{fmtTime(r.created_at)}</span>
                     </TableCell>
                     <TableCell className="font-mono text-xs">{r.reference}</TableCell>
+                    <TableCell><StatusBadge status={r.status} /></TableCell>
                     <TableCell>
                       <div className="font-medium text-sm">{r.contact_name}</div>
                       <div className="text-xs text-muted-foreground">{r.contact_email}</div>
@@ -269,7 +303,7 @@ const Admin = () => {
           </div>
           {/* Mobile */}
           <div className="md:hidden space-y-4">
-            {items.map((r) => (
+            {filtered.map((r) => (
               <div key={r.id} className="p-4 border rounded-xl bg-card space-y-3">
                 <div className="flex items-start justify-between">
                   <div>
@@ -277,6 +311,7 @@ const Admin = () => {
                     <p className="text-xs text-muted-foreground font-mono">{r.reference}</p>
                   </div>
                   <div className="flex items-center gap-2">
+                    <StatusBadge status={r.status} />
                     <span className="text-sm font-bold text-primary">{Number(r.total_chf).toFixed(2)} CHF</span>
                     <button onClick={() => deleteReservation(r.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                       <Trash2 className="h-4 w-4" />
@@ -301,6 +336,7 @@ const Admin = () => {
       )}
     </div>
   );
+  };
 
   return (
     <main className="py-8">
@@ -339,12 +375,12 @@ const Admin = () => {
 
           {/* ========== RESERVATIONS B2C ========== */}
           <TabsContent value="reservations-b2c">
-            <ReservationTable items={b2cReservations} source="b2c" />
+            <ReservationTable items={b2cReservations} source="b2c" statusFilter={statusFilterB2c} onStatusFilterChange={setStatusFilterB2c} />
           </TabsContent>
 
           {/* ========== RESERVATIONS B2B ========== */}
           <TabsContent value="reservations-b2b">
-            <ReservationTable items={b2bReservations} source="b2b" />
+            <ReservationTable items={b2bReservations} source="b2b" statusFilter={statusFilterB2b} onStatusFilterChange={setStatusFilterB2b} />
           </TabsContent>
 
           {/* ========== PRO LEADS TAB ========== */}
