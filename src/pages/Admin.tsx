@@ -163,10 +163,10 @@ const Admin = () => {
 
   const exportReservationsCsv = (source: "b2c" | "b2b") => {
     const filtered = reservations.filter((r) => r.source === source);
-    const headers = ["Date", "Référence", "Nom", "Email", "Téléphone", "Formule", "Pack", "Véhicule", "Début", "Fin", "Jours", "Options", "Km estimés", "Total CHF"];
+    const headers = ["Date", "Référence", "Nom", "Email", "Téléphone", "Formule", "Pack", "Véhicule", "Début", "Heure début", "Fin", "Heure fin", "Jours", "Options", "Km estimés", "Total CHF"];
     const rows = filtered.map((r) => [
       new Date(r.created_at).toLocaleString("fr-CH"), r.reference, r.contact_name, r.contact_email, r.contact_phone,
-      r.plan, r.pack || "", r.vehicle_name, r.start_date || "Pack", r.end_date || "Pack",
+      r.plan, r.pack || "", r.vehicle_name, r.start_date || "Pack", r.start_time || "", r.end_date || "Pack", r.end_time || "",
       String(r.days), r.options || "Aucune", String(r.est_km), String(r.total_chf),
     ]);
     downloadCsv(headers, rows, `reservations-${source}`);
