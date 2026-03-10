@@ -14,9 +14,7 @@
   },
   "hero": {
     "title1": "Book and unlock your utility van in seconds.",
-    "subtitleLine1": "🚐 Available 24/7",
-    "subtitleLine2": "📱 Book in 3 clicks",
-    "subtitleLine3": "💰 From 129 CHF / day",
+    "subtitle": "Connected van rental on the Riviera Vaudoise.",
     "cta": "Book a van",
     "ctaRates": "View rates",
     "reassurance1": "Autonomous access 24/7",
