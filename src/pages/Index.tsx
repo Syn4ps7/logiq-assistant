@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import heroFleet from "@/assets/hero-fleet.png";
-import aboutHub from "@/assets/about-hub.jpg";
+import AboutSection from "@/components/about/AboutSection";
 
 const Index = () => {
   const { t } = useTranslation();
