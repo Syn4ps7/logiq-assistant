@@ -75,14 +75,16 @@ const Index = () => {
             >
               {t("hero.title1")}
             </motion.h1>
-            <motion.p
+            <motion.ul
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-              className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl whitespace-pre-line"
+              className="flex flex-col gap-1.5 text-base sm:text-lg lg:text-xl text-foreground mb-8 max-w-xl font-semibold"
             >
-              {t("hero.subtitle")}
-            </motion.p>
+              <li>{t("hero.subtitleLine1")}</li>
+              <li>{t("hero.subtitleLine2")}</li>
+              <li>{t("hero.subtitleLine3")}</li>
+            </motion.ul>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

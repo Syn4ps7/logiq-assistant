@@ -14,7 +14,9 @@
   },
   "hero": {
     "title1": "Book and unlock your utility van in seconds.",
-    "subtitle": "Autonomous van rental.\nOnline booking, digital access and pickup at the LogIQ Hub — available 24/7.",
+    "subtitleLine1": "🚐 Available 24/7",
+    "subtitleLine2": "📱 Book in 3 clicks",
+    "subtitleLine3": "💰 From 129 CHF / day",
     "cta": "Book a van",
     "ctaRates": "View rates",
     "reassurance1": "Autonomous access 24/7",

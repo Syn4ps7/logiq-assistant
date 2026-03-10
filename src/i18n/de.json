@@ -14,7 +14,9 @@
   },
   "hero": {
     "title1": "Buchen und entsperren Sie Ihren Transporter in Sekunden.",
-    "subtitle": "Autonome Transportervermietung.\nOnline-Buchung, digitaler Zugang und Abholung am LogIQ Hub — rund um die Uhr verfügbar.",
+    "subtitleLine1": "🚐 Rund um die Uhr verfügbar",
+    "subtitleLine2": "📱 Buchung in 3 Klicks",
+    "subtitleLine3": "💰 Ab 129 CHF / Tag",
     "cta": "Transporter buchen",
     "ctaRates": "Tarife ansehen",
     "reassurance1": "Autonomer Zugang 24/7",
