@@ -6,8 +6,8 @@ export function Footer() {
 
   return (
     <footer className="bg-card border-t border-border" role="contentinfo">
-      <div className="container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="container py-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <h3 className="text-lg font-extrabold mb-3">
               <span className="text-primary">LogIQ</span>{" "}
