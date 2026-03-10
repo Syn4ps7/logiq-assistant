@@ -71,9 +71,11 @@ const Index = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-[1.1] mb-5"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-[1.15] lg:leading-[1.25] mb-6"
             >
               {t("hero.title1")}
+              <br className="hidden md:block" />
+              {t("hero.title2")}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 25 }}
