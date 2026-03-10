@@ -13,11 +13,23 @@
     "openChat": "Chat öffnen"
   },
   "hero": {
-    "title1": "Buchen und entsperren Sie Ihren Transporter in Sekunden",
-    "subtitle": "Intelligente Vermietung.\nRund um die Uhr an der Waadtländer Riviera.",
-    "cta": "Jetzt buchen",
+    "title1": "Buchen und entsperren Sie Ihren Transporter in Sekunden.",
+    "subtitle": "Autonome Transportervermietung.\nOnline-Buchung, digitaler Zugang und Abholung am LogIQ Hub — rund um die Uhr verfügbar.",
+    "cta": "Transporter buchen",
     "ctaRates": "Tarife ansehen",
-    "reassuranceLine": "24/7 Pannenhilfe • Versicherung inklusive • Kontaktlose Rückgabe"
+    "reassurance1": "Autonomer Zugang 24/7",
+    "reassurance2": "Versicherung inklusive",
+    "reassurance3": "Schnelle Abholung am LogIQ Hub"
+  },
+  "howItWorks": {
+    "title": "Einen Transporter mieten war noch nie so einfach",
+    "step1Title": "Online buchen",
+    "step1Desc": "Wählen Sie Ihren Transporter und Ihren Zeitraum in Sekunden.",
+    "step2Title": "Zugang zum Fahrzeug",
+    "step2Desc": "Gehen Sie zum LogIQ Hub und entsperren Sie Ihren Transporter mit dem Smartphone.",
+    "step3Title": "Losfahren",
+    "step3Desc": "Nutzen Sie das Fahrzeug und geben Sie es einfach am Hub zurück.",
+    "cta": "Jetzt buchen"
   },
   "why": {
     "digital": "Digitaler Zugang",
@@ -27,7 +39,25 @@
     "fast": "Buchung in 30 Sekunden",
     "fastDesc": "Vereinfachter Prozess, sofortige Bestätigung."
   },
-  "reassurance": {
+  "whyLogiq": {
+    "title": "Warum LogIQ Transport wählen",
+    "items": [
+      "100 % Online-Buchung",
+      "Digitaler Fahrzeugzugang",
+      "Flotte in sicheren Hubs zentralisiert",
+      "Transparente Preisgestaltung",
+      "Service rund um die Uhr verfügbar"
+    ]
+  },
+  "trust": {
+    "title": "Einfache und sichere Vermietung",
+    "items": [
+      "Haftpflichtversicherung inklusive",
+      "Digitaler Zustandsbericht",
+      "24/7 Pannenhilfe",
+      "Schnelle Rückgabe am Hub"
+    ]
+  },
     "insurance": "Vollversicherung",
     "insuranceDesc": "Haftpflicht und Kasko inklusive. Reduzierter Selbstbehalt mit der Sérénité-Option verfügbar.",
     "booking": "Schnelle Buchung",
@@ -51,18 +81,23 @@
     "p3": "LogIQ Transport entstand aus dieser Beobachtung.",
     "p4": "Die Idee war einfach: die Nutzfahrzeugvermietung neu denken – schneller, reibungsloser und zuverlässiger.",
     "p5": "Heute bieten wir ein modernes Erlebnis, bei dem Buchung, Fahrzeugzugang und Mietverwaltung maximal vereinfacht sind. Dank digitalisierter Prozesse können unsere Kunden einen Transporter online buchen und in wenigen Minuten auf ihr Fahrzeug zugreifen – ohne die Einschränkungen einer traditionellen Agentur.",
-    "solutionTitle": "Eine Lösung für echte Bedürfnisse",
+    "solutionTitle": "Eine Lösung für reale Situationen",
+    "solutionIntro": "Umzug, Baustelle, Materialtransport oder sperriger Einkauf.",
+    "solutionNeed": "Wenn Sie einen Transporter brauchen, wollen Sie einfach:",
+    "solutionList": ["Ein verfügbares Fahrzeug", "Schnellen Zugang", "Klare Preise", "Zuverlässigen Service"],
+    "solutionConclusion": "LogIQ Transport wurde genau für diese Bedürfnisse entwickelt.",
     "solution1": "Situationen, die einen Transporter erfordern, sind oft unvorhergesehen.",
     "solution2": "Ein Umzug, eine Baustelle, ein Materialtransport oder einfach der Kauf eines sperrigen Möbelstücks.",
     "solution3": "In diesen Momenten erwarten Kunden keinen komplizierten Service. Sie wollen einfach ein Fahrzeug, das verfügbar, zuverlässig und einfach zu bedienen ist.",
     "solution4": "LogIQ Transport wurde mit dieser Logik entwickelt.",
     "solution5": "Unser Ansatz ist es, jeden Schritt zu vereinfachen:",
-    "solutionList": ["Schnelle Buchung", "Einfacher Fahrzeugzugang", "Transparente Preisgestaltung", "Sichere Prozesse"],
     "solution6": "Das Ergebnis ist ein reibungsloseres und angenehmeres Erlebnis für unsere Kunden.",
-    "hubTitle": "Das LogIQ Hub-Konzept",
+    "hubTitle": "Warum der LogIQ Hub das Mieterlebnis verändert",
+    "hubIntro": "Die LogIQ-Transporter sind nicht über verschiedene Agenturen verstreut.\nSie sind in sicheren Hubs zentralisiert, die Folgendes bieten:",
+    "hubList": ["Bessere Fahrzeugverfügbarkeit", "Schneller autonomer Zugang", "Zuverlässigere Flottenverwaltung", "Ein einfaches Erlebnis für die Nutzer"],
+    "hubConclusion": "Der LogIQ Hub wird zum operativen Zentrum des Services.",
     "hub1": "Im Zentrum von LogIQ Transport steht der LogIQ Hub. Anstatt Fahrzeuge über verschiedene Standorte zu verteilen oder von einer physischen Agentur abhängig zu sein, zentralisiert LogIQ seine Flotte an dedizierten, sicheren Standorten.",
     "hub2": "Diese Hubs gewährleisten:",
-    "hubList": ["Bessere Fahrzeugverfügbarkeit", "Optimierte Flottenorganisation", "Standardisierte Kontroll- und Wartungsverfahren", "Ein einfacheres Erlebnis für die Nutzer"],
     "hub3": "Der Hub wird so zum operativen Zentrum des Services.",
     "hub4": "Das ist es, was LogIQ Transport ermöglicht, eine zuverlässigere, organisiertere und professionellere Nutzfahrzeugvermietung anzubieten.",
     "philoTitle": "Unsere Philosophie",
@@ -79,9 +114,9 @@
     "mission4": "Denn wenn ein Transporter gebraucht wird, sollte nur eines zählen: einsteigen und losfahren."
   },
   "cta": {
-    "title": "Bereit loszufahren?",
-    "subtitle": "Buchen Sie Ihren Transporter in wenigen Klicks. Abholung rund um die Uhr.",
-    "book": "Jetzt buchen",
+    "title": "Bereit, Ihren Transporter zu buchen?",
+    "subtitle": "Zugang zu einem Fahrzeug in Sekunden dank dem LogIQ Hub.",
+    "book": "Transporter buchen",
     "contact": "Kontakt aufnehmen"
   },
   "vehicleCard": {
@@ -108,8 +143,11 @@
     "weekend": "Wochenende",
     "weekendPrice": "149 CHF / Tag (inkl. MwSt.)",
     "normalIncludes": ["Haftpflichtversicherung inklusive", "100 km / Tag inklusive"],
-    "packsTitle": "Wochenend+ Pakete",
-    "packsSubtitle": "Unsere All-inclusive Wochenendpakete.",
+    "packsTitle": "Unsere beliebtesten Pakete",
+    "packsSubtitle": "Wählen Sie das Angebot, das zu Ihrem Bedarf passt.",
+    "packsGuide1": "Einfache Nutzung → Tagestarif",
+    "packsGuide2": "Umzug → 48h-Paket",
+    "packsGuide3": "Komplettlösung → Premium-Paket",
     "reassuranceLine": "In 3 Klicks buchen — Transporter rund um die Uhr verfügbar",
     "standardName": "Wochenende Standard (Hub)",
     "standardPrice": "298 CHF (inkl. MwSt.)",
