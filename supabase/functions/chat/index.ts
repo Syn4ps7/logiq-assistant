@@ -49,7 +49,7 @@ Tu parles à un particulier. Concentre-toi sur les tarifs standard TTC et les pa
 - Km supplémentaires : 0.70 CHF/km, calculé automatiquement au retour
 
 ### Options (par location)
-- **Sérénité** : 49 CHF — Franchise réduite de 2'000 CHF à 500 CHF (recommandé)
+- **Sérénité** : 59 CHF — Franchise réduite de 2'000 CHF à 500 CHF (recommandé)
 - **Diable de transport** : 10 CHF — Chariot de transport inclus
 - **Sangles & Couverture** : 5 CHF — Sangles d'arrimage et couvertures de protection
 
