@@ -235,18 +235,6 @@ const Rates = () => {
           </div>
         </section>
 
-        {/* ── Section 5 : Véhicules disponibles ── */}
-        <section className="mb-12" aria-label="Véhicules disponibles">
-          <h2 className="text-xl font-semibold mb-4">{t("rates.availableVehicles")}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {vehicles.map((v) => (
-              <div key={v.id} className="p-4 bg-card rounded-lg border transition-shadow hover:shadow-lg">
-                <h3 className="font-medium mb-1">{v.name}</h3>
-                <p className="text-sm text-muted-foreground">{v.specs.volume} · {v.specs.payload} · {v.specs.transmission}</p>
-              </div>
-            ))}
-          </div>
-        </section>
 
         {/* ── Section 6 : Inclus ── */}
         <section className="mb-12" aria-label="Inclus dans le tarif">
