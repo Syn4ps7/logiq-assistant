@@ -78,9 +78,6 @@ export function Header() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link to="/rates">
-            <Button variant="outline" size="sm">{t("nav.viewRates")}</Button>
-          </Link>
           <Link to="/reservation">
             <Button variant="default" size="sm">{t("nav.book")}</Button>
           </Link>
