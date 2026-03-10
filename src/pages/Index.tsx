@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { VehicleCard } from "@/components/VehicleCard";
-import { vehicles } from "@/data/vehicles";
 import { Key, MapPin, Zap, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, useScroll, useTransform } from "framer-motion";
