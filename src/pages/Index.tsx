@@ -97,9 +97,9 @@ const Index = () => {
               ))}
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.45, ease: "easeOut" }}
+              transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}
               className="flex flex-wrap gap-3 mb-6"
             >
               <Link to="/reservation">
@@ -115,7 +115,7 @@ const Index = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
               className="flex flex-col sm:flex-row gap-2 sm:gap-4"
             >
               {reassuranceItems.map((item) => (
