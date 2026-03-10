@@ -41,12 +41,6 @@
     "viewAll": "View all",
     "viewAllMobile": "View all vehicles"
   },
-  "stats": {
-    "vehicles": "Vehicles available",
-    "satisfaction": "Client satisfaction",
-    "availability": "Availability",
-    "booking": "Express booking"
-  },
   "about": {
     "title": "About LogIQ Transport",
     "hook": "Utility vehicle rental has barely evolved in decades.",

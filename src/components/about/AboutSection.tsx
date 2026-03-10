@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Zap, MapPin, MousePointerClick, Truck, CreditCard, ShieldCheck, Warehouse, CheckCircle2, Target, Lightbulb, ArrowRight } from "lucide-react";
 import aboutHub from "@/assets/about-hub.jpg";
-import CounterStats from "./CounterStats";
 
 const solutionSteps = [
   { icon: MousePointerClick, colorClass: "bg-primary/15 text-primary" },
@@ -73,9 +72,6 @@ const AboutSection = () => {
             />
           </motion.div>
         </div>
-
-        {/* Animated stats */}
-        <CounterStats />
 
         {/* Solution — interactive process steps */}
         <motion.div

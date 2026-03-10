@@ -41,12 +41,6 @@
     "viewAll": "Voir tout",
     "viewAllMobile": "Voir tous les véhicules"
   },
-  "stats": {
-    "vehicles": "Véhicules disponibles",
-    "satisfaction": "Satisfaction client",
-    "availability": "Disponibilité",
-    "booking": "Réservation express"
-  },
   "about": {
     "title": "À propos de LogIQ Transport",
     "hook": "La mobilité utilitaire n'a presque pas évolué depuis des décennies.",

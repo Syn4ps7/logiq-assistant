@@ -41,12 +41,6 @@
     "viewAll": "Alle ansehen",
     "viewAllMobile": "Alle Fahrzeuge ansehen"
   },
-  "stats": {
-    "vehicles": "Verfügbare Fahrzeuge",
-    "satisfaction": "Kundenzufriedenheit",
-    "availability": "Verfügbarkeit",
-    "booking": "Schnellbuchung"
-  },
   "about": {
     "title": "Über LogIQ Transport",
     "hook": "Die Nutzfahrzeugvermietung hat sich seit Jahrzehnten kaum weiterentwickelt.",
