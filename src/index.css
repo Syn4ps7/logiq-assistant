@@ -72,12 +72,12 @@
   }
 }
 
-  @keyframes swipe-hint {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(12px); }
-  }
+@keyframes swipe-hint {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(12px); }
+}
 
-
+@layer utilities {
   .bg-surface {
     background-color: hsl(var(--surface));
   }
