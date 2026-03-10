@@ -39,7 +39,25 @@
     "fast": "Buchung in 30 Sekunden",
     "fastDesc": "Vereinfachter Prozess, sofortige Bestätigung."
   },
-  "reassurance": {
+  "whyLogiq": {
+    "title": "Warum LogIQ Transport wählen",
+    "items": [
+      "100 % Online-Buchung",
+      "Digitaler Fahrzeugzugang",
+      "Flotte in sicheren Hubs zentralisiert",
+      "Transparente Preisgestaltung",
+      "Service rund um die Uhr verfügbar"
+    ]
+  },
+  "trust": {
+    "title": "Einfache und sichere Vermietung",
+    "items": [
+      "Haftpflichtversicherung inklusive",
+      "Digitaler Zustandsbericht",
+      "24/7 Pannenhilfe",
+      "Schnelle Rückgabe am Hub"
+    ]
+  },
     "insurance": "Vollversicherung",
     "insuranceDesc": "Haftpflicht und Kasko inklusive. Reduzierter Selbstbehalt mit der Sérénité-Option verfügbar.",
     "booking": "Schnelle Buchung",

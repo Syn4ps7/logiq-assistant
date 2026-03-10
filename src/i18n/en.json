@@ -39,7 +39,25 @@
     "fast": "Book in 30 seconds",
     "fastDesc": "Streamlined process, instant confirmation."
   },
-  "reassurance": {
+  "whyLogiq": {
+    "title": "Why choose LogIQ Transport",
+    "items": [
+      "100% online booking",
+      "Digital vehicle access",
+      "Fleet centralised in secure hubs",
+      "Transparent pricing",
+      "Service available 24/7"
+    ]
+  },
+  "trust": {
+    "title": "Simple and secure rental",
+    "items": [
+      "Liability insurance included",
+      "Digital condition report",
+      "24/7 assistance",
+      "Quick return at the hub"
+    ]
+  },
     "insurance": "Full insurance",
     "insuranceDesc": "Liability and comprehensive included. Reduced deductible available with the Serenity option.",
     "booking": "Quick booking",
