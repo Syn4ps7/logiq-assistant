@@ -59,34 +59,34 @@ const Index = () => {
         <motion.div style={{ opacity: heroOpacity }} className="relative container py-20 lg:py-32">
           <div className="max-w-3xl">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-foreground/10 border border-foreground/30 text-foreground text-xs font-semibold mb-6"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               Riviera Vaudoise · 24/7
             </motion.div>
             <motion.h1
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-[1.15] lg:leading-[1.25] mb-6"
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-[1.15] lg:leading-[1.25] mb-2"
             >
               {t("hero.title1")}
             </motion.h1>
             <motion.p
-              initial={{ opacity: 0, y: 25 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-              className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-4 leading-relaxed max-w-xl"
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+              className="text-base sm:text-lg lg:text-xl text-muted-foreground italic mb-5 max-w-xl"
             >
               {t("hero.subtitle")}
             </motion.p>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
               className="flex flex-wrap gap-x-5 gap-y-1.5 mb-8"
             >
               {[t("hero.highlight1"), t("hero.highlight2"), t("hero.highlight3")].map((item) => (
