@@ -1,6 +1,8 @@
 {
   "nav": {
+    "home": "Home",
     "vehicles": "Vehicles",
+    "howItWorks": "How it works",
     "rates": "Rates",
     "pro": "For Pros",
     "cgl": "T&Cs",

@@ -11,12 +11,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const navLinks = [
+  { labelKey: "nav.home", href: "/" },
   { labelKey: "nav.vehicles", href: "/vehicles" },
+  { labelKey: "nav.howItWorks", href: "/#comment-ca-marche" },
   { labelKey: "nav.rates", href: "/rates" },
   { labelKey: "nav.pro", href: "/pro" },
-  { labelKey: "nav.cgl", href: "/cgl" },
   { labelKey: "nav.faq", href: "/faq" },
-  { labelKey: "nav.contact", href: "/contact" },
 ];
 
 const LANGS = [
@@ -52,7 +52,7 @@ export function Header() {
               key={link.href}
               to={link.href}
               className={`text-sm font-medium transition-colors hover:text-primary ${
-                location.pathname === link.href ? "text-primary" : "text-muted-foreground"
+                (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href) ? "text-primary" : "text-muted-foreground"
               }`}
             >
               {t(link.labelKey)}
@@ -138,7 +138,7 @@ export function Header() {
                 to={link.href}
                 onClick={() => setIsOpen(false)}
                 className={`text-sm font-medium py-2 px-3 rounded-md transition-colors ${
-                  location.pathname === link.href
+                  (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href)
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-secondary"
                 }`}

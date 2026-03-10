@@ -117,7 +117,7 @@ const Index = () => {
       </section>
 
       {/* Comment ça marche */}
-      <section className="py-16 lg:py-20 bg-card border-t border-border" aria-label="Comment ça marche">
+      <section id="comment-ca-marche" className="py-16 lg:py-20 bg-card border-t border-border scroll-mt-20" aria-label="Comment ça marche">
         <div className="container max-w-4xl">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}

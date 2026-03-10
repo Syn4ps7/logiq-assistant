@@ -1,6 +1,8 @@
 {
   "nav": {
+    "home": "Startseite",
     "vehicles": "Fahrzeuge",
+    "howItWorks": "So funktioniert's",
     "rates": "Tarife",
     "pro": "Für Profis",
     "cgl": "AGB",
