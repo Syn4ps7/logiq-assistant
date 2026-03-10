@@ -138,7 +138,7 @@ export function Header() {
                 to={link.href}
                 onClick={() => setIsOpen(false)}
                 className={`text-sm font-medium py-2 px-3 rounded-md transition-colors ${
-                  location.pathname === link.href
+                  (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href)
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-secondary"
                 }`}
