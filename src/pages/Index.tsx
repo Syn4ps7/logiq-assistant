@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { VehicleCard } from "@/components/VehicleCard";
-import { vehicles } from "@/data/vehicles";
 import { Key, MapPin, Zap, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -119,35 +117,86 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Vehicles preview */}
-      <section className="py-16" aria-label="Nos véhicules">
-        <div className="container">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-bold mb-2">{t("fleet.title")}</h2>
-              <p className="text-muted-foreground">{t("fleet.subtitle")}</p>
-            </div>
-            <Link to="/vehicles" className="hidden sm:flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-              {t("fleet.viewAll")} <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {vehicles.map((v, i) => (
-              <motion.div
-                key={v.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: i * 0.15, ease: "easeOut" }}
-              >
-                <VehicleCard vehicle={v} />
-              </motion.div>
-            ))}
-          </div>
-          <div className="mt-6 text-center sm:hidden">
-            <Link to="/vehicles">
-              <Button variant="outline">{t("fleet.viewAllMobile")}</Button>
-            </Link>
+      {/* À propos */}
+      <section className="py-16 lg:py-24" aria-label="À propos de LogIQ Transport">
+        <div className="container max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">{t("about.title")}</h2>
+            <p className="text-lg font-semibold text-primary mb-6">{t("about.hook")}</p>
+          </motion.div>
+
+          <div className="space-y-6 text-muted-foreground leading-relaxed">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
+              <p>{t("about.p1")}</p>
+              <p className="mt-3">{t("about.p2")}</p>
+              <p className="mt-3 font-semibold text-foreground">{t("about.p3")}</p>
+              <p className="mt-3">{t("about.p4")}</p>
+              <p className="mt-3">{t("about.p5")}</p>
+            </motion.div>
+
+            {/* Solution */}
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.15 }} className="pt-6 border-t border-border">
+              <h3 className="text-xl font-bold text-foreground mb-3">{t("about.solutionTitle")}</h3>
+              <p>{t("about.solution1")}</p>
+              <p className="mt-3">{t("about.solution2")}</p>
+              <p className="mt-3">{t("about.solution3")}</p>
+              <p className="mt-3 font-semibold text-foreground">{t("about.solution4")}</p>
+              <p className="mt-3">{t("about.solution5")}</p>
+              <ul className="mt-3 space-y-2">
+                {(t("about.solutionList", { returnObjects: true }) as string[]).map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <Zap className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3">{t("about.solution6")}</p>
+            </motion.div>
+
+            {/* Hubs */}
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className="pt-6 border-t border-border">
+              <h3 className="text-xl font-bold text-foreground mb-3">{t("about.hubTitle")}</h3>
+              <p>{t("about.hub1")}</p>
+              <p className="mt-3">{t("about.hub2")}</p>
+              <ul className="mt-3 space-y-2">
+                {(t("about.hubList", { returnObjects: true }) as string[]).map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3">{t("about.hub3")}</p>
+              <p className="mt-3 font-semibold text-foreground">{t("about.hub4")}</p>
+            </motion.div>
+
+            {/* Philosophie */}
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.25 }} className="pt-6 border-t border-border">
+              <h3 className="text-xl font-bold text-foreground mb-3">{t("about.philoTitle")}</h3>
+              <p className="mb-4">{t("about.philoIntro")}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {(t("about.philoItems", { returnObjects: true }) as { title: string; desc: string }[]).map((item, i) => (
+                  <div key={i} className="p-5 rounded-xl border border-border bg-card">
+                    <h4 className="font-bold text-foreground mb-1">{item.title}</h4>
+                    <p className="text-sm">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Mission */}
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }} className="pt-6 border-t border-border">
+              <h3 className="text-xl font-bold text-foreground mb-3">{t("about.missionTitle")}</h3>
+              <p>{t("about.mission1")}</p>
+              <p className="mt-3 text-lg font-semibold text-foreground">{t("about.mission2")}</p>
+              <p className="mt-3">{t("about.mission3")}</p>
+              <p className="mt-3 italic text-foreground">{t("about.mission4")}</p>
+            </motion.div>
           </div>
         </div>
       </section>
