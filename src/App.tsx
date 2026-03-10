@@ -19,6 +19,7 @@ import CGL from "./pages/CGL";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import Privacy from "./pages/Privacy";
+import Legal from "./pages/Legal";
 import Pro from "./pages/Pro";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
@@ -52,6 +53,7 @@ const App = () => {
                 <Route path="/pro" element={<Pro />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/privacy" element={<Privacy />} />
+                <Route path="/legal" element={<Legal />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
