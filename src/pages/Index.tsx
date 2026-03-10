@@ -79,11 +79,19 @@ const Index = () => {
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-              className="flex flex-col gap-1.5 text-base sm:text-lg lg:text-xl text-foreground mb-8 max-w-xl font-semibold"
+              className="flex flex-col gap-2 mb-8 max-w-xl"
             >
-              <li>{t("hero.subtitleLine1")}</li>
-              <li>{t("hero.subtitleLine2")}</li>
-              <li>{t("hero.subtitleLine3")}</li>
+              {[t("hero.subtitleLine1"), t("hero.subtitleLine2"), t("hero.subtitleLine3")].map((line, i) => (
+                <motion.li
+                  key={i}
+                  initial={{ opacity: 0, x: -15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: 0.35 + i * 0.1, ease: "easeOut" }}
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-foreground/10 backdrop-blur-sm border border-foreground/15 text-sm sm:text-base text-foreground font-medium"
+                >
+                  {line}
+                </motion.li>
+              ))}
             </motion.ul>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
