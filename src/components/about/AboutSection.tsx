@@ -69,6 +69,8 @@ const AboutSection = () => {
               alt="Hub LogIQ Transport — flotte utilitaires organisée"
               className="w-full h-auto object-cover"
               loading="lazy"
+              decoding="async"
+              sizes="(max-width: 1024px) 100vw, 50vw"
             />
           </motion.div>
         </div>

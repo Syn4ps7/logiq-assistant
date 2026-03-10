@@ -34,6 +34,9 @@ const Index = () => {
           alt="LogIQ Transport — flotte utilitaires premium"
           style={{ y: imgY, scale: imgScale }}
           className="absolute inset-0 w-full h-full object-cover"
+          fetchPriority="high"
+          decoding="async"
+          sizes="100vw"
         />
         {/* Light overlay for readability */}
         <div className="absolute inset-0 bg-background/40" />
