@@ -82,7 +82,7 @@ const Rates = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {/* Standard */}
-            <div className="relative p-6 bg-card rounded-lg border-2 border-border transition-shadow hover:shadow-lg">
+            <div className="relative p-6 bg-card rounded-lg border-2 border-border transition-shadow hover:shadow-lg flex flex-col">
               <h3 className="text-lg font-bold mb-1">{t("rates.standardName")}</h3>
               <p className="text-sm text-muted-foreground italic mb-3">{t("rates.standardHook")}</p>
               <p className="text-3xl font-bold text-primary mb-4">{t("rates.standardPrice")}</p>
