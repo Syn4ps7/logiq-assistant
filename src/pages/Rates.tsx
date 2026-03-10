@@ -121,7 +121,7 @@ const Rates = () => {
             </div>
 
             {/* Premium Livré */}
-            <div className="relative p-6 bg-card rounded-lg border-2 border-primary/40 transition-shadow hover:shadow-lg">
+            <div className="relative p-6 bg-card rounded-lg border-2 border-primary/40 transition-shadow hover:shadow-lg flex flex-col">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1">
                 <Crown className="h-3 w-3" /> {t("rates.premiumBadge")}
               </div>
