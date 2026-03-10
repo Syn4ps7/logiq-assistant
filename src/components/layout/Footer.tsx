@@ -6,8 +6,8 @@ export function Footer() {
 
   return (
     <footer className="bg-card border-t border-border" role="contentinfo">
-      <div className="container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="container py-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <h3 className="text-lg font-extrabold mb-3">
               <span className="text-primary">LogIQ</span>{" "}
@@ -41,7 +41,7 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="border-t border-border mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-border mt-4 pt-4 flex flex-col md:flex-row justify-between items-center gap-2">
           <p className="text-xs text-muted-foreground">{t("footer.copyright")}</p>
           <p className="text-xs text-muted-foreground">{t("footer.location")}</p>
         </div>
