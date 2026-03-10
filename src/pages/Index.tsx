@@ -57,7 +57,7 @@ const Index = () => {
         <div className="absolute inset-0 gradient-hero" />
 
         <motion.div style={{ opacity: heroOpacity }} className="relative container py-20 lg:py-32">
-          <div className="max-w-2xl">
+          <div className="max-w-3xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
