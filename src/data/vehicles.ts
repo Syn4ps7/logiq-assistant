@@ -73,7 +73,7 @@ export const vehicleOptions: VehicleOption[] = [
   {
     id: "serenite",
     name: "Sérénité",
-    price: 59,
+    price: 49,
     priceType: "flat",
     description: "Franchise réduite de 2'000 CHF à 500 CHF",
   },
