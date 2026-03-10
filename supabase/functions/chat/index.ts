@@ -49,7 +49,7 @@ Tu parles à un particulier. Concentre-toi sur les tarifs standard TTC et les pa
 - Km supplémentaires : 0.70 CHF/km, calculé automatiquement au retour
 
 ### Options (par location)
-- **Sérénité** : 49 CHF — Franchise réduite de 2'000 CHF à 500 CHF (recommandé)
+- **Sérénité** : 59 CHF — Franchise réduite de 2'000 CHF à 500 CHF (recommandé)
 - **Diable de transport** : 10 CHF — Chariot de transport inclus
 - **Sangles & Couverture** : 5 CHF — Sangles d'arrimage et couvertures de protection
 
@@ -86,7 +86,7 @@ Tu parles à un professionnel / une entreprise. Concentre-toi sur les tarifs Pro
 - CGL B2B détaillées : /cgl#article-14
 
 ### Options Pro (par location)
-- **Sérénité** : 49 CHF HT — Franchise réduite de 2'000 CHF à 500 CHF
+- **Sérénité** : 59 CHF HT — Franchise réduite de 2'000 CHF à 500 CHF
 - **Diable de transport** : 10 CHF HT
 - **Sangles & Couverture** : 5 CHF HT
 
