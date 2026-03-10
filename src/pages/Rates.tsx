@@ -100,7 +100,7 @@ const Rates = () => {
             </div>
 
             {/* Confort — mis en avant */}
-            <div className="relative p-6 bg-card rounded-lg border-2 border-accent shadow-md transition-shadow hover:shadow-lg">
+            <div className="relative p-6 bg-card rounded-lg border-2 border-accent shadow-md transition-shadow hover:shadow-lg flex flex-col">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground px-3 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1">
                 <Star className="h-3 w-3" /> {t("rates.confortBadge")}
               </div>
