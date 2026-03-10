@@ -3,11 +3,7 @@
 const Legal = () => {
   return (
     <main className="py-12">
-      <Helmet>
-        <title>Mentions légales — LogIQ Transport</title>
-        <meta name="description" content="Mentions légales de LogIQ Transport Sàrl, entreprise de location d'utilitaires sur la Riviera Vaudoise, Suisse." />
-      </Helmet>
-
+      <title>Mentions légales — LogIQ Transport</title>
       <div className="container max-w-3xl prose prose-sm">
         <h1 className="text-3xl font-bold mb-2">Mentions légales</h1>
         <p className="text-muted-foreground mb-8">Dernière mise à jour : 01/01/2026</p>
