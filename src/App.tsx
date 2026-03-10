@@ -59,7 +59,7 @@ function AppContent() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
-        <Footer />
+        {!isAdmin && <Footer />}
       </div>
       {!isAdmin && <ChatbotWidget />}
       <CookieBanner />
