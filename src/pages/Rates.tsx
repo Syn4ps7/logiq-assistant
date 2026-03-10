@@ -150,7 +150,10 @@ const Rates = () => {
           {/* Tableau comparatif */}
           <div className="bg-card rounded-lg border overflow-hidden">
             <h3 className="text-lg font-semibold p-4 pb-2">{t("rates.compareTitle")}</h3>
-            <p className="text-xs text-muted-foreground px-4 pb-2 md:hidden">← Glissez pour voir tout le tableau →</p>
+            <div className="flex items-center gap-2 px-4 pb-2 md:hidden text-xs text-muted-foreground animate-pulse">
+              <span className="inline-block animate-[swipe-hint_1.5s_ease-in-out_infinite]">👆</span>
+              Glissez pour voir tout le tableau
+            </div>
             <div className="overflow-x-auto">
             <Table>
               <TableHeader>
