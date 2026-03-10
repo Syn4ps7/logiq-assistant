@@ -140,6 +140,22 @@ const Index = () => {
               <p className="mt-3">{t("about.p5")}</p>
             </motion.div>
 
+            {/* Image hub */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.97 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="rounded-2xl overflow-hidden border border-border shadow-lg"
+            >
+              <img
+                src={aboutHub}
+                alt="Hub LogIQ Transport — flotte utilitaires organisée"
+                className="w-full h-auto object-cover"
+                loading="lazy"
+              />
+            </motion.div>
+
             {/* Solution */}
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.15 }} className="pt-6 border-t border-border">
               <h3 className="text-xl font-bold text-foreground mb-3">{t("about.solutionTitle")}</h3>
