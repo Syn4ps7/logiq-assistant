@@ -13,11 +13,23 @@
     "openChat": "Chat öffnen"
   },
   "hero": {
-    "title1": "Buchen und entsperren Sie Ihren Transporter in Sekunden",
-    "subtitle": "Intelligente Vermietung.\nRund um die Uhr an der Waadtländer Riviera.",
-    "cta": "Jetzt buchen",
+    "title1": "Buchen und entsperren Sie Ihren Transporter in Sekunden.",
+    "subtitle": "Autonome Transportervermietung.\nOnline-Buchung, digitaler Zugang und Abholung am LogIQ Hub — rund um die Uhr verfügbar.",
+    "cta": "Transporter buchen",
     "ctaRates": "Tarife ansehen",
-    "reassuranceLine": "24/7 Pannenhilfe • Versicherung inklusive • Kontaktlose Rückgabe"
+    "reassurance1": "Autonomer Zugang 24/7",
+    "reassurance2": "Versicherung inklusive",
+    "reassurance3": "Schnelle Abholung am LogIQ Hub"
+  },
+  "howItWorks": {
+    "title": "Einen Transporter mieten war noch nie so einfach",
+    "step1Title": "Online buchen",
+    "step1Desc": "Wählen Sie Ihren Transporter und Ihren Zeitraum in Sekunden.",
+    "step2Title": "Zugang zum Fahrzeug",
+    "step2Desc": "Gehen Sie zum LogIQ Hub und entsperren Sie Ihren Transporter mit dem Smartphone.",
+    "step3Title": "Losfahren",
+    "step3Desc": "Nutzen Sie das Fahrzeug und geben Sie es einfach am Hub zurück.",
+    "cta": "Jetzt buchen"
   },
   "why": {
     "digital": "Digitaler Zugang",

@@ -13,11 +13,23 @@
     "openChat": "Open chat"
   },
   "hero": {
-    "title1": "Book and unlock your utility van in seconds",
-    "subtitle": "Smart rental.\nAvailable 24/7 on the Swiss Riviera.",
-    "cta": "Book now",
+    "title1": "Book and unlock your utility van in seconds.",
+    "subtitle": "Autonomous van rental.\nOnline booking, digital access and pickup at the LogIQ Hub — available 24/7.",
+    "cta": "Book a van",
     "ctaRates": "View rates",
-    "reassuranceLine": "24/7 assistance • Insurance included • Contactless return"
+    "reassurance1": "Autonomous access 24/7",
+    "reassurance2": "Insurance included",
+    "reassurance3": "Quick pickup at LogIQ Hub"
+  },
+  "howItWorks": {
+    "title": "Renting a van has never been this easy",
+    "step1Title": "Book online",
+    "step1Desc": "Choose your van and your time slot in seconds.",
+    "step2Title": "Access the vehicle",
+    "step2Desc": "Head to the LogIQ Hub and unlock your van with your smartphone.",
+    "step3Title": "Drive",
+    "step3Desc": "Use the vehicle and simply return it to the hub.",
+    "cta": "Book now"
   },
   "why": {
     "digital": "Digital access",
