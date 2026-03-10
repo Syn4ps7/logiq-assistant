@@ -41,7 +41,7 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="border-t border-border mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-border mt-4 pt-4 flex flex-col md:flex-row justify-between items-center gap-2">
           <p className="text-xs text-muted-foreground">{t("footer.copyright")}</p>
           <p className="text-xs text-muted-foreground">{t("footer.location")}</p>
         </div>
