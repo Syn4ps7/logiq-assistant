@@ -11,12 +11,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const navLinks = [
+  { labelKey: "nav.home", href: "/" },
   { labelKey: "nav.vehicles", href: "/vehicles" },
+  { labelKey: "nav.howItWorks", href: "/#comment-ca-marche" },
   { labelKey: "nav.rates", href: "/rates" },
   { labelKey: "nav.pro", href: "/pro" },
-  { labelKey: "nav.cgl", href: "/cgl" },
   { labelKey: "nav.faq", href: "/faq" },
-  { labelKey: "nav.contact", href: "/contact" },
 ];
 
 const LANGS = [
