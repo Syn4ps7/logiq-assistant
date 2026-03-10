@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const navLinks = [
-  { labelKey: "nav.home", href: "/" },
   { labelKey: "nav.vehicles", href: "/vehicles" },
   { labelKey: "nav.howItWorks", href: "/#comment-ca-marche" },
   { labelKey: "nav.rates", href: "/rates" },
@@ -79,9 +78,6 @@ export function Header() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link to="/rates">
-            <Button variant="outline" size="sm">{t("nav.viewRates")}</Button>
-          </Link>
           <Link to="/reservation">
             <Button variant="default" size="sm">{t("nav.book")}</Button>
           </Link>
@@ -147,9 +143,6 @@ export function Header() {
               </Link>
             ))}
             <div className="flex gap-2 pt-2 border-t border-border">
-              <Link to="/rates" className="flex-1" onClick={() => setIsOpen(false)}>
-                <Button variant="outline" className="w-full" size="sm">{t("nav.rates")}</Button>
-              </Link>
               <Link to="/reservation" className="flex-1" onClick={() => setIsOpen(false)}>
                 <Button variant="default" className="w-full" size="sm">{t("nav.book")}</Button>
               </Link>
