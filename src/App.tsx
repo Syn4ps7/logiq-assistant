@@ -53,6 +53,7 @@ const App = () => {
                 <Route path="/pro" element={<Pro />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/privacy" element={<Privacy />} />
+                <Route path="/legal" element={<Legal />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/reset-password" element={<ResetPassword />} />

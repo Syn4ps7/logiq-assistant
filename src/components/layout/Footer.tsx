@@ -30,6 +30,7 @@ export function Footer() {
               <li><Link to="/faq" className="text-muted-foreground hover:text-foreground transition-colors">{t("nav.faq")}</Link></li>
               <li><Link to="/cgl" className="text-muted-foreground hover:text-foreground transition-colors">{t("footer.conditions")}</Link></li>
               <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">{t("footer.privacy")}</Link></li>
+              <li><Link to="/legal" className="text-muted-foreground hover:text-foreground transition-colors">{t("footer.legal")}</Link></li>
             </ul>
           </div>
           <div>
