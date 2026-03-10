@@ -142,7 +142,7 @@ export const cglArticles: CGLArticle[] = [
         id: "article-7.2",
         title: "7.2 — Option « Sérénité » (Rachat partiel)",
         content:
-          "Réduit la franchise à 500 CHF. Coût : 49 CHF par location (forfait).",
+          "Réduit la franchise à 500 CHF. Coût : 59 CHF par location (forfait).",
       },
       {
         id: "article-7.3",
