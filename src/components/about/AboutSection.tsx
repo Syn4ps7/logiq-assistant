@@ -1,27 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Zap, MapPin, MousePointerClick, Truck, CreditCard, ShieldCheck, Warehouse, CheckCircle2, Target, Lightbulb, ArrowRight } from "lucide-react";
+import { Check, Warehouse, Lightbulb, ShieldCheck, Target } from "lucide-react";
 import aboutHub from "@/assets/about-hub.webp";
 
-const solutionSteps = [
-  { icon: MousePointerClick, colorClass: "bg-primary/15 text-primary" },
-  { icon: Truck, colorClass: "bg-primary/15 text-primary" },
-  { icon: CreditCard, colorClass: "bg-primary/15 text-primary" },
-  { icon: ShieldCheck, colorClass: "bg-primary/15 text-primary" },
-];
+const hubIcons = [Check, Check, Check, Check];
 
-const hubIcons = [
-  CheckCircle2,
-  Warehouse,
-  ShieldCheck,
-  MousePointerClick,
-];
-
-const philoIcons = [
-  Lightbulb,
-  ShieldCheck,
-  Target,
-];
+const philoIcons = [Lightbulb, ShieldCheck, Target];
 
 const AboutSection = () => {
   const { t } = useTranslation();
@@ -41,7 +25,7 @@ const AboutSection = () => {
           <p className="text-lg font-semibold text-primary">{t("about.hook")}</p>
         </motion.div>
 
-        {/* Intro text + image side by side on lg */}
+        {/* Intro text + image */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-16">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -75,67 +59,36 @@ const AboutSection = () => {
           </motion.div>
         </div>
 
-        {/* Solution — interactive process steps */}
+        {/* Solution — scannable */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-16"
+          className="mb-16 max-w-3xl mx-auto"
         >
-          <h3 className="text-2xl font-bold text-foreground mb-3 text-center">{t("about.solutionTitle")}</h3>
-          <div className="text-muted-foreground leading-relaxed max-w-3xl mx-auto text-center mb-8">
-            <p>{t("about.solution1")}</p>
-            <p className="mt-2">{t("about.solution2")}</p>
-            <p className="mt-2">{t("about.solution3")}</p>
-            <p className="mt-2 font-semibold text-foreground">{t("about.solution4")}</p>
-            <p className="mt-2">{t("about.solution5")}</p>
+          <h3 className="text-2xl font-bold text-foreground mb-4 text-center">{t("about.solutionTitle")}</h3>
+          <p className="text-muted-foreground text-center mb-2">{t("about.solutionIntro")}</p>
+          <p className="text-muted-foreground text-center mb-6">{t("about.solutionNeed")}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto mb-6">
+            {(t("about.solutionList", { returnObjects: true }) as string[]).map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: i * 0.08 }}
+                className="flex items-center gap-2"
+              >
+                <Check className="h-4 w-4 text-primary shrink-0" />
+                <span className="text-sm text-foreground">{item}</span>
+              </motion.div>
+            ))}
           </div>
-
-          {/* Process flow cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {(t("about.solutionList", { returnObjects: true }) as string[]).map((item, i) => {
-              const StepIcon = solutionSteps[i]?.icon ?? Zap;
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.1 }}
-                  whileHover={{ y: -4, scale: 1.02 }}
-                  className="group relative p-6 rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-yellow transition-all duration-300 cursor-default"
-                >
-                  {/* Step number */}
-                  <div className="absolute -top-3 -left-2 w-7 h-7 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center shadow-yellow">
-                    {i + 1}
-                  </div>
-                  <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                    <StepIcon className="h-6 w-6 text-primary" />
-                  </div>
-                  <p className="font-semibold text-foreground text-sm leading-snug">{item}</p>
-                  {/* Arrow connector (hidden on last) */}
-                  {i < 3 && (
-                    <div className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10">
-                      <ArrowRight className="h-5 w-5 text-primary/40" />
-                    </div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="text-muted-foreground text-center mt-6"
-          >
-            {t("about.solution6")}
-          </motion.p>
+          <p className="text-center font-semibold text-foreground">{t("about.solutionConclusion")}</p>
         </motion.div>
 
-        {/* Hub concept — visual diagram */}
+        {/* Hub concept */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -143,15 +96,13 @@ const AboutSection = () => {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <h3 className="text-2xl font-bold text-foreground mb-3 text-center">{t("about.hubTitle")}</h3>
-          <div className="text-muted-foreground leading-relaxed max-w-3xl mx-auto text-center mb-8">
-            <p>{t("about.hub1")}</p>
-            <p className="mt-2">{t("about.hub2")}</p>
-          </div>
+          <h3 className="text-2xl font-bold text-foreground mb-4 text-center">{t("about.hubTitle")}</h3>
+          <p className="text-muted-foreground leading-relaxed max-w-3xl mx-auto text-center mb-8 whitespace-pre-line">
+            {t("about.hubIntro")}
+          </p>
 
           {/* Hub diagram */}
           <div className="relative max-w-3xl mx-auto">
-            {/* Center hub icon */}
             <motion.div
               initial={{ scale: 0 }}
               whileInView={{ scale: 1 }}
@@ -165,37 +116,31 @@ const AboutSection = () => {
               <span className="text-sm font-bold text-foreground mt-2">Hub LogIQ</span>
             </motion.div>
 
-            {/* Hub features in a grid around */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {(t("about.hubList", { returnObjects: true }) as string[]).map((item, i) => {
-                const HubIcon = hubIcons[i] ?? MapPin;
-                return (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: 0.2 + i * 0.1 }}
-                    whileHover={{ scale: 1.05 }}
-                    className="flex flex-col items-center text-center p-4 rounded-xl border border-border bg-card hover:border-primary/30 hover:shadow-yellow transition-all duration-300"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
-                      <HubIcon className="h-5 w-5 text-primary" />
-                    </div>
-                    <p className="text-xs sm:text-sm font-medium text-muted-foreground leading-tight">{item}</p>
-                  </motion.div>
-                );
-              })}
+              {(t("about.hubList", { returnObjects: true }) as string[]).map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.2 + i * 0.1 }}
+                  className="flex flex-col items-center text-center p-4 rounded-xl border border-border bg-card hover:border-primary/30 transition-all duration-300"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                    <Check className="h-5 w-5 text-primary" />
+                  </div>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground leading-tight">{item}</p>
+                </motion.div>
+              ))}
             </div>
           </div>
 
-          <div className="text-muted-foreground leading-relaxed max-w-3xl mx-auto text-center mt-6 space-y-2">
-            <p>{t("about.hub3")}</p>
-            <p className="font-semibold text-foreground">{t("about.hub4")}</p>
-          </div>
+          <p className="text-muted-foreground leading-relaxed max-w-3xl mx-auto text-center mt-6 font-semibold text-foreground">
+            {t("about.hubConclusion")}
+          </p>
         </motion.div>
 
-        {/* Philosophie — interactive cards with icons */}
+        {/* Philosophie */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -208,7 +153,7 @@ const AboutSection = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {(t("about.philoItems", { returnObjects: true }) as { title: string; desc: string }[]).map((item, i) => {
-              const PhiloIcon = philoIcons[i] ?? Zap;
+              const PhiloIcon = philoIcons[i] ?? ShieldCheck;
               return (
                 <motion.div
                   key={i}
@@ -216,10 +161,9 @@ const AboutSection = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.12 }}
-                  whileHover={{ y: -6 }}
-                  className="group relative p-6 rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-yellow transition-all duration-300 text-center"
+                  className="group relative p-6 rounded-2xl border border-border bg-card hover:border-primary/40 transition-all duration-300 text-center"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors duration-300">
                     <PhiloIcon className="h-7 w-7 text-primary" />
                   </div>
                   <h4 className="text-lg font-bold text-foreground mb-2">{item.title}</h4>
@@ -230,7 +174,7 @@ const AboutSection = () => {
           </div>
         </motion.div>
 
-        {/* Mission — highlight quote style */}
+        {/* Mission */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -238,7 +182,6 @@ const AboutSection = () => {
           transition={{ duration: 0.6 }}
           className="relative rounded-2xl border border-border bg-card p-8 sm:p-10 text-center overflow-hidden"
         >
-          {/* Decorative accent */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-primary rounded-b-full" />
 
           <h3 className="text-2xl font-bold text-foreground mb-4 mt-2">{t("about.missionTitle")}</h3>

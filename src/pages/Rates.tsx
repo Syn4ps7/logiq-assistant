@@ -73,7 +73,12 @@ const Rates = () => {
         {/* ── Section 2 : Packs Week-end+ ── */}
         <section className="mb-14" aria-label={t("rates.packsTitle")}>
           <h2 className="text-xl font-semibold mb-1">{t("rates.packsTitle")}</h2>
-          <p className="text-muted-foreground mb-6">{t("rates.packsSubtitle")}</p>
+          <p className="text-muted-foreground mb-4">{t("rates.packsSubtitle")}</p>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-6 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-primary shrink-0" />{t("rates.packsGuide1")}</span>
+            <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-primary shrink-0" />{t("rates.packsGuide2")}</span>
+            <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-primary shrink-0" />{t("rates.packsGuide3")}</span>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {/* Standard */}

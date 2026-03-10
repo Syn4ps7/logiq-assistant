@@ -11,11 +11,23 @@
     "openChat": "Ouvrir le chat"
   },
   "hero": {
-    "title1": "Réservez et déverrouillez votre utilitaire en quelques secondes",
-    "subtitle": "Location intelligente.\nDisponible 24h/24 sur la Riviera Vaudoise.",
-    "cta": "Réserver maintenant",
+    "title1": "Réservez et déverrouillez votre utilitaire en quelques secondes.",
+    "subtitle": "Location utilitaire autonome.\nRéservation en ligne, accès digital et récupération au Hub LogIQ — disponible 24/7.",
+    "cta": "Réserver un utilitaire",
     "ctaRates": "Voir les tarifs",
-    "reassuranceLine": "Assistance 7j/7 • Assurance incluse • Retour sans contact"
+    "reassurance1": "Accès autonome 24/7",
+    "reassurance2": "Assurance incluse",
+    "reassurance3": "Retrait rapide au Hub LogIQ"
+  },
+  "howItWorks": {
+    "title": "Louer un utilitaire n'a jamais été aussi simple",
+    "step1Title": "Réservez en ligne",
+    "step1Desc": "Choisissez votre utilitaire et votre créneau en quelques secondes.",
+    "step2Title": "Accédez au véhicule",
+    "step2Desc": "Rendez-vous au Hub LogIQ et déverrouillez votre utilitaire avec votre smartphone.",
+    "step3Title": "Roulez",
+    "step3Desc": "Utilisez le véhicule et restituez-le simplement au hub.",
+    "cta": "Réserver maintenant"
   },
   "why": {
     "digital": "Accès digital",
@@ -24,6 +36,25 @@
     "geolocatedDesc": "Suivez la disponibilité en temps réel.",
     "fast": "Réservation en 30 secondes",
     "fastDesc": "Processus simplifié, confirmation instantanée."
+  },
+  "whyLogiq": {
+    "title": "Pourquoi choisir LogIQ Transport",
+    "items": [
+      "Réservation 100 % en ligne",
+      "Accès digital aux véhicules",
+      "Flotte centralisée dans des hubs sécurisés",
+      "Tarification transparente",
+      "Service disponible 24/7"
+    ]
+  },
+  "trust": {
+    "title": "Une location simple et sécurisée",
+    "items": [
+      "Assurance RC incluse",
+      "État des lieux numérique",
+      "Assistance 24/7",
+      "Restitution rapide au hub"
+    ]
   },
   "reassurance": {
     "insurance": "Assurance complète",
@@ -49,18 +80,17 @@
     "p3": "LogIQ Transport est né de cette observation.",
     "p4": "L'idée était simple : repenser la location utilitaire pour la rendre plus rapide, plus fluide et plus fiable.",
     "p5": "Aujourd'hui, nous proposons une expérience moderne où la réservation, l'accès au véhicule et la gestion de la location sont simplifiés au maximum. Grâce à des processus digitalisés, nos clients peuvent réserver un utilitaire en ligne et accéder à leur véhicule en quelques minutes, sans les contraintes d'une agence traditionnelle.",
-    "solutionTitle": "Une solution pensée pour les besoins réels",
-    "solution1": "Les situations qui nécessitent un utilitaire sont souvent imprévues.",
-    "solution2": "Un déménagement, un chantier, un transport de matériel ou simplement l'achat d'un meuble volumineux.",
-    "solution3": "Dans ces moments-là, ce que les clients attendent n'est pas un service compliqué. Ils veulent simplement un véhicule disponible, fiable et facile à utiliser.",
-    "solution4": "LogIQ Transport a été conçu avec cette logique.",
-    "solution5": "Notre approche consiste à simplifier chaque étape :",
-    "solutionList": ["Réservation rapide", "Accès simple aux véhicules", "Tarification transparente", "Processus sécurisés"],
-    "solution6": "Le résultat est une expérience plus fluide et plus sereine pour nos clients.",
-    "hubTitle": "Le concept des hubs LogIQ",
+    "solutionTitle": "Une solution conçue pour les situations réelles",
+    "solutionIntro": "Déménagement, chantier, transport de matériel ou achat volumineux.",
+    "solutionNeed": "Quand vous avez besoin d'un utilitaire, vous voulez simplement :",
+    "solutionList": ["Un véhicule disponible", "Un accès rapide", "Un tarif clair", "Un service fiable"],
+    "solutionConclusion": "LogIQ Transport a été conçu pour répondre exactement à ces besoins.",
+    "hubTitle": "Pourquoi le Hub LogIQ change l'expérience de location",
+    "hubIntro": "Les utilitaires LogIQ ne sont pas dispersés dans différentes agences.\nIls sont centralisés dans des hubs sécurisés conçus pour offrir :",
+    "hubList": ["Une meilleure disponibilité des véhicules", "Un accès autonome rapide", "Une gestion de flotte plus fiable", "Une expérience simple pour les utilisateurs"],
+    "hubConclusion": "Le Hub LogIQ devient le centre opérationnel du service.",
     "hub1": "Au cœur de LogIQ Transport se trouve le hub LogIQ. Plutôt que de disperser les véhicules sur différentes places ou dépendre d'une agence physique, LogIQ centralise sa flotte dans des espaces dédiés et sécurisés.",
     "hub2": "Ces hubs permettent de garantir :",
-    "hubList": ["Une meilleure disponibilité des véhicules", "Une organisation optimisée de la flotte", "Des procédures de contrôle et d'entretien standardisées", "Une expérience plus simple pour les utilisateurs"],
     "hub3": "Le hub devient ainsi le centre opérationnel du service.",
     "hub4": "C'est ce qui permet à LogIQ Transport d'offrir une location utilitaire plus fiable, plus organisée et plus professionnelle.",
     "philoTitle": "Notre philosophie",
@@ -77,9 +107,9 @@
     "mission4": "Parce que lorsqu'un utilitaire est nécessaire, la seule chose qui devrait compter est de pouvoir prendre le volant et avancer."
   },
   "cta": {
-    "title": "Prêt à démarrer ?",
-    "subtitle": "Réservez votre utilitaire en quelques clics. Prise en charge 24/7.",
-    "book": "Réserver",
+    "title": "Prêt à réserver votre utilitaire ?",
+    "subtitle": "Accédez à un véhicule en quelques secondes grâce au Hub LogIQ.",
+    "book": "Réserver un utilitaire",
     "contact": "Nous contacter"
   },
   "vehicleCard": {
@@ -106,8 +136,11 @@
     "weekend": "Week-end",
     "weekendPrice": "149 CHF / jour (TTC)",
     "normalIncludes": ["Assurance RC incluse", "100 km / jour inclus"],
-    "packsTitle": "Packs Week-end+",
-    "packsSubtitle": "Nos forfaits week-end tout compris.",
+    "packsTitle": "Nos packs les plus populaires",
+    "packsSubtitle": "Choisissez l'offre adaptée à votre besoin.",
+    "packsGuide1": "Utilisation simple → tarif journalier",
+    "packsGuide2": "Déménagement → pack 48h",
+    "packsGuide3": "Solution complète → pack Premium",
     "reassuranceLine": "Réservation en 3 clics – utilitaire dispo 24/7",
     "standardName": "Week-end Standard (Hub)",
     "standardPrice": "298 CHF (TTC)",
@@ -318,7 +351,7 @@
     "greetingPro": "Bienvenue sur l'espace **Pro** ! Je peux vous renseigner sur nos tarifs entreprise, la facturation, ou les Carnets Pro. Que puis-je faire pour vous ?",
     "greetingParticulier": "Bonjour ! Je peux vous aider à choisir un véhicule, estimer un prix, ou répondre à vos questions. Comment puis-je vous aider ?",
     "placeholder": "Écrivez votre message…",
-    "proactive": "Besoin d'aide pour choisir votre utilitaire ou estimer un prix ? 💬",
+    "proactive": "Besoin d'un utilitaire rapidement ?\nJe peux vous aider à choisir le véhicule adapté.",
     "quick1": "💰 Quels sont vos tarifs ?",
     "quick2": "🚛 Quels véhicules avez-vous ?",
     "quick3": "📦 C'est quoi le Pack 48h ?",
