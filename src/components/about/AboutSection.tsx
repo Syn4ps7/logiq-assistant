@@ -74,6 +74,9 @@ const AboutSection = () => {
           </motion.div>
         </div>
 
+        {/* Animated stats */}
+        <CounterStats />
+
         {/* Solution — interactive process steps */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
