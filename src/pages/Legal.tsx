@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+
 
 const Legal = () => {
   return (
