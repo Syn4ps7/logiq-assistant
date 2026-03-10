@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import heroFleet from "@/assets/hero-fleet.png";
+import aboutHub from "@/assets/about-hub.jpg";
 
 const Index = () => {
   const { t } = useTranslation();
@@ -137,6 +138,22 @@ const Index = () => {
               <p className="mt-3 font-semibold text-foreground">{t("about.p3")}</p>
               <p className="mt-3">{t("about.p4")}</p>
               <p className="mt-3">{t("about.p5")}</p>
+            </motion.div>
+
+            {/* Image hub */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.97 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="rounded-2xl overflow-hidden border border-border shadow-lg"
+            >
+              <img
+                src={aboutHub}
+                alt="Hub LogIQ Transport — flotte utilitaires organisée"
+                className="w-full h-auto object-cover"
+                loading="lazy"
+              />
             </motion.div>
 
             {/* Solution */}
