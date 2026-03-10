@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const navLinks = [
-  { labelKey: "nav.home", href: "/" },
   { labelKey: "nav.vehicles", href: "/vehicles" },
   { labelKey: "nav.howItWorks", href: "/#comment-ca-marche" },
   { labelKey: "nav.rates", href: "/rates" },
