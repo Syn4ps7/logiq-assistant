@@ -353,7 +353,7 @@ export function ChatbotWidget() {
       {showProactive && !isActive && (
         <button
           onClick={() => { setShowProactive(false); setIsActive(true); }}
-          className="mb-3 bg-card border shadow-lg rounded-xl px-4 py-3 text-sm text-foreground max-w-[260px] text-left animate-fade-in-up hover:shadow-xl transition-shadow relative"
+          className="mb-3 hidden md:block bg-card border shadow-lg rounded-xl px-4 py-3 text-sm text-foreground max-w-[260px] text-left animate-fade-in-up hover:shadow-xl transition-shadow relative"
         >
           <button
             onClick={(e) => { e.stopPropagation(); setShowProactive(false); }}
