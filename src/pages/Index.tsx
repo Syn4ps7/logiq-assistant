@@ -79,10 +79,23 @@ const Index = () => {
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-              className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl"
+              className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-4 leading-relaxed max-w-xl"
             >
               {t("hero.subtitle")}
             </motion.p>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+              className="flex flex-wrap gap-x-5 gap-y-1.5 mb-8"
+            >
+              {[t("hero.highlight1"), t("hero.highlight2"), t("hero.highlight3")].map((item) => (
+                <span key={item} className="flex items-center gap-1.5 text-sm sm:text-base text-foreground font-medium">
+                  <Check className="h-4 w-4 text-primary shrink-0" />
+                  {item}
+                </span>
+              ))}
+            </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
