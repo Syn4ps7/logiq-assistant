@@ -19,10 +19,10 @@ export interface Vehicle {
   availability: boolean;
 }
 
-import van1Exterior from "@/assets/van1-exterior.jpg";
-import van1Interior from "@/assets/van1-interior.jpg";
-import van2Exterior from "@/assets/van2-exterior.jpg";
-import van2Interior from "@/assets/van2-interior.jpg";
+import van1Exterior from "@/assets/van1-exterior.webp";
+import van1Interior from "@/assets/van1-interior.webp";
+import van2Exterior from "@/assets/van2-exterior.webp";
+import van2Interior from "@/assets/van2-interior.webp";
 
 export const vehicles: Vehicle[] = [
   {

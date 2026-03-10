@@ -4,7 +4,7 @@ import { Key, MapPin, Zap, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import heroFleet from "@/assets/hero-fleet.png";
+import heroFleet from "@/assets/hero-fleet.webp";
 import AboutSection from "@/components/about/AboutSection";
 
 const Index = () => {
