@@ -82,11 +82,11 @@ const Rates = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {/* Standard */}
-            <div className="relative p-6 bg-card rounded-lg border-2 border-border transition-shadow hover:shadow-lg">
+            <div className="relative p-6 bg-card rounded-lg border-2 border-border transition-shadow hover:shadow-lg flex flex-col">
               <h3 className="text-lg font-bold mb-1">{t("rates.standardName")}</h3>
               <p className="text-sm text-muted-foreground italic mb-3">{t("rates.standardHook")}</p>
               <p className="text-3xl font-bold text-primary mb-4">{t("rates.standardPrice")}</p>
-              <ul className="space-y-2 mb-5">
+              <ul className="space-y-2 mb-5 flex-1">
                 {(t("rates.standardIncludes", { returnObjects: true }) as string[]).map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm">
                     <Check className="h-4 w-4 text-primary shrink-0" />
@@ -100,14 +100,14 @@ const Rates = () => {
             </div>
 
             {/* Confort — mis en avant */}
-            <div className="relative p-6 bg-card rounded-lg border-2 border-accent shadow-md transition-shadow hover:shadow-lg">
+            <div className="relative p-6 bg-card rounded-lg border-2 border-accent shadow-md transition-shadow hover:shadow-lg flex flex-col">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground px-3 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1">
                 <Star className="h-3 w-3" /> {t("rates.confortBadge")}
               </div>
               <h3 className="text-lg font-bold mb-1">{t("rates.confortName")}</h3>
               <p className="text-sm text-muted-foreground italic mb-3">{t("rates.confortHook")}</p>
               <p className="text-3xl font-bold text-primary mb-4">{t("rates.confortPrice")}</p>
-              <ul className="space-y-2 mb-5">
+              <ul className="space-y-2 mb-5 flex-1">
                 {(t("rates.confortIncludes", { returnObjects: true }) as string[]).map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm">
                     <Check className="h-4 w-4 text-primary shrink-0" />
@@ -121,14 +121,14 @@ const Rates = () => {
             </div>
 
             {/* Premium Livré */}
-            <div className="relative p-6 bg-card rounded-lg border-2 border-primary/40 transition-shadow hover:shadow-lg">
+            <div className="relative p-6 bg-card rounded-lg border-2 border-primary/40 transition-shadow hover:shadow-lg flex flex-col">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1">
                 <Crown className="h-3 w-3" /> {t("rates.premiumBadge")}
               </div>
               <h3 className="text-lg font-bold mb-1">{t("rates.premiumName")}</h3>
               <p className="text-sm text-muted-foreground italic mb-3">{t("rates.premiumHook")}</p>
               <p className="text-3xl font-bold text-primary mb-4">{t("rates.premiumPrice")}</p>
-              <ul className="space-y-2 mb-5">
+              <ul className="space-y-2 mb-5 flex-1">
                 {(t("rates.premiumIncludes", { returnObjects: true }) as string[]).map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm">
                     <Check className="h-4 w-4 text-primary shrink-0" />
