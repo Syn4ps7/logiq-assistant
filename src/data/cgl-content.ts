@@ -274,6 +274,12 @@ export const cglArticles: CGLArticle[] = [
         content:
           "Le Client Professionnel s'assure que les conducteurs respectent les conditions d'éligibilité des CGL (âge, permis, etc.). Le Client Professionnel demeure responsable du respect des obligations contractuelles et des frais (dommages, franchises, pénalités, carburant, kilomètres, amendes) liés aux locations effectuées sous son compte.",
       },
+      {
+        id: "article-14.9",
+        title: "14.9 — Carnets Pro (prépayés)",
+        content:
+          "a) Paiement 100 % à la commande.\nb) Les jours acquis ne sont ni reportables ni remboursables au-delà de l'échéance de validité de 6 mois à compter de la date d'achat.\nc) La réservation des jours reste soumise à la disponibilité des véhicules. La priorité Pro est garantie sous réserve d'un préavis minimum de 48 heures.",
+      },
     ],
   },
 ];
