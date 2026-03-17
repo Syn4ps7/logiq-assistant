@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { vehicles, vehicleOptions, ratePlans, EXTRA_KM_RATE } from "@/data/vehicles";
 import { updateBookingDraft, dispatchLogiqEvent } from "@/lib/logiq";
-import { Check, ChevronRight, Info, Truck, Loader2, CalendarDays, Car, Package } from "lucide-react";
+import { Check, ChevronRight, Info, Truck, Loader2, CalendarDays, Car, Package, Tag } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import emailjs from "@emailjs/browser";
 import { toast } from "sonner";
