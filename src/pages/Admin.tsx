@@ -104,6 +104,11 @@ const Admin = () => {
   const [editingPromo, setEditingPromo] = useState<string | null>(null);
   const [editCode, setEditCode] = useState("");
   const [editDiscount, setEditDiscount] = useState("");
+  const [editExpires, setEditExpires] = useState("");
+  const [newCode, setNewCode] = useState("");
+  const [newDiscount, setNewDiscount] = useState("15");
+  const [newExpires, setNewExpires] = useState("");
+  const [creatingPromo, setCreatingPromo] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
