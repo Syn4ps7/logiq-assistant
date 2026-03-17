@@ -413,7 +413,15 @@ const Admin = () => {
                   <div className="flex items-center gap-2 text-muted-foreground"><Phone className="h-3.5 w-3.5" /> {r.contact_phone}</div>
                   <div className="flex items-center gap-2 text-muted-foreground"><Mail className="h-3.5 w-3.5" /> {r.contact_email}</div>
                 </div>
-                <span className="text-xs bg-muted px-2 py-0.5 rounded-full">{r.vehicle_name}</span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs bg-muted px-2 py-0.5 rounded-full">{r.vehicle_name}</span>
+                  {r.promo_code && (
+                    <Badge variant="secondary" className="text-xs gap-1">
+                      <Tag className="h-3 w-3" />
+                      {r.promo_code} -{Number(r.discount_percent)}%
+                    </Badge>
+                  )}
+                </div>
               </div>
             ))}
           </div>
