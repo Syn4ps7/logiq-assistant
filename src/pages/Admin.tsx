@@ -327,6 +327,13 @@ const Admin = () => {
               <SelectItem value="canceled">Annulé</SelectItem>
             </SelectContent>
           </Select>
+          <button
+            onClick={() => onPromoFilterChange(!promoFilter)}
+            className={`inline-flex items-center gap-1.5 px-3 h-8 rounded-md border text-xs font-medium transition-colors ${promoFilter ? "bg-primary text-primary-foreground border-primary" : "bg-background text-muted-foreground border-input hover:bg-muted"}`}
+          >
+            <Tag className="h-3.5 w-3.5" />
+            Promo
+          </button>
         </div>
         {filtered.length > 0 && (
           <Button variant="outline" size="sm" onClick={() => exportReservationsCsv(source)}><Download className="h-4 w-4 mr-1" /> CSV</Button>
