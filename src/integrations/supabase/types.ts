@@ -74,6 +74,68 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_codes: {
+        Row: {
+          code: string
+          created_at: string
+          discount_percent: number
+          id: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_percent?: number
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_percent?: number
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      promo_usage: {
+        Row: {
+          created_at: string
+          customer_email: string
+          discount_amount: number
+          id: string
+          promo_code_id: string
+          reservation_reference: string
+        }
+        Insert: {
+          created_at?: string
+          customer_email: string
+          discount_amount?: number
+          id?: string
+          promo_code_id: string
+          reservation_reference: string
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string
+          discount_amount?: number
+          id?: string
+          promo_code_id?: string
+          reservation_reference?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_usage_promo_code_id_fkey"
+            columns: ["promo_code_id"]
+            isOneToOne: false
+            referencedRelation: "promo_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reservations: {
         Row: {
           contact_email: string
@@ -86,6 +148,8 @@ export type Database = {
           delivery_instructions: string | null
           delivery_npa: string | null
           delivery_phone: string | null
+          discount_amount: number | null
+          discount_percent: number | null
           end_date: string | null
           end_time: string | null
           est_km: number
@@ -93,6 +157,7 @@ export type Database = {
           options: string | null
           pack: string | null
           plan: string
+          promo_code: string | null
           reference: string
           source: string
           start_date: string | null
@@ -113,6 +178,8 @@ export type Database = {
           delivery_instructions?: string | null
           delivery_npa?: string | null
           delivery_phone?: string | null
+          discount_amount?: number | null
+          discount_percent?: number | null
           end_date?: string | null
           end_time?: string | null
           est_km?: number
@@ -120,6 +187,7 @@ export type Database = {
           options?: string | null
           pack?: string | null
           plan: string
+          promo_code?: string | null
           reference: string
           source?: string
           start_date?: string | null
@@ -140,6 +208,8 @@ export type Database = {
           delivery_instructions?: string | null
           delivery_npa?: string | null
           delivery_phone?: string | null
+          discount_amount?: number | null
+          discount_percent?: number | null
           end_date?: string | null
           end_time?: string | null
           est_km?: number
@@ -147,6 +217,7 @@ export type Database = {
           options?: string | null
           pack?: string | null
           plan?: string
+          promo_code?: string | null
           reference?: string
           source?: string
           start_date?: string | null

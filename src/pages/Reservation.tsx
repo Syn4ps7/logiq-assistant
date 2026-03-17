@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { vehicles, vehicleOptions, ratePlans, EXTRA_KM_RATE } from "@/data/vehicles";
 import { updateBookingDraft, dispatchLogiqEvent } from "@/lib/logiq";
-import { Check, ChevronRight, Info, Truck, Loader2, CalendarDays, Car, Package } from "lucide-react";
+import { Check, ChevronRight, Info, Truck, Loader2, CalendarDays, Car, Package, Tag } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import emailjs from "@emailjs/browser";
 import { toast } from "sonner";
@@ -49,6 +49,10 @@ const Reservation = () => {
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  const [promoCode, setPromoCode] = useState("");
+  const [promoValid, setPromoValid] = useState<null | { id: string; discount_percent: number }>(null);
+  const [promoError, setPromoError] = useState("");
+  const [promoChecking, setPromoChecking] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const isProCheckout = searchParams.get("source") === "pro";
@@ -158,6 +162,54 @@ const Reservation = () => {
 
   const premiumDeliveryValid = !isPremium || (deliveryAddress && deliveryNpa && deliveryCity && deliveryPhone);
 
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim() || !contactEmail.trim()) {
+      setPromoError("Veuillez entrer votre email et un code promo.");
+      return;
+    }
+    setPromoChecking(true);
+    setPromoError("");
+    setPromoValid(null);
+
+    // Check code exists and is active
+    const { data: codeData } = await supabase
+      .from("promo_codes")
+      .select("id, discount_percent")
+      .eq("code", promoCode.trim().toUpperCase())
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (!codeData) {
+      setPromoError("Code promo invalide ou expiré.");
+      setPromoChecking(false);
+      return;
+    }
+
+    // Check if already used by this email
+    const { data: usageData } = await supabase
+      .from("promo_usage")
+      .select("id")
+      .eq("promo_code_id", codeData.id)
+      .eq("customer_email", contactEmail.trim().toLowerCase())
+      .maybeSingle();
+
+    if (usageData) {
+      setPromoError("Ce code a déjà été utilisé avec cette adresse email.");
+      setPromoChecking(false);
+      return;
+    }
+
+    setPromoValid({ id: codeData.id, discount_percent: Number(codeData.discount_percent) });
+    setPromoChecking(false);
+  };
+
+  const discountedTotal = promoValid && price
+    ? roundCHF(price.total * (1 - promoValid.discount_percent / 100))
+    : null;
+  const discountAmount = promoValid && price
+    ? roundCHF(price.total - (discountedTotal || price.total))
+    : 0;
+
   const canProceedStep0 = isPackWithSub || (selectedPlan && (selectedPlan === "week" || selectedPlan === "weekend") && startDate && endDate);
 
   const canConfirm = premiumDeliveryValid && contactName && contactEmail && contactPhone;
@@ -188,6 +240,8 @@ const Reservation = () => {
       .join(", ");
     const reference = Date.now().toString(36).toUpperCase();
 
+    const finalTotal = discountedTotal ?? price.total;
+
     try {
       // Save to database
       await supabase.from("reservations").insert({
@@ -207,13 +261,26 @@ const Reservation = () => {
         days: price.days,
         options: optionNames || null,
         est_km: estKm,
-        total_chf: price.total,
+        total_chf: finalTotal,
+        promo_code: promoValid ? promoCode.trim().toUpperCase() : null,
+        discount_percent: promoValid ? promoValid.discount_percent : 0,
+        discount_amount: discountAmount || 0,
         delivery_address: deliveryAddress || null,
         delivery_npa: deliveryNpa || null,
         delivery_city: deliveryCity || null,
         delivery_phone: deliveryPhone || null,
         delivery_instructions: deliveryInstructions || null,
       });
+
+      // Record promo usage
+      if (promoValid) {
+        await supabase.from("promo_usage").insert({
+          promo_code_id: promoValid.id,
+          customer_email: contactEmail.trim().toLowerCase(),
+          reservation_reference: reference,
+          discount_amount: discountAmount || 0,
+        });
+      }
 
       // Send email notification (non-blocking)
       emailjs.send(
@@ -230,20 +297,20 @@ const Reservation = () => {
           duree: price.days,
           vehicule: vehicle?.name || "",
           options: optionNames || "Aucune",
-          tarif: price.total.toFixed(2) + " CHF",
+          tarif: finalTotal.toFixed(2) + " CHF",
         },
         "txxckOr0_mZu2OaXQ"
       ).catch((err) => console.error("EmailJS error:", err));
 
       // Redirect to Stripe Checkout
-      const description = `${price.planName} — ${vehicle?.name || ""} — ${price.days}j`;
+      const description = `${price.planName} — ${vehicle?.name || ""} — ${price.days}j${promoValid ? ` (promo -${promoValid.discount_percent}%)` : ""}`;
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: {
           reference,
           customerEmail: contactEmail,
           customerName: contactName,
           description,
-          amountCHF: price.total,
+          amountCHF: finalTotal,
         },
       });
 
@@ -647,10 +714,24 @@ const Reservation = () => {
                         </div>
                       </>
                     ) : (
-                      <div className="flex justify-between font-bold text-base pt-2 border-t">
-                        <span>{t("reservation.totalEstimate")}</span>
-                        <span className="text-primary">{price.total.toFixed(2)} CHF</span>
-                      </div>
+                      <>
+                        {promoValid && discountedTotal !== null && (
+                          <>
+                            <div className="flex justify-between pt-2 border-t">
+                              <span>Sous-total</span>
+                              <span>{price.total.toFixed(2)} CHF</span>
+                            </div>
+                            <div className="flex justify-between text-green-600 dark:text-green-400">
+                              <span className="flex items-center gap-1"><Tag className="h-3.5 w-3.5" /> Code {promoCode.toUpperCase()} (-{promoValid.discount_percent}%)</span>
+                              <span>-{(discountAmount || 0).toFixed(2)} CHF</span>
+                            </div>
+                          </>
+                        )}
+                        <div className="flex justify-between font-bold text-base pt-2 border-t">
+                          <span>{t("reservation.totalEstimate")}</span>
+                          <span className="text-primary">{(discountedTotal ?? price.total).toFixed(2)} CHF</span>
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
@@ -674,6 +755,30 @@ const Reservation = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Promo code */}
+              {!isProCheckout && (
+                <div className="bg-muted/30 rounded-lg p-4 space-y-3 border">
+                  <h3 className="font-semibold flex items-center gap-2"><Tag className="h-4 w-4 text-primary" /> Code promo</h3>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoValid(null); setPromoError(""); }}
+                      placeholder="Entrez votre code"
+                      className="flex-1 px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none uppercase"
+                    />
+                    <Button variant="outline" size="sm" onClick={handleApplyPromo} disabled={promoChecking || !promoCode.trim() || !contactEmail.trim()}>
+                      {promoChecking ? <Loader2 className="h-4 w-4 animate-spin" /> : "Appliquer"}
+                    </Button>
+                  </div>
+                  {!contactEmail.trim() && promoCode.trim() && (
+                    <p className="text-xs text-muted-foreground">Veuillez d'abord renseigner votre email ci-dessus.</p>
+                  )}
+                  {promoError && <p className="text-xs text-destructive">{promoError}</p>}
+                  {promoValid && <p className="text-xs text-green-600 dark:text-green-400 font-medium">✓ Code appliqué : -{promoValid.discount_percent}% de réduction</p>}
+                </div>
+              )}
 
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setStep(1)}>{t("reservation.back")}</Button>

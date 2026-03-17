@@ -6,10 +6,12 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart, Filter } from "lucide-react";
+import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart, Filter, Tag, Pencil, Save, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 
 interface ProLead {
   id: string;
@@ -59,6 +61,24 @@ interface Reservation {
   created_at: string;
 }
 
+interface PromoCode {
+  id: string;
+  code: string;
+  discount_percent: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface PromoUsage {
+  id: string;
+  promo_code_id: string;
+  customer_email: string;
+  reservation_reference: string;
+  discount_amount: number;
+  created_at: string;
+}
+
 const statusConfig: Record<string, { label: string; className: string }> = {
   pending: { label: "En attente", className: "bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-700" },
   paid: { label: "Payé", className: "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700" },
@@ -74,10 +94,15 @@ const Admin = () => {
   const [leads, setLeads] = useState<ProLead[]>([]);
   const [contactLeads, setContactLeads] = useState<ContactLead[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
+  const [promoUsage, setPromoUsage] = useState<PromoUsage[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [statusFilterB2c, setStatusFilterB2c] = useState<string>("all");
   const [statusFilterB2b, setStatusFilterB2b] = useState<string>("all");
+  const [editingPromo, setEditingPromo] = useState<string | null>(null);
+  const [editCode, setEditCode] = useState("");
+  const [editDiscount, setEditDiscount] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -112,10 +137,12 @@ const Admin = () => {
 
   const fetchAll = async () => {
     setLoading(true);
-    const [proRes, contactRes, reservationRes] = await Promise.all([
+    const [proRes, contactRes, reservationRes, promoRes, usageRes] = await Promise.all([
       supabase.from("pro_leads").select("*").order("created_at", { ascending: false }),
       supabase.from("contact_leads").select("*").order("created_at", { ascending: false }),
       supabase.from("reservations").select("*").order("created_at", { ascending: false }),
+      supabase.from("promo_codes").select("*").order("created_at", { ascending: false }),
+      supabase.from("promo_usage").select("*").order("created_at", { ascending: false }),
     ]);
     if (proRes.error) toast({ title: "Erreur", description: proRes.error.message, variant: "destructive" });
     else setLeads(proRes.data || []);
@@ -123,6 +150,31 @@ const Admin = () => {
     else setContactLeads(contactRes.data || []);
     if (reservationRes.error) toast({ title: "Erreur", description: reservationRes.error.message, variant: "destructive" });
     else setReservations(reservationRes.data || []);
+    setPromoCodes(promoRes.data || []);
+    setPromoUsage(usageRes.data || []);
+    setLoading(false);
+  };
+
+  const updatePromoCode = async (id: string) => {
+    if (!editCode.trim()) return;
+    const { error } = await supabase.from("promo_codes").update({
+      code: editCode.trim().toUpperCase(),
+      discount_percent: Number(editDiscount) || 15,
+      updated_at: new Date().toISOString(),
+    }).eq("id", id);
+    if (error) toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    else {
+      toast({ title: "Code promo mis à jour" });
+      setEditingPromo(null);
+      fetchAll();
+    }
+  };
+
+  const togglePromoActive = async (id: string, current: boolean) => {
+    const { error } = await supabase.from("promo_codes").update({ is_active: !current }).eq("id", id);
+    if (error) toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    else fetchAll();
+  };
     setLoading(false);
   };
 
@@ -375,6 +427,10 @@ const Admin = () => {
               <User className="h-4 w-4" /> Leads Particuliers
               {contactLeads.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{contactLeads.length}</span>}
             </TabsTrigger>
+            <TabsTrigger value="promotions" className="gap-1.5">
+              <Tag className="h-4 w-4" /> Promotions
+              {promoCodes.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{promoCodes.length}</span>}
+            </TabsTrigger>
           </TabsList>
 
           {/* ========== RESERVATIONS B2C ========== */}
@@ -542,6 +598,130 @@ const Admin = () => {
                 </div>
               </>
             )}
+          </TabsContent>
+
+          {/* ========== PROMOTIONS TAB ========== */}
+          <TabsContent value="promotions" className="space-y-6">
+            {/* Promo codes management */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Codes promo</h3>
+              {promoCodes.length === 0 ? (
+                <p className="text-muted-foreground text-sm">Aucun code promo configuré.</p>
+              ) : (
+                <div className="space-y-3">
+                  {promoCodes.map((promo) => (
+                    <div key={promo.id} className="p-4 border rounded-xl bg-card space-y-3">
+                      {editingPromo === promo.id ? (
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-sm font-medium mb-1">Code</label>
+                              <Input value={editCode} onChange={(e) => setEditCode(e.target.value.toUpperCase())} className="uppercase" />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium mb-1">Réduction (%)</label>
+                              <Input type="number" value={editDiscount} onChange={(e) => setEditDiscount(e.target.value)} min={1} max={100} />
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={() => updatePromoCode(promo.id)}>
+                              <Save className="h-4 w-4 mr-1" /> Enregistrer
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={() => setEditingPromo(null)}>
+                              <X className="h-4 w-4 mr-1" /> Annuler
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between flex-wrap gap-3">
+                          <div className="flex items-center gap-4">
+                            <div>
+                              <span className="font-mono text-lg font-bold">{promo.code}</span>
+                              <p className="text-sm text-muted-foreground">-{promo.discount_percent}% de réduction</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch checked={promo.is_active} onCheckedChange={() => togglePromoActive(promo.id, promo.is_active)} />
+                              <span className="text-sm">{promo.is_active ? "Actif" : "Inactif"}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">
+                              {promoUsage.filter((u) => u.promo_code_id === promo.id).length} utilisation(s)
+                            </span>
+                            <Button variant="outline" size="sm" onClick={() => { setEditingPromo(promo.id); setEditCode(promo.code); setEditDiscount(String(promo.discount_percent)); }}>
+                              <Pencil className="h-4 w-4 mr-1" /> Modifier
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Promo usage history */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Historique des utilisations</h3>
+              {promoUsage.length === 0 ? (
+                <div className="text-center py-10">
+                  <Tag className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
+                  <p className="text-muted-foreground">Aucune utilisation de code promo pour le moment.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="hidden md:block rounded-xl border overflow-hidden">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="bg-muted/50">
+                          <TableHead>Date</TableHead>
+                          <TableHead>Code</TableHead>
+                          <TableHead>Email client</TableHead>
+                          <TableHead>Réf. réservation</TableHead>
+                          <TableHead>Réduction</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {promoUsage.map((usage) => {
+                          const code = promoCodes.find((p) => p.id === usage.promo_code_id);
+                          return (
+                            <TableRow key={usage.id}>
+                              <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                                {fmtDate(usage.created_at)}<br /><span className="opacity-60">{fmtTime(usage.created_at)}</span>
+                              </TableCell>
+                              <TableCell className="font-mono font-bold">{code?.code || "—"}</TableCell>
+                              <TableCell className="text-sm">{usage.customer_email}</TableCell>
+                              <TableCell className="font-mono text-xs">{usage.reservation_reference}</TableCell>
+                              <TableCell className="text-sm font-medium text-primary">-{Number(usage.discount_amount).toFixed(2)} CHF</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                  <div className="md:hidden space-y-3">
+                    {promoUsage.map((usage) => {
+                      const code = promoCodes.find((p) => p.id === usage.promo_code_id);
+                      return (
+                        <div key={usage.id} className="p-4 border rounded-xl bg-card space-y-2">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <span className="font-mono font-bold">{code?.code || "—"}</span>
+                              <p className="text-xs text-muted-foreground">{usage.customer_email}</p>
+                            </div>
+                            <span className="text-sm font-bold text-primary">-{Number(usage.discount_amount).toFixed(2)} CHF</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Calendar className="h-3.5 w-3.5" /> {fmtDate(usage.created_at)}
+                            <span className="font-mono">{usage.reservation_reference}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
