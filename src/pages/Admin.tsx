@@ -362,6 +362,17 @@ const Admin = () => {
                       {fmtDate(r.created_at)}<br /><span className="opacity-60">{fmtTime(r.created_at)}</span>
                     </TableCell>
                     <TableCell className="text-sm font-bold text-primary whitespace-nowrap">{Number(r.total_chf).toFixed(2)} CHF</TableCell>
+                    <TableCell>
+                      {r.promo_code ? (
+                        <Badge variant="secondary" className="text-xs gap-1">
+                          <Tag className="h-3 w-3" />
+                          {r.promo_code}
+                          {r.discount_percent ? <span className="text-muted-foreground">-{Number(r.discount_percent)}%</span> : null}
+                        </Badge>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
                     <TableCell><StatusBadge status={r.status} /></TableCell>
                     <TableCell className="font-mono text-xs">{r.reference}</TableCell>
                     <TableCell>
