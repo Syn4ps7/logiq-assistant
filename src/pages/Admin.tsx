@@ -493,6 +493,9 @@ const Admin = () => {
           );
         })()}
 
+        {/* ========== KPI WIDGETS ========== */}
+        <AdminKpiWidgets reservations={reservations} />
+
         <Tabs defaultValue="reservations-b2c" className="space-y-6">
           <TabsList className="flex-wrap">
             <TabsTrigger value="reservations-b2c" className="gap-1.5">
