@@ -163,17 +163,44 @@ const Admin = () => {
 
   const updatePromoCode = async (id: string) => {
     if (!editCode.trim()) return;
-    const { error } = await supabase.from("promo_codes").update({
+    const updateData: any = {
       code: editCode.trim().toUpperCase(),
       discount_percent: Number(editDiscount) || 15,
+      expires_at: editExpires ? new Date(editExpires).toISOString() : null,
       updated_at: new Date().toISOString(),
-    }).eq("id", id);
+    };
+    const { error } = await supabase.from("promo_codes").update(updateData).eq("id", id);
     if (error) toast({ title: "Erreur", description: error.message, variant: "destructive" });
     else {
       toast({ title: "Code promo mis à jour" });
       setEditingPromo(null);
       fetchAll();
     }
+  };
+
+  const createPromoCode = async () => {
+    if (!newCode.trim()) { toast({ title: "Erreur", description: "Veuillez entrer un code.", variant: "destructive" }); return; }
+    setCreatingPromo(true);
+    const { error } = await supabase.from("promo_codes").insert({
+      code: newCode.trim().toUpperCase(),
+      discount_percent: Number(newDiscount) || 15,
+      expires_at: newExpires ? new Date(newExpires).toISOString() : null,
+    });
+    if (error) toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    else {
+      toast({ title: "Code promo créé !" });
+      setNewCode("");
+      setNewDiscount("15");
+      setNewExpires("");
+      fetchAll();
+    }
+    setCreatingPromo(false);
+  };
+
+  const deletePromoCode = async (id: string) => {
+    const { error } = await supabase.from("promo_codes").delete().eq("id", id);
+    if (error) toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    else { toast({ title: "Code promo supprimé" }); fetchAll(); }
   };
 
   const togglePromoActive = async (id: string, current: boolean) => {
