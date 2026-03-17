@@ -28,7 +28,7 @@ import van2Interior from "@/assets/van2-interior.webp";
 export const vehicles: Vehicle[] = [
   {
     id: "utilitaire-1",
-    name: "Utilitaire 1 — 13 m³",
+    name: "Einstein — 13 m³",
     priceDay: 129,
     specs: {
       volume: "13 m³",
