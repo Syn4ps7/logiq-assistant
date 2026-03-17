@@ -102,6 +102,7 @@ export const vehicles: Vehicle[] = [
   {
     id: "utilitaire-5",
     name: "Tesla — 13 m³",
+    tagline: "13 m³ de génie brut. Et promis, pas besoin de le brancher.",
     priceDay: 129,
     specs: {
       volume: "13 m³",
