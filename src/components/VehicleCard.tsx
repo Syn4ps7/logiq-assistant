@@ -22,6 +22,63 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
     dispatchLogiqEvent("logiq:vehicleClick", { vehicleId: vehicle.id });
   };
 
+  const isComingSoon = vehicle.comingSoon === true;
+
+  if (isComingSoon) {
+    return (
+      <div
+        className="group bg-card rounded-xl border border-border overflow-hidden relative"
+        data-vehicle-id={vehicle.id}
+        role="article"
+        aria-label={`${vehicle.name} — bientôt disponible`}
+      >
+        {/* Image section — blurred */}
+        <div className="relative aspect-[16/10] bg-secondary overflow-hidden">
+          <img
+            src={vehicle.images.exterior}
+            alt={`${vehicle.name} — bientôt disponible`}
+            className="w-full h-full object-cover blur-sm scale-105 brightness-75"
+            loading="lazy"
+            decoding="async"
+          />
+          {/* Coming soon overlay */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-foreground/30 backdrop-blur-[2px]">
+            <span className="bg-primary text-primary-foreground px-5 py-2.5 rounded-lg text-sm font-bold tracking-wide shadow-lg">
+              Bientôt disponible
+            </span>
+          </div>
+        </div>
+
+        {/* Content — muted */}
+        <div className="p-6 opacity-60">
+          <div className="mb-4">
+            <h3 className="font-bold text-lg">{vehicle.name}</h3>
+          </div>
+
+          {/* Specs grid */}
+          <div className="grid grid-cols-2 gap-3 mb-5">
+            {[
+              { icon: Package, label: vehicle.specs.volume },
+              { icon: Ruler, label: `H: ${vehicle.specs.height}` },
+              { icon: Users, label: `${vehicle.specs.seats} ${t("vehicleCard.seats")}` },
+              { icon: Fuel, label: vehicle.specs.transmission },
+            ].map((spec, i) => (
+              <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground bg-secondary rounded-lg px-3 py-2">
+                <spec.icon className="h-3.5 w-3.5 text-primary shrink-0" />
+                <span>{spec.label}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Disabled CTA */}
+          <Button variant="outline" className="w-full" size="sm" disabled>
+            Bientôt disponible
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="group bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-yellow transition-all duration-300 overflow-hidden"

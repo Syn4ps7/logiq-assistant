@@ -17,6 +17,7 @@ export interface Vehicle {
     interior: string;
   };
   availability: boolean;
+  comingSoon?: boolean;
 }
 
 import van1Exterior from "@/assets/van1-exterior.webp";
@@ -58,6 +59,76 @@ export const vehicles: Vehicle[] = [
     features: ["GPS intégré", "Caméra de recul", "Régulateur de vitesse", "Bluetooth"],
     images: { exterior: van2Exterior, interior: van2Interior },
     availability: true,
+  },
+  {
+    id: "utilitaire-3",
+    name: "Utilitaire 3 — 13 m³",
+    priceDay: 129,
+    specs: {
+      volume: "13 m³",
+      height: "1.90 m",
+      length: "3.27 m",
+      payload: "1'200 kg",
+      seats: 3,
+      transmission: "Automatique",
+      fuel: "Diesel",
+    },
+    features: ["GPS intégré", "Caméra de recul", "Régulateur de vitesse", "Bluetooth"],
+    images: { exterior: van1Exterior, interior: van1Interior },
+    availability: true,
+  },
+  {
+    id: "utilitaire-4",
+    name: "Utilitaire 4 — 13 m³",
+    priceDay: 129,
+    specs: {
+      volume: "13 m³",
+      height: "1.90 m",
+      length: "3.27 m",
+      payload: "1'200 kg",
+      seats: 3,
+      transmission: "Automatique",
+      fuel: "Diesel",
+    },
+    features: ["GPS intégré", "Caméra de recul", "Régulateur de vitesse", "Bluetooth"],
+    images: { exterior: van2Exterior, interior: van2Interior },
+    availability: true,
+  },
+  {
+    id: "utilitaire-5",
+    name: "Utilitaire 5 — 13 m³",
+    priceDay: 129,
+    specs: {
+      volume: "13 m³",
+      height: "1.90 m",
+      length: "3.27 m",
+      payload: "1'200 kg",
+      seats: 3,
+      transmission: "Automatique",
+      fuel: "Diesel",
+    },
+    features: ["GPS intégré", "Caméra de recul", "Régulateur de vitesse", "Bluetooth"],
+    images: { exterior: van1Exterior, interior: van1Interior },
+    availability: false,
+    comingSoon: true,
+  },
+  {
+    id: "utilitaire-6",
+    name: "Utilitaire 6 — 13 m³",
+    priceDay: 129,
+    specs: {
+      volume: "13 m³",
+      height: "1.90 m",
+      length: "3.27 m",
+      payload: "1'200 kg",
+      seats: 3,
+      transmission: "Automatique",
+      fuel: "Diesel",
+    },
+    features: ["GPS intégré", "Caméra de recul", "Régulateur de vitesse", "Bluetooth"],
+    images: { exterior: van2Exterior, interior: van2Interior },
+    availability: false,
+    comingSoon: true,
   },
 ];
 
