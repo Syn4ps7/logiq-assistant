@@ -342,16 +342,12 @@ const Admin = () => {
               <TableHeader>
                 <TableRow className="bg-muted/50">
                   <TableHead>Date</TableHead>
-                  <TableHead>Réf.</TableHead>
+                  <TableHead>Total</TableHead>
                   <TableHead>Statut</TableHead>
+                  <TableHead>Réf.</TableHead>
                   <TableHead>Client</TableHead>
                   <TableHead>Contact</TableHead>
-                  <TableHead>Formule</TableHead>
                   <TableHead>Véhicule</TableHead>
-                  <TableHead>Dates</TableHead>
-                  <TableHead>Options</TableHead>
-                  <TableHead>Km</TableHead>
-                  <TableHead>Total</TableHead>
                   <TableHead className="w-10"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -361,23 +357,15 @@ const Admin = () => {
                     <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
                       {fmtDate(r.created_at)}<br /><span className="opacity-60">{fmtTime(r.created_at)}</span>
                     </TableCell>
-                    <TableCell className="font-mono text-xs">{r.reference}</TableCell>
+                    <TableCell className="text-sm font-bold text-primary whitespace-nowrap">{Number(r.total_chf).toFixed(2)} CHF</TableCell>
                     <TableCell><StatusBadge status={r.status} /></TableCell>
+                    <TableCell className="font-mono text-xs">{r.reference}</TableCell>
                     <TableCell>
                       <div className="font-medium text-sm">{r.contact_name}</div>
                       <div className="text-xs text-muted-foreground">{r.contact_email}</div>
                     </TableCell>
                     <TableCell className="text-sm">{r.contact_phone}</TableCell>
-                    <TableCell className="text-sm font-medium">{planLabel(r)}</TableCell>
                     <TableCell className="text-sm">{r.vehicle_name}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
-                      {r.start_date && r.end_date
-                        ? <>{r.start_date}{r.start_time ? ` ${r.start_time}` : ""} → {r.end_date}{r.end_time ? ` ${r.end_time}` : ""}</>
-                        : `${r.days}j (Pack)`}
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground max-w-[150px] truncate">{r.options || "—"}</TableCell>
-                    <TableCell className="text-sm">{r.est_km}</TableCell>
-                    <TableCell className="text-sm font-bold text-primary whitespace-nowrap">{Number(r.total_chf).toFixed(2)} CHF</TableCell>
                     <TableCell>
                       <button onClick={() => deleteReservation(r.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" aria-label="Supprimer">
                         <Trash2 className="h-4 w-4" />
