@@ -482,7 +482,7 @@ const Admin = () => {
 
           {/* ========== RESERVATIONS B2C ========== */}
           <TabsContent value="reservations-b2c">
-            <ReservationTable items={b2cReservations} source="b2c" statusFilter={statusFilterB2c} onStatusFilterChange={setStatusFilterB2c} />
+            <ReservationTable items={b2cReservations} source="b2c" statusFilter={statusFilterB2c} onStatusFilterChange={setStatusFilterB2c} promoFilter={promoFilterB2c} onPromoFilterChange={setPromoFilterB2c} />
           </TabsContent>
 
           {/* ========== RESERVATIONS B2B ========== */}
