@@ -307,8 +307,9 @@ const Admin = () => {
     return planLabels[r.plan] || r.plan;
   };
 
-  const ReservationTable = ({ items, source, statusFilter, onStatusFilterChange }: { items: Reservation[]; source: "b2c" | "b2b"; statusFilter: string; onStatusFilterChange: (v: string) => void }) => {
-    const filtered = statusFilter === "all" ? items : items.filter((r) => r.status === statusFilter);
+  const ReservationTable = ({ items, source, statusFilter, onStatusFilterChange, promoFilter, onPromoFilterChange }: { items: Reservation[]; source: "b2c" | "b2b"; statusFilter: string; onStatusFilterChange: (v: string) => void; promoFilter: boolean; onPromoFilterChange: (v: boolean) => void }) => {
+    let filtered = statusFilter === "all" ? items : items.filter((r) => r.status === statusFilter);
+    if (promoFilter) filtered = filtered.filter((r) => !!r.promo_code);
     return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
