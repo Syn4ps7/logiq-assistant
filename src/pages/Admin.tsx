@@ -310,11 +310,18 @@ const Admin = () => {
   const ReservationTable = ({ items, source, statusFilter, onStatusFilterChange, promoFilter, onPromoFilterChange }: { items: Reservation[]; source: "b2c" | "b2b"; statusFilter: string; onStatusFilterChange: (v: string) => void; promoFilter: boolean; onPromoFilterChange: (v: boolean) => void }) => {
     let filtered = statusFilter === "all" ? items : items.filter((r) => r.status === statusFilter);
     if (promoFilter) filtered = filtered.filter((r) => !!r.promo_code);
+    const totalDiscount = filtered.reduce((sum, r) => sum + (Number(r.discount_amount) || 0), 0);
     return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-3">
           <p className="text-muted-foreground text-sm">{filtered.length} réservation{filtered.length !== 1 ? "s" : ""}</p>
+          {totalDiscount > 0 && (
+            <Badge variant="secondary" className="gap-1 text-xs">
+              <Tag className="h-3 w-3" />
+              Total réductions : -{totalDiscount.toFixed(2)} CHF
+            </Badge>
+          )}
           <Select value={statusFilter} onValueChange={onStatusFilterChange}>
             <SelectTrigger className="w-[160px] h-8 text-xs">
               <Filter className="h-3.5 w-3.5 mr-1.5" />
