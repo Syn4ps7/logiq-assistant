@@ -6,7 +6,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart, Filter, Tag, Pencil, Save, X } from "lucide-react";
+import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart, Filter, Tag, Pencil, Save, X, TrendingUp, Hash, PercentCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
@@ -462,6 +462,35 @@ const Admin = () => {
             </Button>
           </div>
         </div>
+
+        {/* ========== SUMMARY CARDS ========== */}
+        {(() => {
+          const allRes = reservations;
+          const totalCA = allRes.reduce((s, r) => s + Number(r.total_chf), 0);
+          const totalReductions = allRes.reduce((s, r) => s + (Number(r.discount_amount) || 0), 0);
+          const paidCount = allRes.filter((r) => r.status === "paid").length;
+          const promoCount = allRes.filter((r) => !!r.promo_code).length;
+          return (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="rounded-lg border bg-card p-4 space-y-1">
+                <p className="text-xs text-muted-foreground flex items-center gap-1"><TrendingUp className="h-3.5 w-3.5" /> CA Total</p>
+                <p className="text-xl font-bold">{totalCA.toFixed(2)} <span className="text-sm font-normal text-muted-foreground">CHF</span></p>
+              </div>
+              <div className="rounded-lg border bg-card p-4 space-y-1">
+                <p className="text-xs text-muted-foreground flex items-center gap-1"><Hash className="h-3.5 w-3.5" /> Réservations</p>
+                <p className="text-xl font-bold">{allRes.length} <span className="text-sm font-normal text-muted-foreground">dont {paidCount} payée{paidCount !== 1 ? "s" : ""}</span></p>
+              </div>
+              <div className="rounded-lg border bg-card p-4 space-y-1">
+                <p className="text-xs text-muted-foreground flex items-center gap-1"><Tag className="h-3.5 w-3.5" /> Réductions accordées</p>
+                <p className="text-xl font-bold text-primary">-{totalReductions.toFixed(2)} <span className="text-sm font-normal">CHF</span></p>
+              </div>
+              <div className="rounded-lg border bg-card p-4 space-y-1">
+                <p className="text-xs text-muted-foreground flex items-center gap-1"><PercentCircle className="h-3.5 w-3.5" /> Avec promo</p>
+                <p className="text-xl font-bold">{promoCount} <span className="text-sm font-normal text-muted-foreground">/ {allRes.length}</span></p>
+              </div>
+            </div>
+          );
+        })()}
 
         <Tabs defaultValue="reservations-b2c" className="space-y-6">
           <TabsList className="flex-wrap">
