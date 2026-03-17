@@ -714,10 +714,24 @@ const Reservation = () => {
                         </div>
                       </>
                     ) : (
-                      <div className="flex justify-between font-bold text-base pt-2 border-t">
-                        <span>{t("reservation.totalEstimate")}</span>
-                        <span className="text-primary">{price.total.toFixed(2)} CHF</span>
-                      </div>
+                      <>
+                        {promoValid && discountedTotal !== null && (
+                          <>
+                            <div className="flex justify-between pt-2 border-t">
+                              <span>Sous-total</span>
+                              <span>{price.total.toFixed(2)} CHF</span>
+                            </div>
+                            <div className="flex justify-between text-green-600 dark:text-green-400">
+                              <span className="flex items-center gap-1"><Tag className="h-3.5 w-3.5" /> Code {promoCode.toUpperCase()} (-{promoValid.discount_percent}%)</span>
+                              <span>-{(discountAmount || 0).toFixed(2)} CHF</span>
+                            </div>
+                          </>
+                        )}
+                        <div className="flex justify-between font-bold text-base pt-2 border-t">
+                          <span>{t("reservation.totalEstimate")}</span>
+                          <span className="text-primary">{(discountedTotal ?? price.total).toFixed(2)} CHF</span>
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
