@@ -780,6 +780,7 @@ const Reservation = () => {
                 </div>
               )}
 
+              <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setStep(1)}>{t("reservation.back")}</Button>
                 <Button variant="hero" onClick={handleConfirm} disabled={!canConfirm || isSending}>
                   {isSending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
