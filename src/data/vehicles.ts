@@ -48,6 +48,7 @@ export const vehicles: Vehicle[] = [
   {
     id: "utilitaire-2",
     name: "Newton — 13 m³",
+    tagline: "La première loi d'un déménagement sans friction.",
     priceDay: 129,
     specs: {
       volume: "13 m³",
