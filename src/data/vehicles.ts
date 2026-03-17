@@ -28,7 +28,7 @@ import van2Interior from "@/assets/van2-interior.webp";
 export const vehicles: Vehicle[] = [
   {
     id: "utilitaire-1",
-    name: "Utilitaire 1 — 13 m³",
+    name: "Einstein — 13 m³",
     priceDay: 129,
     specs: {
       volume: "13 m³",
@@ -45,7 +45,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "utilitaire-2",
-    name: "Utilitaire 2 — 13 m³",
+    name: "Newton — 13 m³",
     priceDay: 129,
     specs: {
       volume: "13 m³",
@@ -62,7 +62,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "utilitaire-3",
-    name: "Utilitaire 3 — 13 m³",
+    name: "Galilée — 13 m³",
     priceDay: 129,
     specs: {
       volume: "13 m³",
@@ -79,7 +79,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "utilitaire-4",
-    name: "Utilitaire 4 — 13 m³",
+    name: "Curie — 13 m³",
     priceDay: 129,
     specs: {
       volume: "13 m³",
@@ -96,7 +96,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "utilitaire-5",
-    name: "Utilitaire 5 — 13 m³",
+    name: "Tesla — 13 m³",
     priceDay: 129,
     specs: {
       volume: "13 m³",
@@ -114,7 +114,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "utilitaire-6",
-    name: "Utilitaire 6 — 13 m³",
+    name: "Da Vinci — 13 m³",
     priceDay: 129,
     specs: {
       volume: "13 m³",
