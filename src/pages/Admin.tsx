@@ -342,16 +342,12 @@ const Admin = () => {
               <TableHeader>
                 <TableRow className="bg-muted/50">
                   <TableHead>Date</TableHead>
-                  <TableHead>Réf.</TableHead>
+                  <TableHead>Total</TableHead>
                   <TableHead>Statut</TableHead>
+                  <TableHead>Réf.</TableHead>
                   <TableHead>Client</TableHead>
                   <TableHead>Contact</TableHead>
-                  <TableHead>Formule</TableHead>
                   <TableHead>Véhicule</TableHead>
-                  <TableHead>Dates</TableHead>
-                  <TableHead>Options</TableHead>
-                  <TableHead>Km</TableHead>
-                  <TableHead>Total</TableHead>
                   <TableHead className="w-10"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -361,23 +357,15 @@ const Admin = () => {
                     <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
                       {fmtDate(r.created_at)}<br /><span className="opacity-60">{fmtTime(r.created_at)}</span>
                     </TableCell>
-                    <TableCell className="font-mono text-xs">{r.reference}</TableCell>
+                    <TableCell className="text-sm font-bold text-primary whitespace-nowrap">{Number(r.total_chf).toFixed(2)} CHF</TableCell>
                     <TableCell><StatusBadge status={r.status} /></TableCell>
+                    <TableCell className="font-mono text-xs">{r.reference}</TableCell>
                     <TableCell>
                       <div className="font-medium text-sm">{r.contact_name}</div>
                       <div className="text-xs text-muted-foreground">{r.contact_email}</div>
                     </TableCell>
                     <TableCell className="text-sm">{r.contact_phone}</TableCell>
-                    <TableCell className="text-sm font-medium">{planLabel(r)}</TableCell>
                     <TableCell className="text-sm">{r.vehicle_name}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
-                      {r.start_date && r.end_date
-                        ? <>{r.start_date}{r.start_time ? ` ${r.start_time}` : ""} → {r.end_date}{r.end_time ? ` ${r.end_time}` : ""}</>
-                        : `${r.days}j (Pack)`}
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground max-w-[150px] truncate">{r.options || "—"}</TableCell>
-                    <TableCell className="text-sm">{r.est_km}</TableCell>
-                    <TableCell className="text-sm font-bold text-primary whitespace-nowrap">{Number(r.total_chf).toFixed(2)} CHF</TableCell>
                     <TableCell>
                       <button onClick={() => deleteReservation(r.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" aria-label="Supprimer">
                         <Trash2 className="h-4 w-4" />
@@ -394,28 +382,23 @@ const Admin = () => {
               <div key={r.id} className="p-4 border rounded-xl bg-card space-y-3">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="font-semibold">{r.contact_name}</p>
-                    <p className="text-xs text-muted-foreground font-mono">{r.reference}</p>
+                    <span className="text-sm font-bold text-primary">{Number(r.total_chf).toFixed(2)} CHF</span>
+                    <p className="text-xs text-muted-foreground">{fmtDate(r.created_at)}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <StatusBadge status={r.status} />
-                    <span className="text-sm font-bold text-primary">{Number(r.total_chf).toFixed(2)} CHF</span>
                     <button onClick={() => deleteReservation(r.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 gap-1.5 text-sm">
+                <div className="space-y-1.5 text-sm">
+                  <p className="font-mono text-xs text-muted-foreground">{r.reference}</p>
+                  <p className="font-semibold">{r.contact_name}</p>
                   <div className="flex items-center gap-2 text-muted-foreground"><Phone className="h-3.5 w-3.5" /> {r.contact_phone}</div>
                   <div className="flex items-center gap-2 text-muted-foreground"><Mail className="h-3.5 w-3.5" /> {r.contact_email}</div>
-                  <div className="flex items-center gap-2 text-muted-foreground"><Calendar className="h-3.5 w-3.5" /> {fmtDate(r.created_at)}</div>
                 </div>
-                <div className="flex flex-wrap gap-1.5">
-                  <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">{planLabel(r)}</span>
-                  <span className="text-xs bg-muted px-2 py-0.5 rounded-full">{r.vehicle_name}</span>
-                  <span className="text-xs bg-muted px-2 py-0.5 rounded-full">{r.est_km} km</span>
-                </div>
-                {r.options && <p className="text-xs text-muted-foreground">Options : {r.options}</p>}
+                <span className="text-xs bg-muted px-2 py-0.5 rounded-full">{r.vehicle_name}</span>
               </div>
             ))}
           </div>
