@@ -141,6 +141,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
         <div className="mb-4">
           <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{vehicle.name}</h3>
           <p className="text-sm text-muted-foreground italic mt-1">{vehicle.tagline}</p>
+        </div>
 
         {/* Specs grid */}
         <div className="grid grid-cols-2 gap-3 mb-5">
