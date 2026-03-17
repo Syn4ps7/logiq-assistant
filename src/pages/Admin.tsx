@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart, Filter, Tag, Pencil, Save, X, TrendingUp, Hash, PercentCircle } from "lucide-react";
+import { AdminKpiWidgets } from "@/components/admin/AdminKpiWidgets";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
@@ -491,6 +492,9 @@ const Admin = () => {
             </div>
           );
         })()}
+
+        {/* ========== KPI WIDGETS ========== */}
+        <AdminKpiWidgets reservations={reservations} />
 
         <Tabs defaultValue="reservations-b2c" className="space-y-6">
           <TabsList className="flex-wrap">
