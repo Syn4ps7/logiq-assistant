@@ -66,6 +66,7 @@ export const vehicles: Vehicle[] = [
   {
     id: "utilitaire-3",
     name: "Galilée — 13 m³",
+    tagline: "Une nouvelle vision de l'utilitaire. Le monde tourne, votre location aussi, 24/7.",
     priceDay: 129,
     specs: {
       volume: "13 m³",
