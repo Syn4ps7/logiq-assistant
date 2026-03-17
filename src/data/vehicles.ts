@@ -17,6 +17,7 @@ export interface Vehicle {
     interior: string;
   };
   availability: boolean;
+  comingSoon?: boolean;
 }
 
 import van1Exterior from "@/assets/van1-exterior.webp";
