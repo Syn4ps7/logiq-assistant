@@ -49,6 +49,10 @@ const Reservation = () => {
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  const [promoCode, setPromoCode] = useState("");
+  const [promoValid, setPromoValid] = useState<null | { id: string; discount_percent: number }>(null);
+  const [promoError, setPromoError] = useState("");
+  const [promoChecking, setPromoChecking] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const isProCheckout = searchParams.get("source") === "pro";
