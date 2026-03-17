@@ -137,10 +137,12 @@ const Admin = () => {
 
   const fetchAll = async () => {
     setLoading(true);
-    const [proRes, contactRes, reservationRes] = await Promise.all([
+    const [proRes, contactRes, reservationRes, promoRes, usageRes] = await Promise.all([
       supabase.from("pro_leads").select("*").order("created_at", { ascending: false }),
       supabase.from("contact_leads").select("*").order("created_at", { ascending: false }),
       supabase.from("reservations").select("*").order("created_at", { ascending: false }),
+      supabase.from("promo_codes").select("*").order("created_at", { ascending: false }),
+      supabase.from("promo_usage").select("*").order("created_at", { ascending: false }),
     ]);
     if (proRes.error) toast({ title: "Erreur", description: proRes.error.message, variant: "destructive" });
     else setLeads(proRes.data || []);
@@ -148,6 +150,31 @@ const Admin = () => {
     else setContactLeads(contactRes.data || []);
     if (reservationRes.error) toast({ title: "Erreur", description: reservationRes.error.message, variant: "destructive" });
     else setReservations(reservationRes.data || []);
+    setPromoCodes(promoRes.data || []);
+    setPromoUsage(usageRes.data || []);
+    setLoading(false);
+  };
+
+  const updatePromoCode = async (id: string) => {
+    if (!editCode.trim()) return;
+    const { error } = await supabase.from("promo_codes").update({
+      code: editCode.trim().toUpperCase(),
+      discount_percent: Number(editDiscount) || 15,
+      updated_at: new Date().toISOString(),
+    }).eq("id", id);
+    if (error) toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    else {
+      toast({ title: "Code promo mis à jour" });
+      setEditingPromo(null);
+      fetchAll();
+    }
+  };
+
+  const togglePromoActive = async (id: string, current: boolean) => {
+    const { error } = await supabase.from("promo_codes").update({ is_active: !current }).eq("id", id);
+    if (error) toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    else fetchAll();
+  };
     setLoading(false);
   };
 
