@@ -240,6 +240,8 @@ const Reservation = () => {
       .join(", ");
     const reference = Date.now().toString(36).toUpperCase();
 
+    const finalTotal = discountedTotal ?? price.total;
+
     try {
       // Save to database
       await supabase.from("reservations").insert({
@@ -259,13 +261,26 @@ const Reservation = () => {
         days: price.days,
         options: optionNames || null,
         est_km: estKm,
-        total_chf: price.total,
+        total_chf: finalTotal,
+        promo_code: promoValid ? promoCode.trim().toUpperCase() : null,
+        discount_percent: promoValid ? promoValid.discount_percent : 0,
+        discount_amount: discountAmount || 0,
         delivery_address: deliveryAddress || null,
         delivery_npa: deliveryNpa || null,
         delivery_city: deliveryCity || null,
         delivery_phone: deliveryPhone || null,
         delivery_instructions: deliveryInstructions || null,
       });
+
+      // Record promo usage
+      if (promoValid) {
+        await supabase.from("promo_usage").insert({
+          promo_code_id: promoValid.id,
+          customer_email: contactEmail.trim().toLowerCase(),
+          reservation_reference: reference,
+          discount_amount: discountAmount || 0,
+        });
+      }
 
       // Send email notification (non-blocking)
       emailjs.send(
@@ -282,20 +297,20 @@ const Reservation = () => {
           duree: price.days,
           vehicule: vehicle?.name || "",
           options: optionNames || "Aucune",
-          tarif: price.total.toFixed(2) + " CHF",
+          tarif: finalTotal.toFixed(2) + " CHF",
         },
         "txxckOr0_mZu2OaXQ"
       ).catch((err) => console.error("EmailJS error:", err));
 
       // Redirect to Stripe Checkout
-      const description = `${price.planName} — ${vehicle?.name || ""} — ${price.days}j`;
+      const description = `${price.planName} — ${vehicle?.name || ""} — ${price.days}j${promoValid ? ` (promo -${promoValid.discount_percent}%)` : ""}`;
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: {
           reference,
           customerEmail: contactEmail,
           customerName: contactName,
           description,
-          amountCHF: price.total,
+          amountCHF: finalTotal,
         },
       });
 
