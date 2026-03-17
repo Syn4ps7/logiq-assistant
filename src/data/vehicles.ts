@@ -1,6 +1,7 @@
 export interface Vehicle {
   id: string;
   name: string;
+  tagline: string;
   priceDay: number; // base daily rate (Week rate)
   specs: {
     volume: string;
