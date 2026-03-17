@@ -114,7 +114,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "utilitaire-6",
-    name: "Utilitaire 6 — 13 m³",
+    name: "Da Vinci — 13 m³",
     priceDay: 129,
     specs: {
       volume: "13 m³",
