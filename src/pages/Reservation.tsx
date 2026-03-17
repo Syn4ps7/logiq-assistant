@@ -174,13 +174,20 @@ const Reservation = () => {
     // Check code exists and is active
     const { data: codeData } = await supabase
       .from("promo_codes")
-      .select("id, discount_percent")
+      .select("id, discount_percent, expires_at")
       .eq("code", promoCode.trim().toUpperCase())
       .eq("is_active", true)
       .maybeSingle();
 
     if (!codeData) {
       setPromoError("Code promo invalide ou expiré.");
+      setPromoChecking(false);
+      return;
+    }
+
+    // Check expiration
+    if (codeData.expires_at && new Date(codeData.expires_at) < new Date()) {
+      setPromoError("Ce code promo a expiré.");
       setPromoChecking(false);
       return;
     }

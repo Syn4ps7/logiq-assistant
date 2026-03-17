@@ -79,6 +79,7 @@ export type Database = {
           code: string
           created_at: string
           discount_percent: number
+          expires_at: string | null
           id: string
           is_active: boolean
           updated_at: string
@@ -87,6 +88,7 @@ export type Database = {
           code: string
           created_at?: string
           discount_percent?: number
+          expires_at?: string | null
           id?: string
           is_active?: boolean
           updated_at?: string
@@ -95,6 +97,7 @@ export type Database = {
           code?: string
           created_at?: string
           discount_percent?: number
+          expires_at?: string | null
           id?: string
           is_active?: boolean
           updated_at?: string
