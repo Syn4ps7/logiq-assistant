@@ -346,6 +346,7 @@ const Admin = () => {
                 <TableRow className="bg-muted/50">
                   <TableHead>Date</TableHead>
                   <TableHead>Total</TableHead>
+                  <TableHead>Promo</TableHead>
                   <TableHead>Statut</TableHead>
                   <TableHead>Réf.</TableHead>
                   <TableHead>Client</TableHead>
