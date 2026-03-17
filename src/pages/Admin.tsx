@@ -104,6 +104,8 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [statusFilterB2c, setStatusFilterB2c] = useState<string>("all");
   const [statusFilterB2b, setStatusFilterB2b] = useState<string>("all");
+  const [promoFilterB2c, setPromoFilterB2c] = useState(false);
+  const [promoFilterB2b, setPromoFilterB2b] = useState(false);
   const [editingPromo, setEditingPromo] = useState<string | null>(null);
   const [editCode, setEditCode] = useState("");
   const [editDiscount, setEditDiscount] = useState("");
@@ -305,8 +307,9 @@ const Admin = () => {
     return planLabels[r.plan] || r.plan;
   };
 
-  const ReservationTable = ({ items, source, statusFilter, onStatusFilterChange }: { items: Reservation[]; source: "b2c" | "b2b"; statusFilter: string; onStatusFilterChange: (v: string) => void }) => {
-    const filtered = statusFilter === "all" ? items : items.filter((r) => r.status === statusFilter);
+  const ReservationTable = ({ items, source, statusFilter, onStatusFilterChange, promoFilter, onPromoFilterChange }: { items: Reservation[]; source: "b2c" | "b2b"; statusFilter: string; onStatusFilterChange: (v: string) => void; promoFilter: boolean; onPromoFilterChange: (v: boolean) => void }) => {
+    let filtered = statusFilter === "all" ? items : items.filter((r) => r.status === statusFilter);
+    if (promoFilter) filtered = filtered.filter((r) => !!r.promo_code);
     return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
@@ -324,6 +327,13 @@ const Admin = () => {
               <SelectItem value="canceled">Annulé</SelectItem>
             </SelectContent>
           </Select>
+          <button
+            onClick={() => onPromoFilterChange(!promoFilter)}
+            className={`inline-flex items-center gap-1.5 px-3 h-8 rounded-md border text-xs font-medium transition-colors ${promoFilter ? "bg-primary text-primary-foreground border-primary" : "bg-background text-muted-foreground border-input hover:bg-muted"}`}
+          >
+            <Tag className="h-3.5 w-3.5" />
+            Promo
+          </button>
         </div>
         {filtered.length > 0 && (
           <Button variant="outline" size="sm" onClick={() => exportReservationsCsv(source)}><Download className="h-4 w-4 mr-1" /> CSV</Button>
@@ -472,12 +482,12 @@ const Admin = () => {
 
           {/* ========== RESERVATIONS B2C ========== */}
           <TabsContent value="reservations-b2c">
-            <ReservationTable items={b2cReservations} source="b2c" statusFilter={statusFilterB2c} onStatusFilterChange={setStatusFilterB2c} />
+            <ReservationTable items={b2cReservations} source="b2c" statusFilter={statusFilterB2c} onStatusFilterChange={setStatusFilterB2c} promoFilter={promoFilterB2c} onPromoFilterChange={setPromoFilterB2c} />
           </TabsContent>
 
           {/* ========== RESERVATIONS B2B ========== */}
           <TabsContent value="reservations-b2b">
-            <ReservationTable items={b2bReservations} source="b2b" statusFilter={statusFilterB2b} onStatusFilterChange={setStatusFilterB2b} />
+            <ReservationTable items={b2bReservations} source="b2b" statusFilter={statusFilterB2b} onStatusFilterChange={setStatusFilterB2b} promoFilter={promoFilterB2b} onPromoFilterChange={setPromoFilterB2b} />
           </TabsContent>
 
           {/* ========== PRO LEADS TAB ========== */}
