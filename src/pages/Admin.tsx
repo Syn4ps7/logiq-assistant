@@ -6,10 +6,12 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart, Filter } from "lucide-react";
+import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart, Filter, Tag, Pencil, Save, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 
 interface ProLead {
   id: string;
