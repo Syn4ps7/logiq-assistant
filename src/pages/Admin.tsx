@@ -53,6 +53,9 @@ interface Reservation {
   options: string | null;
   est_km: number;
   total_chf: number;
+  promo_code: string | null;
+  discount_percent: number | null;
+  discount_amount: number | null;
   delivery_address: string | null;
   delivery_npa: string | null;
   delivery_city: string | null;
