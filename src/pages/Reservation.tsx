@@ -162,6 +162,54 @@ const Reservation = () => {
 
   const premiumDeliveryValid = !isPremium || (deliveryAddress && deliveryNpa && deliveryCity && deliveryPhone);
 
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim() || !contactEmail.trim()) {
+      setPromoError("Veuillez entrer votre email et un code promo.");
+      return;
+    }
+    setPromoChecking(true);
+    setPromoError("");
+    setPromoValid(null);
+
+    // Check code exists and is active
+    const { data: codeData } = await supabase
+      .from("promo_codes")
+      .select("id, discount_percent")
+      .eq("code", promoCode.trim().toUpperCase())
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (!codeData) {
+      setPromoError("Code promo invalide ou expiré.");
+      setPromoChecking(false);
+      return;
+    }
+
+    // Check if already used by this email
+    const { data: usageData } = await supabase
+      .from("promo_usage")
+      .select("id")
+      .eq("promo_code_id", codeData.id)
+      .eq("customer_email", contactEmail.trim().toLowerCase())
+      .maybeSingle();
+
+    if (usageData) {
+      setPromoError("Ce code a déjà été utilisé avec cette adresse email.");
+      setPromoChecking(false);
+      return;
+    }
+
+    setPromoValid({ id: codeData.id, discount_percent: Number(codeData.discount_percent) });
+    setPromoChecking(false);
+  };
+
+  const discountedTotal = promoValid && price
+    ? roundCHF(price.total * (1 - promoValid.discount_percent / 100))
+    : null;
+  const discountAmount = promoValid && price
+    ? roundCHF(price.total - (discountedTotal || price.total))
+    : 0;
+
   const canProceedStep0 = isPackWithSub || (selectedPlan && (selectedPlan === "week" || selectedPlan === "weekend") && startDate && endDate);
 
   const canConfirm = premiumDeliveryValid && contactName && contactEmail && contactPhone;
