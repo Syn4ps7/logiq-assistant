@@ -61,6 +61,24 @@ interface Reservation {
   created_at: string;
 }
 
+interface PromoCode {
+  id: string;
+  code: string;
+  discount_percent: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface PromoUsage {
+  id: string;
+  promo_code_id: string;
+  customer_email: string;
+  reservation_reference: string;
+  discount_amount: number;
+  created_at: string;
+}
+
 const statusConfig: Record<string, { label: string; className: string }> = {
   pending: { label: "En attente", className: "bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-700" },
   paid: { label: "Payé", className: "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700" },
@@ -76,10 +94,15 @@ const Admin = () => {
   const [leads, setLeads] = useState<ProLead[]>([]);
   const [contactLeads, setContactLeads] = useState<ContactLead[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
+  const [promoUsage, setPromoUsage] = useState<PromoUsage[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [statusFilterB2c, setStatusFilterB2c] = useState<string>("all");
   const [statusFilterB2b, setStatusFilterB2b] = useState<string>("all");
+  const [editingPromo, setEditingPromo] = useState<string | null>(null);
+  const [editCode, setEditCode] = useState("");
+  const [editDiscount, setEditDiscount] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
