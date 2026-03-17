@@ -175,8 +175,6 @@ const Admin = () => {
     if (error) toast({ title: "Erreur", description: error.message, variant: "destructive" });
     else fetchAll();
   };
-    setLoading(false);
-  };
 
   const deleteProLead = async (id: string) => {
     const { error } = await supabase.from("pro_leads").delete().eq("id", id);
