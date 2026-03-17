@@ -1,6 +1,7 @@
 export interface Vehicle {
   id: string;
   name: string;
+  tagline: string;
   priceDay: number; // base daily rate (Week rate)
   specs: {
     volume: string;
@@ -29,6 +30,7 @@ export const vehicles: Vehicle[] = [
   {
     id: "utilitaire-1",
     name: "Einstein — 13 m³",
+    tagline: "La preuve que l'espace est relatif. Surtout avec 13 m³ à l'arrière.",
     priceDay: 129,
     specs: {
       volume: "13 m³",
@@ -46,6 +48,7 @@ export const vehicles: Vehicle[] = [
   {
     id: "utilitaire-2",
     name: "Newton — 13 m³",
+    tagline: "La première loi d'un déménagement sans friction.",
     priceDay: 129,
     specs: {
       volume: "13 m³",
@@ -63,6 +66,7 @@ export const vehicles: Vehicle[] = [
   {
     id: "utilitaire-3",
     name: "Galilée — 13 m³",
+    tagline: "Une nouvelle vision de l'utilitaire. Le monde tourne, votre location aussi, 24/7.",
     priceDay: 129,
     specs: {
       volume: "13 m³",
@@ -80,6 +84,7 @@ export const vehicles: Vehicle[] = [
   {
     id: "utilitaire-4",
     name: "Curie — 13 m³",
+    tagline: "L'élément indispensable pour une logistique qui rayonne.",
     priceDay: 129,
     specs: {
       volume: "13 m³",
@@ -97,6 +102,7 @@ export const vehicles: Vehicle[] = [
   {
     id: "utilitaire-5",
     name: "Tesla — 13 m³",
+    tagline: "13 m³ de génie brut. Et promis, pas besoin de le brancher.",
     priceDay: 129,
     specs: {
       volume: "13 m³",
@@ -115,6 +121,7 @@ export const vehicles: Vehicle[] = [
   {
     id: "utilitaire-6",
     name: "Da Vinci — 13 m³",
+    tagline: "L'art de tout transporter, la science de la perfection.",
     priceDay: 129,
     specs: {
       volume: "13 m³",

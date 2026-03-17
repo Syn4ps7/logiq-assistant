@@ -53,6 +53,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
         <div className="p-6 opacity-60">
           <div className="mb-4">
             <h3 className="font-bold text-lg">{vehicle.name}</h3>
+            <p className="text-sm text-muted-foreground italic mt-1">{vehicle.tagline}</p>
           </div>
 
           {/* Specs grid */}
@@ -139,6 +140,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
       <div className="p-6">
         <div className="mb-4">
           <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{vehicle.name}</h3>
+          <p className="text-sm text-muted-foreground italic mt-1">{vehicle.tagline}</p>
         </div>
 
         {/* Specs grid */}
