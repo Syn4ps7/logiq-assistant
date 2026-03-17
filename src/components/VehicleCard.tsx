@@ -53,7 +53,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
         <div className="p-6 opacity-60">
           <div className="mb-4">
             <h3 className="font-bold text-lg">{vehicle.name}</h3>
-          </div>
+            <p className="text-sm text-muted-foreground italic mt-1">{vehicle.tagline}</p>
 
           {/* Specs grid */}
           <div className="grid grid-cols-2 gap-3 mb-5">
