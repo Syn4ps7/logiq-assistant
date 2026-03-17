@@ -633,18 +633,42 @@ const Admin = () => {
 
           {/* ========== PROMOTIONS TAB ========== */}
           <TabsContent value="promotions" className="space-y-6">
+            {/* Create new promo code */}
+            <div className="p-4 border-2 border-dashed rounded-xl bg-card space-y-3">
+              <h3 className="font-semibold text-lg">Créer un code promo</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Code</label>
+                  <Input value={newCode} onChange={(e) => setNewCode(e.target.value.toUpperCase())} placeholder="EX: SUMMER25" className="uppercase" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Réduction (%)</label>
+                  <Input type="number" value={newDiscount} onChange={(e) => setNewDiscount(e.target.value)} min={1} max={100} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Expire le (optionnel)</label>
+                  <Input type="date" value={newExpires} onChange={(e) => setNewExpires(e.target.value)} />
+                </div>
+              </div>
+              <Button size="sm" onClick={createPromoCode} disabled={creatingPromo || !newCode.trim()}>
+                {creatingPromo ? <RefreshCw className="h-4 w-4 animate-spin mr-1" /> : <Tag className="h-4 w-4 mr-1" />} Créer
+              </Button>
+            </div>
+
             {/* Promo codes management */}
             <div className="space-y-4">
-              <h3 className="font-semibold text-lg">Codes promo</h3>
+              <h3 className="font-semibold text-lg">Codes promo existants</h3>
               {promoCodes.length === 0 ? (
                 <p className="text-muted-foreground text-sm">Aucun code promo configuré.</p>
               ) : (
                 <div className="space-y-3">
-                  {promoCodes.map((promo) => (
+                  {promoCodes.map((promo) => {
+                    const isExpired = promo.expires_at && new Date(promo.expires_at) < new Date();
+                    return (
                     <div key={promo.id} className="p-4 border rounded-xl bg-card space-y-3">
                       {editingPromo === promo.id ? (
                         <div className="space-y-3">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div>
                               <label className="block text-sm font-medium mb-1">Code</label>
                               <Input value={editCode} onChange={(e) => setEditCode(e.target.value.toUpperCase())} className="uppercase" />
@@ -652,6 +676,10 @@ const Admin = () => {
                             <div>
                               <label className="block text-sm font-medium mb-1">Réduction (%)</label>
                               <Input type="number" value={editDiscount} onChange={(e) => setEditDiscount(e.target.value)} min={1} max={100} />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium mb-1">Expire le (optionnel)</label>
+                              <Input type="date" value={editExpires} onChange={(e) => setEditExpires(e.target.value)} />
                             </div>
                           </div>
                           <div className="flex gap-2">
@@ -669,24 +697,34 @@ const Admin = () => {
                             <div>
                               <span className="font-mono text-lg font-bold">{promo.code}</span>
                               <p className="text-sm text-muted-foreground">-{promo.discount_percent}% de réduction</p>
+                              {promo.expires_at && (
+                                <p className={`text-xs ${isExpired ? "text-destructive" : "text-muted-foreground"}`}>
+                                  {isExpired ? "Expiré le" : "Expire le"} {new Date(promo.expires_at).toLocaleDateString("fr-CH")}
+                                </p>
+                              )}
                             </div>
                             <div className="flex items-center gap-2">
                               <Switch checked={promo.is_active} onCheckedChange={() => togglePromoActive(promo.id, promo.is_active)} />
                               <span className="text-sm">{promo.is_active ? "Actif" : "Inactif"}</span>
+                              {isExpired && <Badge variant="destructive" className="text-xs">Expiré</Badge>}
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-muted-foreground">
                               {promoUsage.filter((u) => u.promo_code_id === promo.id).length} utilisation(s)
                             </span>
-                            <Button variant="outline" size="sm" onClick={() => { setEditingPromo(promo.id); setEditCode(promo.code); setEditDiscount(String(promo.discount_percent)); }}>
+                            <Button variant="outline" size="sm" onClick={() => { setEditingPromo(promo.id); setEditCode(promo.code); setEditDiscount(String(promo.discount_percent)); setEditExpires(promo.expires_at ? promo.expires_at.slice(0, 10) : ""); }}>
                               <Pencil className="h-4 w-4 mr-1" /> Modifier
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => deletePromoCode(promo.id)}>
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
                       )}
                     </div>
-                  ))}
+                  );
+                  })}
                 </div>
               )}
             </div>
