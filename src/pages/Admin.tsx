@@ -427,6 +427,10 @@ const Admin = () => {
               <User className="h-4 w-4" /> Leads Particuliers
               {contactLeads.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{contactLeads.length}</span>}
             </TabsTrigger>
+            <TabsTrigger value="promotions" className="gap-1.5">
+              <Tag className="h-4 w-4" /> Promotions
+              {promoCodes.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{promoCodes.length}</span>}
+            </TabsTrigger>
           </TabsList>
 
           {/* ========== RESERVATIONS B2C ========== */}
