@@ -104,6 +104,8 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [statusFilterB2c, setStatusFilterB2c] = useState<string>("all");
   const [statusFilterB2b, setStatusFilterB2b] = useState<string>("all");
+  const [promoFilterB2c, setPromoFilterB2c] = useState(false);
+  const [promoFilterB2b, setPromoFilterB2b] = useState(false);
   const [editingPromo, setEditingPromo] = useState<string | null>(null);
   const [editCode, setEditCode] = useState("");
   const [editDiscount, setEditDiscount] = useState("");
