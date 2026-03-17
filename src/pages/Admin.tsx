@@ -599,6 +599,130 @@ const Admin = () => {
               </>
             )}
           </TabsContent>
+
+          {/* ========== PROMOTIONS TAB ========== */}
+          <TabsContent value="promotions" className="space-y-6">
+            {/* Promo codes management */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Codes promo</h3>
+              {promoCodes.length === 0 ? (
+                <p className="text-muted-foreground text-sm">Aucun code promo configuré.</p>
+              ) : (
+                <div className="space-y-3">
+                  {promoCodes.map((promo) => (
+                    <div key={promo.id} className="p-4 border rounded-xl bg-card space-y-3">
+                      {editingPromo === promo.id ? (
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-sm font-medium mb-1">Code</label>
+                              <Input value={editCode} onChange={(e) => setEditCode(e.target.value.toUpperCase())} className="uppercase" />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium mb-1">Réduction (%)</label>
+                              <Input type="number" value={editDiscount} onChange={(e) => setEditDiscount(e.target.value)} min={1} max={100} />
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={() => updatePromoCode(promo.id)}>
+                              <Save className="h-4 w-4 mr-1" /> Enregistrer
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={() => setEditingPromo(null)}>
+                              <X className="h-4 w-4 mr-1" /> Annuler
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between flex-wrap gap-3">
+                          <div className="flex items-center gap-4">
+                            <div>
+                              <span className="font-mono text-lg font-bold">{promo.code}</span>
+                              <p className="text-sm text-muted-foreground">-{promo.discount_percent}% de réduction</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch checked={promo.is_active} onCheckedChange={() => togglePromoActive(promo.id, promo.is_active)} />
+                              <span className="text-sm">{promo.is_active ? "Actif" : "Inactif"}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">
+                              {promoUsage.filter((u) => u.promo_code_id === promo.id).length} utilisation(s)
+                            </span>
+                            <Button variant="outline" size="sm" onClick={() => { setEditingPromo(promo.id); setEditCode(promo.code); setEditDiscount(String(promo.discount_percent)); }}>
+                              <Pencil className="h-4 w-4 mr-1" /> Modifier
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Promo usage history */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Historique des utilisations</h3>
+              {promoUsage.length === 0 ? (
+                <div className="text-center py-10">
+                  <Tag className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
+                  <p className="text-muted-foreground">Aucune utilisation de code promo pour le moment.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="hidden md:block rounded-xl border overflow-hidden">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="bg-muted/50">
+                          <TableHead>Date</TableHead>
+                          <TableHead>Code</TableHead>
+                          <TableHead>Email client</TableHead>
+                          <TableHead>Réf. réservation</TableHead>
+                          <TableHead>Réduction</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {promoUsage.map((usage) => {
+                          const code = promoCodes.find((p) => p.id === usage.promo_code_id);
+                          return (
+                            <TableRow key={usage.id}>
+                              <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                                {fmtDate(usage.created_at)}<br /><span className="opacity-60">{fmtTime(usage.created_at)}</span>
+                              </TableCell>
+                              <TableCell className="font-mono font-bold">{code?.code || "—"}</TableCell>
+                              <TableCell className="text-sm">{usage.customer_email}</TableCell>
+                              <TableCell className="font-mono text-xs">{usage.reservation_reference}</TableCell>
+                              <TableCell className="text-sm font-medium text-primary">-{Number(usage.discount_amount).toFixed(2)} CHF</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                  <div className="md:hidden space-y-3">
+                    {promoUsage.map((usage) => {
+                      const code = promoCodes.find((p) => p.id === usage.promo_code_id);
+                      return (
+                        <div key={usage.id} className="p-4 border rounded-xl bg-card space-y-2">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <span className="font-mono font-bold">{code?.code || "—"}</span>
+                              <p className="text-xs text-muted-foreground">{usage.customer_email}</p>
+                            </div>
+                            <span className="text-sm font-bold text-primary">-{Number(usage.discount_amount).toFixed(2)} CHF</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Calendar className="h-3.5 w-3.5" /> {fmtDate(usage.created_at)}
+                            <span className="font-mono">{usage.reservation_reference}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
     </main>
