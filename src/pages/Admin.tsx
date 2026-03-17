@@ -53,6 +53,9 @@ interface Reservation {
   options: string | null;
   est_km: number;
   total_chf: number;
+  promo_code: string | null;
+  discount_percent: number | null;
+  discount_amount: number | null;
   delivery_address: string | null;
   delivery_npa: string | null;
   delivery_city: string | null;
@@ -343,6 +346,7 @@ const Admin = () => {
                 <TableRow className="bg-muted/50">
                   <TableHead>Date</TableHead>
                   <TableHead>Total</TableHead>
+                  <TableHead>Promo</TableHead>
                   <TableHead>Statut</TableHead>
                   <TableHead>Réf.</TableHead>
                   <TableHead>Client</TableHead>
@@ -358,6 +362,17 @@ const Admin = () => {
                       {fmtDate(r.created_at)}<br /><span className="opacity-60">{fmtTime(r.created_at)}</span>
                     </TableCell>
                     <TableCell className="text-sm font-bold text-primary whitespace-nowrap">{Number(r.total_chf).toFixed(2)} CHF</TableCell>
+                    <TableCell>
+                      {r.promo_code ? (
+                        <Badge variant="secondary" className="text-xs gap-1">
+                          <Tag className="h-3 w-3" />
+                          {r.promo_code}
+                          {r.discount_percent ? <span className="text-muted-foreground">-{Number(r.discount_percent)}%</span> : null}
+                        </Badge>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
                     <TableCell><StatusBadge status={r.status} /></TableCell>
                     <TableCell className="font-mono text-xs">{r.reference}</TableCell>
                     <TableCell>
@@ -398,7 +413,15 @@ const Admin = () => {
                   <div className="flex items-center gap-2 text-muted-foreground"><Phone className="h-3.5 w-3.5" /> {r.contact_phone}</div>
                   <div className="flex items-center gap-2 text-muted-foreground"><Mail className="h-3.5 w-3.5" /> {r.contact_email}</div>
                 </div>
-                <span className="text-xs bg-muted px-2 py-0.5 rounded-full">{r.vehicle_name}</span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs bg-muted px-2 py-0.5 rounded-full">{r.vehicle_name}</span>
+                  {r.promo_code && (
+                    <Badge variant="secondary" className="text-xs gap-1">
+                      <Tag className="h-3 w-3" />
+                      {r.promo_code} -{Number(r.discount_percent)}%
+                    </Badge>
+                  )}
+                </div>
               </div>
             ))}
           </div>
