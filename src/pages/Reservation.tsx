@@ -756,7 +756,30 @@ const Reservation = () => {
                 </div>
               </div>
 
-              <div className="flex gap-2">
+              {/* Promo code */}
+              {!isProCheckout && (
+                <div className="bg-muted/30 rounded-lg p-4 space-y-3 border">
+                  <h3 className="font-semibold flex items-center gap-2"><Tag className="h-4 w-4 text-primary" /> Code promo</h3>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoValid(null); setPromoError(""); }}
+                      placeholder="Entrez votre code"
+                      className="flex-1 px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none uppercase"
+                    />
+                    <Button variant="outline" size="sm" onClick={handleApplyPromo} disabled={promoChecking || !promoCode.trim() || !contactEmail.trim()}>
+                      {promoChecking ? <Loader2 className="h-4 w-4 animate-spin" /> : "Appliquer"}
+                    </Button>
+                  </div>
+                  {!contactEmail.trim() && promoCode.trim() && (
+                    <p className="text-xs text-muted-foreground">Veuillez d'abord renseigner votre email ci-dessus.</p>
+                  )}
+                  {promoError && <p className="text-xs text-destructive">{promoError}</p>}
+                  {promoValid && <p className="text-xs text-green-600 dark:text-green-400 font-medium">✓ Code appliqué : -{promoValid.discount_percent}% de réduction</p>}
+                </div>
+              )}
+
                 <Button variant="outline" onClick={() => setStep(1)}>{t("reservation.back")}</Button>
                 <Button variant="hero" onClick={handleConfirm} disabled={!canConfirm || isSending}>
                   {isSending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
