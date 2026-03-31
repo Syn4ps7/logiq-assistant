@@ -912,6 +912,99 @@ const Admin = () => {
               )}
             </div>
           </TabsContent>
+
+          {/* ========== USERS TAB ========== */}
+          <TabsContent value="users" className="space-y-6">
+            {/* Create new user */}
+            <div className="flex items-center justify-between">
+              <p className="text-muted-foreground text-sm">{profiles.length} compte{profiles.length !== 1 ? "s" : ""} enregistré{profiles.length !== 1 ? "s" : ""}</p>
+              <Button size="sm" onClick={() => setShowNewUser(!showNewUser)}>
+                <Plus className="h-4 w-4 mr-1" /> Créer un utilisateur
+              </Button>
+            </div>
+
+            {showNewUser && (
+              <div className="p-4 border-2 border-dashed rounded-xl bg-card space-y-3">
+                <h3 className="font-semibold text-lg">Créer un compte pro</h3>
+                <p className="text-sm text-muted-foreground">L'utilisateur devra choisir un nouveau mot de passe à sa première connexion.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Email *</label>
+                    <Input value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} placeholder="email@exemple.com" type="email" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Mot de passe temporaire *</label>
+                    <Input value={newUserPassword} onChange={(e) => setNewUserPassword(e.target.value)} placeholder="Min. 6 caractères" type="text" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Nom du contact *</label>
+                    <Input value={newUserContact} onChange={(e) => setNewUserContact(e.target.value)} placeholder="Jean Dupont" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Entreprise</label>
+                    <Input value={newUserCompany} onChange={(e) => setNewUserCompany(e.target.value)} placeholder="Nom de l'entreprise" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Téléphone</label>
+                    <Input value={newUserPhone} onChange={(e) => setNewUserPhone(e.target.value)} placeholder="+41 XX XXX XX XX" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Ville</label>
+                    <Input value={newUserCity} onChange={(e) => setNewUserCity(e.target.value)} placeholder="Genève" />
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button size="sm" onClick={createUser} disabled={creatingUser}>
+                    {creatingUser ? <RefreshCw className="h-4 w-4 animate-spin mr-1" /> : <Users className="h-4 w-4 mr-1" />} Créer
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setShowNewUser(false)}>
+                    <X className="h-4 w-4 mr-1" /> Annuler
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Users list */}
+            {profiles.length === 0 ? (
+              <div className="text-center py-20">
+                <Users className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
+                <p className="text-muted-foreground">Aucun utilisateur enregistré.</p>
+              </div>
+            ) : (
+              <div className="rounded-xl border overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/50">
+                      <TableHead>Date</TableHead>
+                      <TableHead>Entreprise</TableHead>
+                      <TableHead>Contact</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Téléphone</TableHead>
+                      <TableHead>Ville</TableHead>
+                      <TableHead>Type</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {profiles.map((p) => (
+                      <TableRow key={p.id}>
+                        <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                          {fmtDate(p.created_at)}
+                        </TableCell>
+                        <TableCell className="font-medium">{p.company_name || "—"}</TableCell>
+                        <TableCell>{p.contact_name || "—"}</TableCell>
+                        <TableCell className="text-sm">{p.email}</TableCell>
+                        <TableCell className="text-sm">{p.phone || "—"}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{p.city || "—"}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="text-xs">{p.account_type}</Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
       </div>
     </main>
