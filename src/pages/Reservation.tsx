@@ -269,7 +269,7 @@ const Reservation = () => {
     ? roundCHF(price.total - (discountedTotal || price.total))
     : 0;
 
-  const canProceedStep0 = isPackWithSub || (selectedPlan && (selectedPlan === "week" || selectedPlan === "weekend") && startDate && endDate);
+  const canProceedStep0 = (proTab === "carnet" && selectedCarnet) || isPackWithSub || (selectedPlan && (selectedPlan === "week" || selectedPlan === "weekend") && startDate && endDate);
 
   const canConfirm = premiumDeliveryValid && contactName && contactEmail && contactPhone;
 
