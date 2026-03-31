@@ -1000,7 +1000,9 @@ const Admin = () => {
                       <TableHead>Email</TableHead>
                       <TableHead>Téléphone</TableHead>
                       <TableHead>Ville</TableHead>
+                      <TableHead>IDE/TVA</TableHead>
                       <TableHead>Type</TableHead>
+                      <TableHead className="w-10"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -1014,8 +1016,14 @@ const Admin = () => {
                         <TableCell className="text-sm">{p.email}</TableCell>
                         <TableCell className="text-sm">{p.phone || "—"}</TableCell>
                         <TableCell className="text-sm text-muted-foreground">{p.city || "—"}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{p.ide_tva || "—"}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className="text-xs">{p.account_type}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <button onClick={() => deleteUser(p.user_id, p.email)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" aria-label="Supprimer">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </TableCell>
                       </TableRow>
                     ))}
