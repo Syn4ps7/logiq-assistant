@@ -968,7 +968,7 @@ const Admin = () => {
           <TabsContent value="users" className="space-y-6">
             {/* Create new user */}
             <div className="flex items-center justify-between">
-              <p className="text-muted-foreground text-sm">{profiles.length} compte{profiles.length !== 1 ? "s" : ""} enregistré{profiles.length !== 1 ? "s" : ""}</p>
+              <p className="text-muted-foreground text-sm">{profiles.filter((p) => p.user_id !== adminUserId).length} compte{profiles.filter((p) => p.user_id !== adminUserId).length !== 1 ? "s" : ""} enregistré{profiles.filter((p) => p.user_id !== adminUserId).length !== 1 ? "s" : ""}</p>
               <Button size="sm" onClick={() => setShowNewUser(!showNewUser)}>
                 <Plus className="h-4 w-4 mr-1" /> Créer un utilisateur
               </Button>
