@@ -175,5 +175,15 @@ export function generateProInvoice(data: InvoiceData) {
   y += 4;
   doc.text("Conditions générales disponibles sur logiq-transport.ch/cgl", marginL, y);
 
+  return doc;
+}
+
+export function downloadProInvoice(data: InvoiceData) {
+  const doc = generateProInvoice(data);
   doc.save(`facture-${data.reference}.pdf`);
+}
+
+export function getProInvoiceDataUrl(data: InvoiceData): string {
+  const doc = generateProInvoice(data);
+  return doc.output("dataurlstring");
 }
