@@ -39,6 +39,8 @@ const Reservation = () => {
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(0);
   const [selectedPlan, setSelectedPlan] = useState<RatePlanId | "">("");
+  const [proTab, setProTab] = useState<ProTab>("daily");
+  const [selectedCarnet, setSelectedCarnet] = useState<CarnetId | "">("");
   const [weekendPack, setWeekendPack] = useState<WeekendPack | "">("");
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("07:00");
