@@ -631,7 +631,7 @@ const Admin = () => {
             </TabsTrigger>
             <TabsTrigger value="users" className="gap-1.5 text-xs sm:text-sm whitespace-nowrap">
               <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Utilisateurs
-              {profiles.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{profiles.length}</span>}
+              {profiles.filter((p) => p.user_id !== adminUserId).length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{profiles.filter((p) => p.user_id !== adminUserId).length}</span>}
             </TabsTrigger>
           </TabsList>
 
@@ -1021,7 +1021,7 @@ const Admin = () => {
 
             {/* Users list */}
             {(() => {
-              const filteredProfiles = profiles.filter((p) => p.user_id !== adminUserId);
+              const filteredProfiles = profiles.filter((p) => p.user_id !== adminUserId).sort((a, b) => (a.company_name || a.contact_name || "").localeCompare(b.company_name || b.contact_name || ""));
               return filteredProfiles.length === 0 ? (
               <div className="text-center py-20">
                 <Users className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
