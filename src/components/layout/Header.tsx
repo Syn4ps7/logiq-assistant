@@ -59,10 +59,14 @@ export function Header() {
               key={link.href}
               to={link.href}
               className={`text-sm font-medium transition-colors hover:text-primary ${
-                (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href) ? "text-primary" : "text-muted-foreground"
+                link.highlight
+                  ? "border border-primary/30 rounded-full px-3 py-1 text-primary hover:bg-primary/5"
+                  : ""
+              } ${
+                (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href) ? "text-primary" : link.highlight ? "" : "text-muted-foreground"
               }`}
             >
-              {t(link.labelKey)}
+              {link.highlight ? "Espace Pro" : t(link.labelKey)}
             </Link>
           ))}
         </nav>
