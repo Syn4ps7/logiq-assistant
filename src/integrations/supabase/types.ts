@@ -74,6 +74,45 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          account_type: string
+          city: string | null
+          company_name: string
+          contact_name: string
+          created_at: string
+          email: string
+          id: string
+          phone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_type?: string
+          city?: string | null
+          company_name?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          phone?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_type?: string
+          city?: string | null
+          company_name?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          phone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       promo_codes: {
         Row: {
           code: string
