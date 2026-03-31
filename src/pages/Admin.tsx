@@ -357,6 +357,33 @@ const Admin = () => {
     }
   };
 
+  const startEditUser = (p: any) => {
+    setEditingUser(p.id);
+    setEditUserCompany(p.company_name || "");
+    setEditUserContact(p.contact_name || "");
+    setEditUserPhone(p.phone || "");
+    setEditUserCity(p.city || "");
+    setEditUserIdeTva(p.ide_tva || "");
+  };
+
+  const saveEditUser = async (profileId: string) => {
+    const { error } = await supabase.from("profiles").update({
+      company_name: editUserCompany,
+      contact_name: editUserContact,
+      phone: editUserPhone,
+      city: editUserCity || null,
+      ide_tva: editUserIdeTva || null,
+      updated_at: new Date().toISOString(),
+    }).eq("id", profileId);
+    if (error) {
+      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Utilisateur mis à jour" });
+      setEditingUser(null);
+      fetchAll();
+    }
+  };
+
   if (isAdmin === false) {
     return (
       <main className="py-20">
