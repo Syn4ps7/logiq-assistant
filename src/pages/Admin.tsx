@@ -497,9 +497,9 @@ const Admin = () => {
         <AdminKpiWidgets reservations={reservations} />
 
         <Tabs defaultValue="reservations-b2c" className="space-y-6">
-          <TabsList className="flex-wrap">
-            <TabsTrigger value="reservations-b2c" className="gap-1.5">
-              <ShoppingCart className="h-4 w-4" /> Réservations B2C
+          <TabsList className="h-auto flex-wrap gap-1 sm:flex-nowrap sm:overflow-x-auto sm:h-10">
+            <TabsTrigger value="reservations-b2c" className="gap-1.5 text-xs sm:text-sm whitespace-nowrap">
+              <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Résa B2C
               {b2cReservations.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{b2cReservations.length}</span>}
             </TabsTrigger>
             <TabsTrigger value="reservations-b2b" className="gap-1.5">
