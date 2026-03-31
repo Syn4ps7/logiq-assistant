@@ -77,10 +77,11 @@ const Reservation = () => {
       if (!session) return;
       const { data: profile } = await supabase
         .from("profiles")
-        .select("contact_name, email, phone, company_name")
+        .select("contact_name, email, phone, company_name, account_type")
         .eq("user_id", session.user.id)
         .maybeSingle();
       if (profile) {
+        if (profile.account_type === "pro") setIsProUser(true);
         if (profile.contact_name && !contactName) setContactName(profile.contact_name);
         if (profile.email && !contactEmail) setContactEmail(profile.email);
         if (profile.phone && !contactPhone) setContactPhone(profile.phone);
