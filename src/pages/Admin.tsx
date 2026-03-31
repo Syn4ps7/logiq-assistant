@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart, Filter, Tag, Pencil, Save, X, TrendingUp, Hash, PercentCircle } from "lucide-react";
+import { LogOut, RefreshCw, Trash2, Building2, Mail, Phone, MapPin, Calendar, Download, User, ShoppingCart, Filter, Tag, Pencil, Save, X, TrendingUp, Hash, PercentCircle, ChevronDown, ChevronUp, BarChart3 } from "lucide-react";
 import { AdminKpiWidgets } from "@/components/admin/AdminKpiWidgets";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -90,6 +90,21 @@ const statusConfig: Record<string, { label: string; className: string }> = {
   canceled: { label: "Annulé", className: "bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700" },
 };
 
+function CollapsibleSection({ title, icon, defaultOpen = true, children }: { title: string; icon?: React.ReactNode; defaultOpen?: boolean; children: React.ReactNode }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="mb-6 rounded-lg border bg-card">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between p-4 text-left font-semibold text-sm hover:bg-muted/50 transition-colors rounded-lg"
+      >
+        <span className="flex items-center gap-2">{icon}{title}</span>
+        {open ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+      </button>
+      {open && <div className="px-4 pb-4">{children}</div>}
+    </div>
+  );
+}
 const StatusBadge = ({ status }: { status: string }) => {
   const config = statusConfig[status] || statusConfig.pending;
   return <Badge variant="outline" className={`text-xs font-medium ${config.className}`}>{config.label}</Badge>;
@@ -472,29 +487,33 @@ const Admin = () => {
           const paidCount = allRes.filter((r) => r.status === "paid").length;
           const promoCount = allRes.filter((r) => !!r.promo_code).length;
           return (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="rounded-lg border bg-card p-4 space-y-1">
-                <p className="text-xs text-muted-foreground flex items-center gap-1"><TrendingUp className="h-3.5 w-3.5" /> CA Total</p>
-                <p className="text-xl font-bold">{totalCA.toFixed(2)} <span className="text-sm font-normal text-muted-foreground">CHF</span></p>
+            <CollapsibleSection title="Résumé global" icon={<TrendingUp className="h-4 w-4" />} defaultOpen={false}>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="rounded-lg border bg-card p-4 space-y-1">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><TrendingUp className="h-3.5 w-3.5" /> CA Total</p>
+                  <p className="text-xl font-bold">{totalCA.toFixed(2)} <span className="text-sm font-normal text-muted-foreground">CHF</span></p>
+                </div>
+                <div className="rounded-lg border bg-card p-4 space-y-1">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><Hash className="h-3.5 w-3.5" /> Réservations</p>
+                  <p className="text-xl font-bold">{allRes.length} <span className="text-sm font-normal text-muted-foreground">dont {paidCount} payée{paidCount !== 1 ? "s" : ""}</span></p>
+                </div>
+                <div className="rounded-lg border bg-card p-4 space-y-1">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><Tag className="h-3.5 w-3.5" /> Réductions accordées</p>
+                  <p className="text-xl font-bold text-primary">-{totalReductions.toFixed(2)} <span className="text-sm font-normal">CHF</span></p>
+                </div>
+                <div className="rounded-lg border bg-card p-4 space-y-1">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><PercentCircle className="h-3.5 w-3.5" /> Avec promo</p>
+                  <p className="text-xl font-bold">{promoCount} <span className="text-sm font-normal text-muted-foreground">/ {allRes.length}</span></p>
+                </div>
               </div>
-              <div className="rounded-lg border bg-card p-4 space-y-1">
-                <p className="text-xs text-muted-foreground flex items-center gap-1"><Hash className="h-3.5 w-3.5" /> Réservations</p>
-                <p className="text-xl font-bold">{allRes.length} <span className="text-sm font-normal text-muted-foreground">dont {paidCount} payée{paidCount !== 1 ? "s" : ""}</span></p>
-              </div>
-              <div className="rounded-lg border bg-card p-4 space-y-1">
-                <p className="text-xs text-muted-foreground flex items-center gap-1"><Tag className="h-3.5 w-3.5" /> Réductions accordées</p>
-                <p className="text-xl font-bold text-primary">-{totalReductions.toFixed(2)} <span className="text-sm font-normal">CHF</span></p>
-              </div>
-              <div className="rounded-lg border bg-card p-4 space-y-1">
-                <p className="text-xs text-muted-foreground flex items-center gap-1"><PercentCircle className="h-3.5 w-3.5" /> Avec promo</p>
-                <p className="text-xl font-bold">{promoCount} <span className="text-sm font-normal text-muted-foreground">/ {allRes.length}</span></p>
-              </div>
-            </div>
+            </CollapsibleSection>
           );
         })()}
 
         {/* ========== KPI WIDGETS ========== */}
-        <AdminKpiWidgets reservations={reservations} />
+        <CollapsibleSection title="Graphiques & KPI" icon={<BarChart3 className="h-4 w-4" />} defaultOpen={false}>
+          <AdminKpiWidgets reservations={reservations} />
+        </CollapsibleSection>
 
         <Tabs defaultValue="reservations-b2c" className="space-y-6">
           <TabsList className="h-auto flex-wrap gap-1 sm:flex-nowrap sm:overflow-x-auto sm:h-10">
