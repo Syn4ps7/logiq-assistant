@@ -105,7 +105,7 @@ function CollapsibleSection({ title, icon, defaultOpen = true, children }: { tit
     </div>
   );
 }
-
+const StatusBadge = ({ status }: { status: string }) => {
   const config = statusConfig[status] || statusConfig.pending;
   return <Badge variant="outline" className={`text-xs font-medium ${config.className}`}>{config.label}</Badge>;
 };
