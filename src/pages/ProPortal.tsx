@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, ClipboardList, User, Building2, ArrowRight, FileText } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ShoppingCart, ClipboardList, User, Building2, ArrowRight, FileText, Lock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { generateProInvoice } from "@/lib/invoice";
 import type { Tables } from "@/integrations/supabase/types";
@@ -24,6 +25,10 @@ const ProPortal = () => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [reservations, setReservations] = useState<any[]>([]);
+  const [mustChangePassword, setMustChangePassword] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
 
   // Show confirmation toast when arriving from email validation
   useEffect(() => {
