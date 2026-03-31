@@ -1020,7 +1020,9 @@ const Admin = () => {
             )}
 
             {/* Users list */}
-            {profiles.length === 0 ? (
+            {(() => {
+              const filteredProfiles = profiles.filter((p) => p.user_id !== adminUserId);
+              return filteredProfiles.length === 0 ? (
               <div className="text-center py-20">
                 <Users className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
                 <p className="text-muted-foreground">Aucun utilisateur enregistré.</p>
@@ -1038,35 +1040,62 @@ const Admin = () => {
                       <TableHead>Ville</TableHead>
                       <TableHead>IDE/TVA</TableHead>
                       <TableHead>Type</TableHead>
-                      <TableHead className="w-10"></TableHead>
+                      <TableHead className="w-20"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {profiles.map((p) => (
+                    {filteredProfiles.map((p) => (
                       <TableRow key={p.id}>
-                        <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
-                          {fmtDate(p.created_at)}
-                        </TableCell>
-                        <TableCell className="font-medium">{p.company_name || "—"}</TableCell>
-                        <TableCell>{p.contact_name || "—"}</TableCell>
-                        <TableCell className="text-sm">{p.email}</TableCell>
-                        <TableCell className="text-sm">{p.phone || "—"}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{p.city || "—"}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{p.ide_tva || "—"}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-xs">{p.account_type}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <button onClick={() => deleteUser(p.user_id, p.email)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" aria-label="Supprimer">
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </TableCell>
+                        {editingUser === p.id ? (
+                          <>
+                            <TableCell className="text-xs text-muted-foreground whitespace-nowrap">{fmtDate(p.created_at)}</TableCell>
+                            <TableCell><Input value={editUserCompany} onChange={(e) => setEditUserCompany(e.target.value)} className="h-8 text-sm" /></TableCell>
+                            <TableCell><Input value={editUserContact} onChange={(e) => setEditUserContact(e.target.value)} className="h-8 text-sm" /></TableCell>
+                            <TableCell className="text-sm">{p.email}</TableCell>
+                            <TableCell><Input value={editUserPhone} onChange={(e) => setEditUserPhone(e.target.value)} className="h-8 text-sm" /></TableCell>
+                            <TableCell><Input value={editUserCity} onChange={(e) => setEditUserCity(e.target.value)} className="h-8 text-sm" /></TableCell>
+                            <TableCell><Input value={editUserIdeTva} onChange={(e) => setEditUserIdeTva(e.target.value)} className="h-8 text-sm" /></TableCell>
+                            <TableCell><Badge variant="outline" className="text-xs">{p.account_type}</Badge></TableCell>
+                            <TableCell>
+                              <div className="flex gap-1">
+                                <button onClick={() => saveEditUser(p.id)} className="p-1.5 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" aria-label="Enregistrer">
+                                  <Save className="h-4 w-4" />
+                                </button>
+                                <button onClick={() => setEditingUser(null)} className="p-1.5 rounded-md text-muted-foreground hover:text-muted-foreground hover:bg-muted transition-colors" aria-label="Annuler">
+                                  <X className="h-4 w-4" />
+                                </button>
+                              </div>
+                            </TableCell>
+                          </>
+                        ) : (
+                          <>
+                            <TableCell className="text-xs text-muted-foreground whitespace-nowrap">{fmtDate(p.created_at)}</TableCell>
+                            <TableCell className="font-medium">{p.company_name || "—"}</TableCell>
+                            <TableCell>{p.contact_name || "—"}</TableCell>
+                            <TableCell className="text-sm">{p.email}</TableCell>
+                            <TableCell className="text-sm">{p.phone || "—"}</TableCell>
+                            <TableCell className="text-sm text-muted-foreground">{p.city || "—"}</TableCell>
+                            <TableCell className="text-sm text-muted-foreground">{p.ide_tva || "—"}</TableCell>
+                            <TableCell><Badge variant="outline" className="text-xs">{p.account_type}</Badge></TableCell>
+                            <TableCell>
+                              <div className="flex gap-1">
+                                <button onClick={() => startEditUser(p)} className="p-1.5 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" aria-label="Modifier">
+                                  <Pencil className="h-4 w-4" />
+                                </button>
+                                <button onClick={() => deleteUser(p.user_id, p.email)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" aria-label="Supprimer">
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </div>
+                            </TableCell>
+                          </>
+                        )}
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </div>
-            )}
+            );
+            })()}
           </TabsContent>
         </Tabs>
       </div>
