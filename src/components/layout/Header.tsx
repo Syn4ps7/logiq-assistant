@@ -165,6 +165,12 @@ export function Header() {
       {isOpen && (
         <nav className="md:hidden border-t border-border bg-background p-4" role="navigation" aria-label="Navigation mobile">
           <div className="flex flex-col gap-3">
+            {isLoggedIn && proName && (
+              <Link to="/pro-portal" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md bg-secondary text-foreground text-sm font-semibold">
+                <Building2 className="h-4 w-4 text-primary" />
+                {proName}
+              </Link>
+            )}
             {navLinks.map((link) => (
               <Link
                 key={link.href}
