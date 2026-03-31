@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, MessageCircle, Globe, Building2 } from "lucide-react";
+import { Menu, X, MessageCircle, Globe, Building2, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
 import {
@@ -92,10 +92,20 @@ export function Header() {
 
         <div className="hidden md:flex items-center gap-3">
           {isLoggedIn && proName && (
-            <Link to="/pro-portal" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground text-xs font-semibold hover:bg-secondary/80 transition-colors">
-              <Building2 className="h-3.5 w-3.5 text-primary" />
-              {proName}
-            </Link>
+            <div className="flex items-center gap-1.5">
+              <Link to="/pro-portal" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground text-xs font-semibold hover:bg-secondary/80 transition-colors">
+                <Building2 className="h-3.5 w-3.5 text-primary" />
+                {proName}
+              </Link>
+              <button
+                onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }}
+                className="p-1.5 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                aria-label="Déconnexion"
+                title="Déconnexion"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+              </button>
+            </div>
           )}
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors outline-none">
@@ -166,10 +176,19 @@ export function Header() {
         <nav className="md:hidden border-t border-border bg-background p-4" role="navigation" aria-label="Navigation mobile">
           <div className="flex flex-col gap-3">
             {isLoggedIn && proName && (
-              <Link to="/pro-portal" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md bg-secondary text-foreground text-sm font-semibold">
-                <Building2 className="h-4 w-4 text-primary" />
-                {proName}
-              </Link>
+              <div className="flex items-center justify-between px-3 py-2 rounded-md bg-secondary">
+                <Link to="/pro-portal" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-foreground text-sm font-semibold">
+                  <Building2 className="h-4 w-4 text-primary" />
+                  {proName}
+                </Link>
+                <button
+                  onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }}
+                  className="p-1.5 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  aria-label="Déconnexion"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
             )}
             {navLinks.map((link) => (
               <Link
