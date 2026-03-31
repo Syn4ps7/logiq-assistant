@@ -103,19 +103,14 @@ const ProPortal = () => {
     <main className="py-10">
       <div className="container max-w-4xl space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Building2 className="h-6 w-6 text-primary" />
-              {profile?.company_name || "Mon espace Pro"}
-            </h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              Bienvenue, {profile?.contact_name || ""}
-            </p>
-          </div>
-          <Button variant="outline" size="sm" onClick={handleLogout}>
-            <LogOut className="h-4 w-4 mr-1" /> Déconnexion
-          </Button>
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Building2 className="h-6 w-6 text-primary" />
+            {profile?.company_name || "Mon espace Pro"}
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Bienvenue, {profile?.contact_name || ""}
+          </p>
         </div>
 
         {/* Summary cards */}

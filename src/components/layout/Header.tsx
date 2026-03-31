@@ -176,10 +176,19 @@ export function Header() {
         <nav className="md:hidden border-t border-border bg-background p-4" role="navigation" aria-label="Navigation mobile">
           <div className="flex flex-col gap-3">
             {isLoggedIn && proName && (
-              <Link to="/pro-portal" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md bg-secondary text-foreground text-sm font-semibold">
-                <Building2 className="h-4 w-4 text-primary" />
-                {proName}
-              </Link>
+              <div className="flex items-center justify-between px-3 py-2 rounded-md bg-secondary">
+                <Link to="/pro-portal" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-foreground text-sm font-semibold">
+                  <Building2 className="h-4 w-4 text-primary" />
+                  {proName}
+                </Link>
+                <button
+                  onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }}
+                  className="p-1.5 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  aria-label="Déconnexion"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
             )}
             {navLinks.map((link) => (
               <Link
