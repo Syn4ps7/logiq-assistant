@@ -11,7 +11,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Verify caller is admin
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Non autorisé" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -21,7 +20,6 @@ Deno.serve(async (req) => {
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
-    // Verify caller with anon client
     const anonClient = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: authHeader } },
     });
@@ -30,54 +28,30 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "Non autorisé" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Check admin role
     const { data: roleData } = await anonClient.from("user_roles").select("role").eq("user_id", caller.id).eq("role", "admin").maybeSingle();
     if (!roleData) {
       return new Response(JSON.stringify({ error: "Accès refusé" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const { email, password, company_name, contact_name, phone, city, ide_tva } = await req.json();
-
-    if (!email || !password || !contact_name) {
-      return new Response(JSON.stringify({ error: "Email, mot de passe et nom de contact requis" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const { user_id } = await req.json();
+    if (!user_id) {
+      return new Response(JSON.stringify({ error: "user_id requis" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Use service role to create user without email verification
+    // Prevent self-deletion
+    if (user_id === caller.id) {
+      return new Response(JSON.stringify({ error: "Vous ne pouvez pas supprimer votre propre compte" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
-    const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: {
-        contact_name,
-        must_change_password: true,
-      },
-    });
-
-    if (createError) {
-      return new Response(JSON.stringify({ error: createError.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    // Delete profile and roles (cascade from auth.users deletion)
+    const { error } = await adminClient.auth.admin.deleteUser(user_id);
+    if (error) {
+      return new Response(JSON.stringify({ error: error.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Update the auto-created profile with additional info
-    if (newUser.user) {
-      await adminClient.from("profiles").update({
-        company_name: company_name || "",
-        contact_name,
-        phone: phone || "",
-        city: city || null,
-        email,
-        ide_tva: ide_tva || null,
-      }).eq("user_id", newUser.user.id);
-
-      // Assign 'user' role
-      await adminClient.from("user_roles").insert({
-        user_id: newUser.user.id,
-        role: "user",
-      });
-    }
-
-    return new Response(JSON.stringify({ success: true, user_id: newUser.user?.id }), {
+    return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
