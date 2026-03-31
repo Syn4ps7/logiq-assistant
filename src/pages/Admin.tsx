@@ -304,6 +304,35 @@ const Admin = () => {
     navigate("/login");
   };
 
+  const createUser = async () => {
+    if (!newUserEmail || !newUserPassword || !newUserContact) {
+      toast({ title: "Erreur", description: "Email, mot de passe et nom de contact sont requis.", variant: "destructive" });
+      return;
+    }
+    setCreatingUser(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await supabase.functions.invoke("admin-create-user", {
+      body: {
+        email: newUserEmail,
+        password: newUserPassword,
+        contact_name: newUserContact,
+        company_name: newUserCompany,
+        phone: newUserPhone,
+        city: newUserCity,
+      },
+    });
+    if (res.error || res.data?.error) {
+      toast({ title: "Erreur", description: res.data?.error || res.error?.message, variant: "destructive" });
+    } else {
+      toast({ title: "✅ Utilisateur créé", description: `${newUserEmail} peut se connecter avec le mot de passe temporaire.` });
+      setNewUserEmail(""); setNewUserPassword(""); setNewUserContact("");
+      setNewUserCompany(""); setNewUserPhone(""); setNewUserCity("");
+      setShowNewUser(false);
+      fetchAll();
+    }
+    setCreatingUser(false);
+  };
+
   if (isAdmin === false) {
     return (
       <main className="py-20">
