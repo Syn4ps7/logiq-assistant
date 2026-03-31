@@ -63,7 +63,7 @@ export function Header() {
                   ? "font-bold border border-foreground rounded-full px-3 py-1 text-foreground hover:bg-foreground/5"
                   : "font-medium"
               } ${
-                (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href) ? "text-primary" : link.highlight ? "" : "text-muted-foreground"
+                (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href) ? (link.highlight ? "text-foreground" : "text-primary") : link.highlight ? "" : "text-muted-foreground"
               }`}
             >
               {link.highlight ? "Espace Pro" : t(link.labelKey)}
