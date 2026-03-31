@@ -17,6 +17,7 @@ const ProRegister = () => {
     contact_name: "",
     phone: "",
     city: "",
+    ide_tva: "",
   });
 
   const update = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
