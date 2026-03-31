@@ -92,10 +92,20 @@ export function Header() {
 
         <div className="hidden md:flex items-center gap-3">
           {isLoggedIn && proName && (
-            <Link to="/pro-portal" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground text-xs font-semibold hover:bg-secondary/80 transition-colors">
-              <Building2 className="h-3.5 w-3.5 text-primary" />
-              {proName}
-            </Link>
+            <div className="flex items-center gap-1.5">
+              <Link to="/pro-portal" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground text-xs font-semibold hover:bg-secondary/80 transition-colors">
+                <Building2 className="h-3.5 w-3.5 text-primary" />
+                {proName}
+              </Link>
+              <button
+                onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }}
+                className="p-1.5 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                aria-label="Déconnexion"
+                title="Déconnexion"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+              </button>
+            </div>
           )}
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors outline-none">
