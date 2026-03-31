@@ -683,7 +683,7 @@ const Admin = () => {
                   </Table>
                 </div>
                 {/* Mobile */}
-                <div className="md:hidden space-y-4">
+                <div className="hidden space-y-4">
                   {contactLeads.map((lead) => (
                     <div key={lead.id} className="p-4 border rounded-xl bg-card space-y-3">
                       <div className="flex items-start justify-between">
