@@ -141,6 +141,14 @@ const Admin = () => {
   const [newUserCity, setNewUserCity] = useState("");
   const [newUserIdeTva, setNewUserIdeTva] = useState("");
   const [creatingUser, setCreatingUser] = useState(false);
+  // Edit user
+  const [editingUser, setEditingUser] = useState<string | null>(null);
+  const [editUserCompany, setEditUserCompany] = useState("");
+  const [editUserContact, setEditUserContact] = useState("");
+  const [editUserPhone, setEditUserPhone] = useState("");
+  const [editUserCity, setEditUserCity] = useState("");
+  const [editUserIdeTva, setEditUserIdeTva] = useState("");
+  const [adminUserId, setAdminUserId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
