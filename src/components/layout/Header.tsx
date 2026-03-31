@@ -193,7 +193,7 @@ export function Header() {
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                to={link.href}
+                to={link.highlight && isLoggedIn ? "/pro-portal" : link.href}
                 onClick={() => setIsOpen(false)}
                 className={`text-sm font-medium py-2 px-3 rounded-md transition-colors ${
                   link.highlight
