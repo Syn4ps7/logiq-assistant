@@ -33,7 +33,7 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const location = useLocation();
-  const isAdmin = location.pathname.startsWith("/admin") || location.pathname === "/login";
+  const isAdmin = location.pathname.startsWith("/admin") || location.pathname === "/login" || location.pathname.startsWith("/pro-");
 
   useEffect(() => {
     initLogiq();
