@@ -159,11 +159,6 @@ export function Header() {
               </Link>
             ))}
             <div className="flex gap-2 pt-2 border-t border-border">
-              <Link to={isLoggedIn ? "/pro-portal" : "/pro-login"} className="flex-1" onClick={() => setIsOpen(false)}>
-                <Button variant="outline" className="w-full gap-1.5" size="sm">
-                  <Building2 className="h-3.5 w-3.5" /> Espace Pro
-                </Button>
-              </Link>
               <Link to="/reservation" className="flex-1" onClick={() => setIsOpen(false)}>
                 <Button variant="default" className="w-full" size="sm">{t("nav.book")}</Button>
               </Link>
