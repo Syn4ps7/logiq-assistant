@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ShoppingCart, ClipboardList, User, Building2, ArrowRight, FileText, Lock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { generateProInvoice } from "@/lib/invoice";
+import { downloadProInvoice } from "@/lib/invoice";
+import InvoicePreviewDialog from "@/components/InvoicePreviewDialog";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
@@ -29,6 +30,7 @@ const ProPortal = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
+  const [previewInvoice, setPreviewInvoice] = useState<Parameters<typeof downloadProInvoice>[0] | null>(null);
 
   // Show confirmation toast when arriving from email validation
   useEffect(() => {
@@ -250,14 +252,14 @@ const ProPortal = () => {
                                 variant="ghost"
                                 size="sm"
                                 className="gap-1 text-xs"
-                                onClick={() => generateProInvoice({
+                                onClick={() => setPreviewInvoice({
                                   reference: r.reference,
                                   date: new Date(r.created_at).toLocaleDateString("fr-CH"),
                                   companyName: profile?.company_name || "",
                                   contactName: profile?.contact_name || "",
                                   email: profile?.email || "",
                                   phone: profile?.phone || "",
-                                  ideTva: (profile as any)?.ide_tva || undefined,
+                                  ideTva: profile?.ide_tva || undefined,
                                   vehicleName: r.vehicle_name,
                                   plan: r.plan,
                                   days: r.days,
@@ -335,6 +337,12 @@ const ProPortal = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      <InvoicePreviewDialog
+        open={!!previewInvoice}
+        onOpenChange={(open) => { if (!open) setPreviewInvoice(null); }}
+        invoiceData={previewInvoice}
+      />
     </main>
   );
 };
