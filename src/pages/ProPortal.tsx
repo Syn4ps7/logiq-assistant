@@ -154,7 +154,7 @@ const ProPortal = () => {
               <div className="text-center py-16">
                 <ClipboardList className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
                 <p className="text-muted-foreground">Aucune réservation pour le moment.</p>
-                <Link to="/reservation">
+                <Link to="/reservation?source=pro">
                   <Button variant="petrol" className="mt-4">
                     Réserver un véhicule <ArrowRight className="h-4 w-4 ml-1" />
                   </Button>
