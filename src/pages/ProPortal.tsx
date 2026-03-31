@@ -266,6 +266,10 @@ const ProPortal = () => {
                   <p className="font-medium">{profile?.city || "—"}</p>
                 </div>
                 <div>
+                  <p className="text-muted-foreground">N° IDE / TVA</p>
+                  <p className="font-medium">{(profile as any)?.ide_tva || "—"}</p>
+                </div>
+                <div>
                   <p className="text-muted-foreground">Type de compte</p>
                   <p className="font-medium capitalize">{profile?.account_type || "pro"}</p>
                 </div>
