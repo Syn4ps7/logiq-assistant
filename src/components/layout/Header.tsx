@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, MessageCircle, Globe } from "lucide-react";
+import { Menu, X, MessageCircle, Globe, Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
 import {
@@ -28,12 +28,31 @@ const LANGS = [
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [proName, setProName] = useState<string | null>(null);
   const location = useLocation();
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => setIsLoggedIn(!!session));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setIsLoggedIn(!!session));
+    const fetchProfile = async (userId: string) => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("company_name, contact_name")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (data) {
+        setProName(data.company_name || data.contact_name || null);
+      }
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+      if (session) fetchProfile(session.user.id);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+      if (session) fetchProfile(session.user.id);
+      else setProName(null);
+    });
     return () => subscription.unsubscribe();
   }, []);
 
@@ -72,6 +91,12 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
+          {isLoggedIn && proName && (
+            <Link to="/pro-portal" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground text-xs font-semibold hover:bg-secondary/80 transition-colors">
+              <Building2 className="h-3.5 w-3.5 text-primary" />
+              {proName}
+            </Link>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors outline-none">
               <Globe className="h-3.5 w-3.5" />
@@ -140,6 +165,12 @@ export function Header() {
       {isOpen && (
         <nav className="md:hidden border-t border-border bg-background p-4" role="navigation" aria-label="Navigation mobile">
           <div className="flex flex-col gap-3">
+            {isLoggedIn && proName && (
+              <Link to="/pro-portal" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md bg-secondary text-foreground text-sm font-semibold">
+                <Building2 className="h-4 w-4 text-primary" />
+                {proName}
+              </Link>
+            )}
             {navLinks.map((link) => (
               <Link
                 key={link.href}
