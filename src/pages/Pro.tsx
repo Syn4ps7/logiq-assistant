@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { Building2, ChevronRight, Fuel, CreditCard, MapPin, IdCard, ShieldCheck } from "lucide-react";
+import { Building2, ChevronRight, Fuel, CreditCard, MapPin, IdCard, ShieldCheck, LogIn } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
