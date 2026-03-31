@@ -58,10 +58,10 @@ export function Header() {
             <Link
               key={link.href}
               to={link.href}
-              className={`text-sm font-medium transition-colors hover:text-primary ${
+              className={`text-sm transition-colors hover:text-primary ${
                 link.highlight
-                  ? "border border-primary/30 rounded-full px-3 py-1 text-primary hover:bg-primary/5"
-                  : ""
+                  ? "font-bold border border-foreground rounded-full px-3 py-1 text-foreground hover:bg-foreground/5"
+                  : "font-medium"
               } ${
                 (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href) ? "text-primary" : link.highlight ? "" : "text-muted-foreground"
               }`}
