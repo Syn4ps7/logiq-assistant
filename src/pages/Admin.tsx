@@ -506,8 +506,8 @@ const Admin = () => {
               <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Résa B2B
               {b2bReservations.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{b2bReservations.length}</span>}
             </TabsTrigger>
-            <TabsTrigger value="pro" className="gap-1.5">
-              <Building2 className="h-4 w-4" /> Leads Pro
+            <TabsTrigger value="pro" className="gap-1.5 text-xs sm:text-sm whitespace-nowrap">
+              <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Leads Pro
               {leads.length > 0 && <span className="ml-1 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{leads.length}</span>}
             </TabsTrigger>
             <TabsTrigger value="contact" className="gap-1.5">
