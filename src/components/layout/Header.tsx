@@ -76,7 +76,7 @@ export function Header() {
           {navLinks.map((link) => (
             <Link
               key={link.href}
-              to={link.href}
+              to={link.highlight && isLoggedIn ? "/pro-portal" : link.href}
               className={`text-sm transition-colors hover:text-primary ${
                 link.highlight
                   ? "font-bold border border-foreground rounded-full px-3 py-1 text-foreground hover:bg-foreground/5"
@@ -193,7 +193,7 @@ export function Header() {
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                to={link.href}
+                to={link.highlight && isLoggedIn ? "/pro-portal" : link.href}
                 onClick={() => setIsOpen(false)}
                 className={`text-sm font-medium py-2 px-3 rounded-md transition-colors ${
                   link.highlight
