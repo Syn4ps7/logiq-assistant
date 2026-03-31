@@ -16,12 +16,22 @@ const fmtCHF = (v: number) => roundCHF(v).toLocaleString("fr-CH", { minimumFract
 
 type RatePlanId = "week" | "weekend" | "pack-48h";
 type WeekendPack = "standard" | "confort" | "premium";
+type ProTab = "daily" | "carnet";
+type CarnetId = "carnet-10" | "carnet-20" | "carnet-40";
 
 const WEEKEND_PACKS: Record<WeekendPack, { price: number; label: string }> = {
   standard: { price: 298, label: "Week-end Standard" },
   confort: { price: 399, label: "Pack Déménagement 48h" },
   premium: { price: 429, label: "Pack Déménagement Premium 48h" },
 };
+
+const CARNETS: { id: CarnetId; days: number; totalHT: number; totalTTC: number; perDayHT: number; perDayTTC: number; kmPerDay: number }[] = [
+  { id: "carnet-10", days: 10, totalHT: 1193.35, totalTTC: 1290, perDayHT: 119.35, perDayTTC: 129, kmPerDay: 200 },
+  { id: "carnet-20", days: 20, totalHT: 2257.15, totalTTC: 2440, perDayHT: 112.85, perDayTTC: 122, kmPerDay: 200 },
+  { id: "carnet-40", days: 40, totalHT: 4255.30, totalTTC: 4600, perDayHT: 106.40, perDayTTC: 115, kmPerDay: 200 },
+];
+
+const EXTRA_KM_RATE_PRO_HT = 0.65;
 
 const Reservation = () => {
   const { t } = useTranslation();
