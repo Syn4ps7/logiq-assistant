@@ -90,11 +90,6 @@ export function Header() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link to={isLoggedIn ? "/pro-portal" : "/pro-login"}>
-            <Button variant="outline" size="sm" className="gap-1.5">
-              <Building2 className="h-3.5 w-3.5" /> Espace Pro
-            </Button>
-          </Link>
           <Link to="/reservation">
             <Button variant="default" size="sm">{t("nav.book")}</Button>
           </Link>
