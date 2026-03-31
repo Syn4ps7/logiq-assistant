@@ -59,6 +59,9 @@ function AppContent() {
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/pro-login" element={<ProLogin />} />
+            <Route path="/pro-register" element={<ProRegister />} />
+            <Route path="/pro-portal" element={<ProPortal />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
