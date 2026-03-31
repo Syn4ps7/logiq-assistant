@@ -504,7 +504,11 @@ const Reservation = () => {
                           {key === "premium" && <Truck className="h-4 w-4 text-primary" />}
                           <span className="font-medium text-sm">{pack.label}</span>
                         </div>
-                        <span className="text-sm font-bold text-primary">{pack.price} CHF (TTC)</span>
+                        <span className="text-sm font-bold text-primary">
+                          {isProCheckout
+                            ? `${fmtCHF(pack.price / (1 + TVA_RATE))} CHF HT`
+                            : `${pack.price} CHF (TTC)`}
+                        </span>
                       </div>
                     </button>
                   ))}
