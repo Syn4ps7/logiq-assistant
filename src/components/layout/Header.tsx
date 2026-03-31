@@ -146,12 +146,16 @@ export function Header() {
                 to={link.href}
                 onClick={() => setIsOpen(false)}
                 className={`text-sm font-medium py-2 px-3 rounded-md transition-colors ${
+                  link.highlight
+                    ? "border border-primary/30 text-primary"
+                    : ""
+                } ${
                   (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href)
                     ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-secondary"
+                    : link.highlight ? "" : "text-muted-foreground hover:bg-secondary"
                 }`}
               >
-                {t(link.labelKey)}
+                {link.highlight ? "Espace Pro" : t(link.labelKey)}
               </Link>
             ))}
             <div className="flex gap-2 pt-2 border-t border-border">
