@@ -90,7 +90,22 @@ const statusConfig: Record<string, { label: string; className: string }> = {
   canceled: { label: "Annulé", className: "bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700" },
 };
 
-const StatusBadge = ({ status }: { status: string }) => {
+function CollapsibleSection({ title, icon, defaultOpen = true, children }: { title: string; icon?: React.ReactNode; defaultOpen?: boolean; children: React.ReactNode }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="mb-6 rounded-lg border bg-card">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between p-4 text-left font-semibold text-sm hover:bg-muted/50 transition-colors rounded-lg"
+      >
+        <span className="flex items-center gap-2">{icon}{title}</span>
+        {open ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+      </button>
+      {open && <div className="px-4 pb-4">{children}</div>}
+    </div>
+  );
+}
+
   const config = statusConfig[status] || statusConfig.pending;
   return <Badge variant="outline" className={`text-xs font-medium ${config.className}`}>{config.label}</Badge>;
 };
