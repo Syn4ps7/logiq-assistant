@@ -477,7 +477,11 @@ const Reservation = () => {
                         <div className="font-medium">{plan.name}</div>
                         <div className="text-sm text-muted-foreground">{plan.subtitle}</div>
                       </div>
-                      <span className="text-lg font-bold text-primary">{plan.priceDisplay}</span>
+                      <span className="text-lg font-bold text-primary">
+                        {isProCheckout
+                          ? `${fmtCHF(plan.priceValue / (1 + TVA_RATE))} CHF HT${plan.isFlat ? "" : " / jour"}`
+                          : plan.priceDisplay}
+                      </span>
                     </div>
                   </button>
                 ))}
