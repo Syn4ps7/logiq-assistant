@@ -472,29 +472,33 @@ const Admin = () => {
           const paidCount = allRes.filter((r) => r.status === "paid").length;
           const promoCount = allRes.filter((r) => !!r.promo_code).length;
           return (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="rounded-lg border bg-card p-4 space-y-1">
-                <p className="text-xs text-muted-foreground flex items-center gap-1"><TrendingUp className="h-3.5 w-3.5" /> CA Total</p>
-                <p className="text-xl font-bold">{totalCA.toFixed(2)} <span className="text-sm font-normal text-muted-foreground">CHF</span></p>
+            <CollapsibleSection title="Résumé global" icon={<TrendingUp className="h-4 w-4" />} defaultOpen={false}>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="rounded-lg border bg-card p-4 space-y-1">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><TrendingUp className="h-3.5 w-3.5" /> CA Total</p>
+                  <p className="text-xl font-bold">{totalCA.toFixed(2)} <span className="text-sm font-normal text-muted-foreground">CHF</span></p>
+                </div>
+                <div className="rounded-lg border bg-card p-4 space-y-1">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><Hash className="h-3.5 w-3.5" /> Réservations</p>
+                  <p className="text-xl font-bold">{allRes.length} <span className="text-sm font-normal text-muted-foreground">dont {paidCount} payée{paidCount !== 1 ? "s" : ""}</span></p>
+                </div>
+                <div className="rounded-lg border bg-card p-4 space-y-1">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><Tag className="h-3.5 w-3.5" /> Réductions accordées</p>
+                  <p className="text-xl font-bold text-primary">-{totalReductions.toFixed(2)} <span className="text-sm font-normal">CHF</span></p>
+                </div>
+                <div className="rounded-lg border bg-card p-4 space-y-1">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><PercentCircle className="h-3.5 w-3.5" /> Avec promo</p>
+                  <p className="text-xl font-bold">{promoCount} <span className="text-sm font-normal text-muted-foreground">/ {allRes.length}</span></p>
+                </div>
               </div>
-              <div className="rounded-lg border bg-card p-4 space-y-1">
-                <p className="text-xs text-muted-foreground flex items-center gap-1"><Hash className="h-3.5 w-3.5" /> Réservations</p>
-                <p className="text-xl font-bold">{allRes.length} <span className="text-sm font-normal text-muted-foreground">dont {paidCount} payée{paidCount !== 1 ? "s" : ""}</span></p>
-              </div>
-              <div className="rounded-lg border bg-card p-4 space-y-1">
-                <p className="text-xs text-muted-foreground flex items-center gap-1"><Tag className="h-3.5 w-3.5" /> Réductions accordées</p>
-                <p className="text-xl font-bold text-primary">-{totalReductions.toFixed(2)} <span className="text-sm font-normal">CHF</span></p>
-              </div>
-              <div className="rounded-lg border bg-card p-4 space-y-1">
-                <p className="text-xs text-muted-foreground flex items-center gap-1"><PercentCircle className="h-3.5 w-3.5" /> Avec promo</p>
-                <p className="text-xl font-bold">{promoCount} <span className="text-sm font-normal text-muted-foreground">/ {allRes.length}</span></p>
-              </div>
-            </div>
+            </CollapsibleSection>
           );
         })()}
 
         {/* ========== KPI WIDGETS ========== */}
-        <AdminKpiWidgets reservations={reservations} />
+        <CollapsibleSection title="Graphiques & KPI" icon={<BarChart3 className="h-4 w-4" />} defaultOpen={false}>
+          <AdminKpiWidgets reservations={reservations} />
+        </CollapsibleSection>
 
         <Tabs defaultValue="reservations-b2c" className="space-y-6">
           <TabsList className="h-auto flex-wrap gap-1 sm:flex-nowrap sm:overflow-x-auto sm:h-10">
