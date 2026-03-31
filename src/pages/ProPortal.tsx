@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { LogOut, ShoppingCart, ClipboardList, User, Building2, ArrowRight } from "lucide-react";
+import { LogOut, ShoppingCart, ClipboardList, User, Building2, ArrowRight, FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { generateProInvoice } from "@/lib/invoice";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
