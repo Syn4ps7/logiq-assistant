@@ -967,6 +967,10 @@ const Admin = () => {
                     <label className="block text-sm font-medium mb-1">Ville</label>
                     <Input value={newUserCity} onChange={(e) => setNewUserCity(e.target.value)} placeholder="Genève" />
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">IDE / TVA</label>
+                    <Input value={newUserIdeTva} onChange={(e) => setNewUserIdeTva(e.target.value)} placeholder="CHE-XXX.XXX.XXX" />
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <Button size="sm" onClick={createUser} disabled={creatingUser}>
