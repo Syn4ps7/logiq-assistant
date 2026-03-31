@@ -93,10 +93,62 @@ const ProPortal = () => {
     navigate("/pro-login");
   };
 
+  const handleChangePassword = async () => {
+    if (newPassword.length < 6) {
+      toast({ title: "Erreur", description: "Le mot de passe doit contenir au moins 6 caractères.", variant: "destructive" });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast({ title: "Erreur", description: "Les mots de passe ne correspondent pas.", variant: "destructive" });
+      return;
+    }
+    setChangingPassword(true);
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+      data: { must_change_password: false },
+    });
+    if (error) {
+      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    } else {
+      setMustChangePassword(false);
+      toast({ title: "✅ Mot de passe mis à jour", description: "Vous pouvez maintenant utiliser votre espace." });
+    }
+    setChangingPassword(false);
+  };
+
   if (loading) {
     return (
       <main className="py-20 text-center text-muted-foreground">
         Chargement de votre espace…
+      </main>
+    );
+  }
+
+  if (mustChangePassword) {
+    return (
+      <main className="py-20">
+        <div className="container max-w-md space-y-6">
+          <div className="text-center space-y-2">
+            <Lock className="h-12 w-12 text-primary mx-auto" />
+            <h1 className="text-2xl font-bold">Changement de mot de passe requis</h1>
+            <p className="text-muted-foreground text-sm">
+              Votre compte a été créé par un administrateur. Veuillez choisir un nouveau mot de passe personnel.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Nouveau mot de passe</label>
+              <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Min. 6 caractères" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Confirmer le mot de passe</label>
+              <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirmer" />
+            </div>
+            <Button className="w-full" onClick={handleChangePassword} disabled={changingPassword}>
+              {changingPassword ? "Mise à jour…" : "Mettre à jour le mot de passe"}
+            </Button>
+          </div>
+        </div>
       </main>
     );
   }
