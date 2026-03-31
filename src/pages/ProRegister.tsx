@@ -55,15 +55,18 @@ const ProRegister = () => {
       return;
     }
 
-    // Update profile with extra info
+    // Create profile with extra info
     if (data.user) {
-      await supabase.from("profiles").update({
+      await supabase.from("profiles").upsert({
+        user_id: data.user.id,
         company_name: form.company_name,
         contact_name: form.contact_name,
         phone: form.phone,
+        email: form.email,
         city: form.city,
         ide_tva: form.ide_tva || null,
-      } as any).eq("user_id", data.user.id);
+        account_type: "pro",
+      }, { onConflict: "user_id" });
     }
 
     setLoading(false);
