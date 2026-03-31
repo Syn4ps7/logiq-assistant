@@ -28,6 +28,7 @@ import NotFound from "./pages/NotFound";
 import ProLogin from "./pages/ProLogin";
 import ProRegister from "./pages/ProRegister";
 import ProPortal from "./pages/ProPortal";
+import AuthCallback from "./pages/AuthCallback";
 
 const queryClient = new QueryClient();
 
