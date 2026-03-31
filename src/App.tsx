@@ -25,6 +25,9 @@ import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import ProLogin from "./pages/ProLogin";
+import ProRegister from "./pages/ProRegister";
+import ProPortal from "./pages/ProPortal";
 
 const queryClient = new QueryClient();
 
