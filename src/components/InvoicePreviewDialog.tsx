@@ -1,8 +1,10 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerFooter, DrawerClose } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { Download, X } from "lucide-react";
+import { Download, FileText, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getProInvoiceDataUrl, downloadProInvoice } from "@/lib/invoice";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface InvoicePreviewDialogProps {
   open: boolean;
@@ -12,21 +14,50 @@ interface InvoicePreviewDialogProps {
 
 const InvoicePreviewDialog = ({ open, onOpenChange, invoiceData }: InvoicePreviewDialogProps) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
-    if (open && invoiceData) {
+    if (open && invoiceData && !isMobile) {
       const url = getProInvoiceDataUrl(invoiceData);
       setPdfUrl(url);
     } else {
       setPdfUrl(null);
     }
-  }, [open, invoiceData]);
+  }, [open, invoiceData, isMobile]);
 
   const handleDownload = () => {
     if (invoiceData) {
       downloadProInvoice(invoiceData);
     }
   };
+
+  if (isMobile) {
+    return (
+      <Drawer open={open} onOpenChange={onOpenChange}>
+        <DrawerContent>
+          <DrawerHeader className="text-center">
+            <DrawerTitle className="text-lg">
+              Facture {invoiceData?.reference ? `— ${invoiceData.reference}` : ""}
+            </DrawerTitle>
+          </DrawerHeader>
+          <div className="px-6 py-8 flex flex-col items-center gap-4">
+            <FileText className="h-16 w-16 text-primary/40" />
+            <p className="text-sm text-muted-foreground text-center">
+              Téléchargez votre facture au format PDF.
+            </p>
+            <Button variant="petrol" className="w-full gap-2" onClick={handleDownload}>
+              <Download className="h-4 w-4" /> Télécharger la facture
+            </Button>
+          </div>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="outline" className="w-full">Fermer</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
