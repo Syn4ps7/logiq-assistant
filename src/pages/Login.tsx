@@ -19,7 +19,7 @@ const Login = () => {
     }
     setResetLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: "https://logiq-transport.ch/reset-password",
     });
     setResetLoading(false);
     if (error) {

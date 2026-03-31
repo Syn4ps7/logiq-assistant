@@ -44,7 +44,7 @@ const ProRegister = () => {
           contact_name: form.contact_name,
           company_name: form.company_name,
         },
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: "https://logiq-transport.ch",
       },
     });
 
