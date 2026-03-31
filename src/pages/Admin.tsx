@@ -320,6 +320,7 @@ const Admin = () => {
         company_name: newUserCompany,
         phone: newUserPhone,
         city: newUserCity,
+        ide_tva: newUserIdeTva,
       },
     });
     if (res.error || res.data?.error) {
@@ -327,11 +328,24 @@ const Admin = () => {
     } else {
       toast({ title: "✅ Utilisateur créé", description: `${newUserEmail} peut se connecter avec le mot de passe temporaire.` });
       setNewUserEmail(""); setNewUserPassword(""); setNewUserContact("");
-      setNewUserCompany(""); setNewUserPhone(""); setNewUserCity("");
+      setNewUserCompany(""); setNewUserPhone(""); setNewUserCity(""); setNewUserIdeTva("");
       setShowNewUser(false);
       fetchAll();
     }
     setCreatingUser(false);
+  };
+
+  const deleteUser = async (userId: string, email: string) => {
+    if (!confirm(`Supprimer le compte de ${email} ? Cette action est irréversible.`)) return;
+    const res = await supabase.functions.invoke("admin-delete-user", {
+      body: { user_id: userId },
+    });
+    if (res.error || res.data?.error) {
+      toast({ title: "Erreur", description: res.data?.error || res.error?.message, variant: "destructive" });
+    } else {
+      toast({ title: "Utilisateur supprimé" });
+      fetchAll();
+    }
   };
 
   if (isAdmin === false) {
