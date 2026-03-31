@@ -337,6 +337,12 @@ const ProPortal = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      <InvoicePreviewDialog
+        open={!!previewInvoice}
+        onOpenChange={(open) => { if (!open) setPreviewInvoice(null); }}
+        invoiceData={previewInvoice}
+      />
     </main>
   );
 };
