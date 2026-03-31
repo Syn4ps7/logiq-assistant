@@ -169,6 +169,7 @@ const Admin = () => {
       }
 
       setIsAdmin(true);
+      setAdminUserId(session.user.id);
       fetchAll();
     };
 
