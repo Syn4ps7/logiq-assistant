@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, MessageCircle, Globe, Building2 } from "lucide-react";
+import { Menu, X, MessageCircle, Globe } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
 import {
@@ -15,7 +15,7 @@ const navLinks = [
   { labelKey: "nav.vehicles", href: "/vehicles" },
   { labelKey: "nav.howItWorks", href: "/#comment-ca-marche" },
   { labelKey: "nav.rates", href: "/rates" },
-  { labelKey: "nav.pro", href: "/pro" },
+  { labelKey: "nav.pro", href: "/pro", highlight: true },
   { labelKey: "nav.faq", href: "/faq" },
 ];
 
@@ -59,10 +59,14 @@ export function Header() {
               key={link.href}
               to={link.href}
               className={`text-sm font-medium transition-colors hover:text-primary ${
-                (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href) ? "text-primary" : "text-muted-foreground"
+                link.highlight
+                  ? "border border-primary/30 rounded-full px-3 py-1 text-primary hover:bg-primary/5"
+                  : ""
+              } ${
+                (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href) ? "text-primary" : link.highlight ? "" : "text-muted-foreground"
               }`}
             >
-              {t(link.labelKey)}
+              {link.highlight ? "Espace Pro" : t(link.labelKey)}
             </Link>
           ))}
         </nav>
@@ -86,11 +90,6 @@ export function Header() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link to={isLoggedIn ? "/pro-portal" : "/pro-login"}>
-            <Button variant="outline" size="sm" className="gap-1.5">
-              <Building2 className="h-3.5 w-3.5" /> Espace Pro
-            </Button>
-          </Link>
           <Link to="/reservation">
             <Button variant="default" size="sm">{t("nav.book")}</Button>
           </Link>
@@ -147,20 +146,19 @@ export function Header() {
                 to={link.href}
                 onClick={() => setIsOpen(false)}
                 className={`text-sm font-medium py-2 px-3 rounded-md transition-colors ${
+                  link.highlight
+                    ? "border border-primary/30 text-primary"
+                    : ""
+                } ${
                   (link.href.startsWith("/#") ? location.pathname === "/" && location.hash === link.href.slice(1) : location.pathname === link.href)
                     ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-secondary"
+                    : link.highlight ? "" : "text-muted-foreground hover:bg-secondary"
                 }`}
               >
-                {t(link.labelKey)}
+                {link.highlight ? "Espace Pro" : t(link.labelKey)}
               </Link>
             ))}
             <div className="flex gap-2 pt-2 border-t border-border">
-              <Link to={isLoggedIn ? "/pro-portal" : "/pro-login"} className="flex-1" onClick={() => setIsOpen(false)}>
-                <Button variant="outline" className="w-full gap-1.5" size="sm">
-                  <Building2 className="h-3.5 w-3.5" /> Espace Pro
-                </Button>
-              </Link>
               <Link to="/reservation" className="flex-1" onClick={() => setIsOpen(false)}>
                 <Button variant="default" className="w-full" size="sm">{t("nav.book")}</Button>
               </Link>

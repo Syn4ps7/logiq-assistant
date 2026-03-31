@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { Building2, ChevronRight, Fuel, CreditCard, MapPin, IdCard, ShieldCheck } from "lucide-react";
+import { Building2, ChevronRight, Fuel, CreditCard, MapPin, IdCard, ShieldCheck, LogIn } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -90,6 +90,11 @@ const Pro = () => {
               <Button variant="hero-outline" size="lg" onClick={scrollToForm}>
                 {t("pro.ctaQuote")}
               </Button>
+              <Link to="/pro-login">
+                <Button variant="hero-outline" size="lg" className="gap-1.5">
+                  <LogIn className="h-4 w-4" /> Connexion
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </div>
