@@ -27,8 +27,15 @@ const LANGS = [
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => setIsLoggedIn(!!session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setIsLoggedIn(!!session));
+    return () => subscription.unsubscribe();
+  }, []);
 
   const setLang = (code: string) => {
     i18n.changeLanguage(code);
