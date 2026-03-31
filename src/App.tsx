@@ -34,11 +34,27 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const location = useLocation();
-  const isAdmin = location.pathname.startsWith("/admin") || location.pathname === "/login" || location.pathname.startsWith("/pro-");
+  const navigate = useNavigate();
+  const isAdmin = location.pathname.startsWith("/admin") || location.pathname === "/login" || location.pathname.startsWith("/pro-") || location.pathname.startsWith("/auth/");
 
   useEffect(() => {
     initLogiq();
   }, []);
+
+  // Handle auth callback tokens in URL hash (email confirmation redirect)
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && (hash.includes("access_token") || hash.includes("type=signup") || hash.includes("type=recovery"))) {
+      // Let Supabase client process the tokens, then redirect
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          supabase.from("user_roles").select("role").eq("user_id", session.user.id).eq("role", "admin").maybeSingle().then(({ data: roleData }) => {
+            navigate(roleData ? "/admin" : "/pro-portal", { replace: true });
+          });
+        }
+      });
+    }
+  }, [navigate]);
 
   return (
     <>
