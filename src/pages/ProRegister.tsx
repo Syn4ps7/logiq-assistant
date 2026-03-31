@@ -110,6 +110,11 @@ const ProRegister = () => {
           </div>
 
           <div>
+            <label className="block text-sm font-medium mb-1">Numéro IDE / TVA</label>
+            <Input value={form.ide_tva} onChange={update("ide_tva")} placeholder="CHE-123.456.789 TVA" />
+          </div>
+
+          <div>
             <label className="block text-sm font-medium mb-1">Email professionnel *</label>
             <Input required type="email" value={form.email} onChange={update("email")} placeholder="contact@entreprise.ch" />
           </div>
