@@ -30,6 +30,7 @@ const ProPortal = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
+  const [previewInvoice, setPreviewInvoice] = useState<Parameters<typeof downloadProInvoice>[0] | null>(null);
 
   // Show confirmation toast when arriving from email validation
   useEffect(() => {
