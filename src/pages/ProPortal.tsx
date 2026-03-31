@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,9 +19,22 @@ const statusConfig: Record<string, { label: string; className: string }> = {
 
 const ProPortal = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [reservations, setReservations] = useState<any[]>([]);
+
+  // Show confirmation toast when arriving from email validation
+  useEffect(() => {
+    if (searchParams.get("confirmed") === "true") {
+      toast({
+        title: "✅ Email confirmé !",
+        description: "Votre compte pro est activé. Bienvenue dans votre espace.",
+      });
+      // Clean URL
+      window.history.replaceState({}, "", "/pro-portal");
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const init = async () => {

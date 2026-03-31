@@ -46,11 +46,15 @@ function AppContent() {
   useEffect(() => {
     const hash = window.location.hash;
     if (hash && (hash.includes("access_token") || hash.includes("type=signup") || hash.includes("type=recovery"))) {
-      // Let Supabase client process the tokens, then redirect
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session) {
+          const isSignup = hash.includes("type=signup");
           supabase.from("user_roles").select("role").eq("user_id", session.user.id).eq("role", "admin").maybeSingle().then(({ data: roleData }) => {
-            navigate(roleData ? "/admin" : "/pro-portal", { replace: true });
+            if (isSignup) {
+              navigate("/pro-portal?confirmed=true", { replace: true });
+            } else {
+              navigate(roleData ? "/admin" : "/pro-portal", { replace: true });
+            }
           });
         }
       });
