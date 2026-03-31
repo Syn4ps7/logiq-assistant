@@ -116,6 +116,7 @@ const Admin = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [promoUsage, setPromoUsage] = useState<PromoUsage[]>([]);
+  const [profiles, setProfiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [statusFilterB2c, setStatusFilterB2c] = useState<string>("all");
@@ -130,6 +131,15 @@ const Admin = () => {
   const [newDiscount, setNewDiscount] = useState("15");
   const [newExpires, setNewExpires] = useState("");
   const [creatingPromo, setCreatingPromo] = useState(false);
+  // New user form
+  const [showNewUser, setShowNewUser] = useState(false);
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [newUserPassword, setNewUserPassword] = useState("");
+  const [newUserContact, setNewUserContact] = useState("");
+  const [newUserCompany, setNewUserCompany] = useState("");
+  const [newUserPhone, setNewUserPhone] = useState("");
+  const [newUserCity, setNewUserCity] = useState("");
+  const [creatingUser, setCreatingUser] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
