@@ -373,7 +373,7 @@ const Admin = () => {
       ) : (
         <>
           {/* Desktop */}
-          <div className="hidden md:block rounded-xl border overflow-x-auto">
+          <div className="rounded-xl border overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
@@ -425,7 +425,7 @@ const Admin = () => {
             </Table>
           </div>
           {/* Mobile */}
-          <div className="md:hidden space-y-4">
+          <div className="hidden space-y-4">
             {filtered.map((r) => (
               <div key={r.id} className="p-4 border rounded-xl bg-card space-y-3">
                 <div className="flex items-start justify-between">
@@ -568,7 +568,7 @@ const Admin = () => {
             ) : (
               <>
                 {/* Desktop */}
-                <div className="hidden md:block rounded-xl border overflow-hidden">
+                <div className="rounded-xl border overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow className="bg-muted/50">
@@ -607,7 +607,7 @@ const Admin = () => {
                   </Table>
                 </div>
                 {/* Mobile */}
-                <div className="md:hidden space-y-4">
+                <div className="hidden space-y-4">
                   {leads.map((lead) => (
                     <div key={lead.id} className="p-4 border rounded-xl bg-card space-y-3">
                       <div className="flex items-start justify-between">
@@ -652,7 +652,7 @@ const Admin = () => {
             ) : (
               <>
                 {/* Desktop */}
-                <div className="hidden md:block rounded-xl border overflow-hidden">
+                <div className="rounded-xl border overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow className="bg-muted/50">
@@ -683,7 +683,7 @@ const Admin = () => {
                   </Table>
                 </div>
                 {/* Mobile */}
-                <div className="md:hidden space-y-4">
+                <div className="hidden space-y-4">
                   {contactLeads.map((lead) => (
                     <div key={lead.id} className="p-4 border rounded-xl bg-card space-y-3">
                       <div className="flex items-start justify-between">
@@ -814,7 +814,7 @@ const Admin = () => {
                 </div>
               ) : (
                 <>
-                  <div className="hidden md:block rounded-xl border overflow-hidden">
+                  <div className="rounded-xl border overflow-x-auto">
                     <Table>
                       <TableHeader>
                         <TableRow className="bg-muted/50">
@@ -843,7 +843,7 @@ const Admin = () => {
                       </TableBody>
                     </Table>
                   </div>
-                  <div className="md:hidden space-y-3">
+                  <div className="hidden space-y-3">
                     {promoUsage.map((usage) => {
                       const code = promoCodes.find((p) => p.id === usage.promo_code_id);
                       return (
