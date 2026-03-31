@@ -55,7 +55,8 @@ const Reservation = () => {
   const [promoChecking, setPromoChecking] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
-  const isProCheckout = searchParams.get("source") === "pro";
+  const [isProUser, setIsProUser] = useState(false);
+  const isProCheckout = searchParams.get("source") === "pro" || isProUser;
 
   // Pre-fill from query params (from Rates page links)
   useEffect(() => {
@@ -76,10 +77,11 @@ const Reservation = () => {
       if (!session) return;
       const { data: profile } = await supabase
         .from("profiles")
-        .select("contact_name, email, phone, company_name")
+        .select("contact_name, email, phone, company_name, account_type")
         .eq("user_id", session.user.id)
         .maybeSingle();
       if (profile) {
+        if (profile.account_type === "pro") setIsProUser(true);
         if (profile.contact_name && !contactName) setContactName(profile.contact_name);
         if (profile.email && !contactEmail) setContactEmail(profile.email);
         if (profile.phone && !contactPhone) setContactPhone(profile.phone);
