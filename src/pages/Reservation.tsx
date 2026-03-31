@@ -16,6 +16,8 @@ const fmtCHF = (v: number) => roundCHF(v).toLocaleString("fr-CH", { minimumFract
 
 type RatePlanId = "week" | "weekend" | "pack-48h";
 type WeekendPack = "standard" | "confort" | "premium";
+type ProTab = "daily" | "carnet";
+type CarnetId = "carnet-10" | "carnet-20" | "carnet-40";
 
 const WEEKEND_PACKS: Record<WeekendPack, { price: number; label: string }> = {
   standard: { price: 298, label: "Week-end Standard" },
@@ -23,12 +25,22 @@ const WEEKEND_PACKS: Record<WeekendPack, { price: number; label: string }> = {
   premium: { price: 429, label: "Pack Déménagement Premium 48h" },
 };
 
+const CARNETS: { id: CarnetId; days: number; totalHT: number; totalTTC: number; perDayHT: number; perDayTTC: number; kmPerDay: number }[] = [
+  { id: "carnet-10", days: 10, totalHT: 1193.35, totalTTC: 1290, perDayHT: 119.35, perDayTTC: 129, kmPerDay: 200 },
+  { id: "carnet-20", days: 20, totalHT: 2257.15, totalTTC: 2440, perDayHT: 112.85, perDayTTC: 122, kmPerDay: 200 },
+  { id: "carnet-40", days: 40, totalHT: 4255.30, totalTTC: 4600, perDayHT: 106.40, perDayTTC: 115, kmPerDay: 200 },
+];
+
+const EXTRA_KM_RATE_PRO_HT = 0.65;
+
 const Reservation = () => {
   const { t } = useTranslation();
   const steps = t("reservation.steps", { returnObjects: true }) as string[];
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(0);
   const [selectedPlan, setSelectedPlan] = useState<RatePlanId | "">("");
+  const [proTab, setProTab] = useState<ProTab>("daily");
+  const [selectedCarnet, setSelectedCarnet] = useState<CarnetId | "">("");
   const [weekendPack, setWeekendPack] = useState<WeekendPack | "">("");
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("07:00");
@@ -117,6 +129,26 @@ const Reservation = () => {
   const price = useMemo(() => {
     if (!selectedVehicle) return null;
 
+    // Carnet flow
+    if (proTab === "carnet" && selectedCarnet) {
+      const carnet = CARNETS.find((c) => c.id === selectedCarnet);
+      if (!carnet) return null;
+      const days = carnet.days;
+      const baseTotal = carnet.totalTTC;
+      const includedKm = carnet.kmPerDay * days;
+
+      const optionsCost = selectedOptions.reduce((sum, optId) => {
+        const opt = vehicleOptions.find((o) => o.id === optId);
+        return sum + (opt ? opt.price : 0);
+      }, 0);
+
+      const extraKm = Math.max(0, estKm - includedKm);
+      const extraKmCost = Math.round(extraKm * 0.70 * 100) / 100;
+      const total = Math.round((baseTotal + optionsCost + extraKmCost) * 100) / 100;
+
+      return { days, baseTotal, includedKm, optionsCost, extraKm, extraKmCost, total, planName: `Carnet ${days} jours`, isCarnet: true, carnetHT: carnet.totalHT, perDayHT: carnet.perDayHT };
+    }
+
     // Weekend pack flow
     if (isPackWithSub && weekendPack) {
       const pack = WEEKEND_PACKS[weekendPack];
@@ -124,7 +156,6 @@ const Reservation = () => {
       const includedKm = 200;
       const days = 2;
 
-      // For confort & premium, sérénité is already included — don't charge
       const filteredOptions = selectedOptions.filter((optId) => {
         if ((weekendPack === "confort" || weekendPack === "premium") && optId === "serenite") return false;
         if (weekendPack === "premium" && (optId === "diable" || optId === "sangles-couverture")) return false;
@@ -172,7 +203,7 @@ const Reservation = () => {
     const total = Math.round((baseTotal + optionsCost + extraKmCost) * 100) / 100;
 
     return { days, baseTotal, includedKm, optionsCost, extraKm, extraKmCost, total, planName: plan.name };
-  }, [selectedPlan, weekendPack, startDate, endDate, selectedVehicle, selectedOptions, estKm, isPackWithSub]);
+  }, [selectedPlan, weekendPack, startDate, endDate, selectedVehicle, selectedOptions, estKm, isPackWithSub, proTab, selectedCarnet]);
 
   useEffect(() => {
     if (price) {
@@ -238,7 +269,7 @@ const Reservation = () => {
     ? roundCHF(price.total - (discountedTotal || price.total))
     : 0;
 
-  const canProceedStep0 = isPackWithSub || (selectedPlan && (selectedPlan === "week" || selectedPlan === "weekend") && startDate && endDate);
+  const canProceedStep0 = (proTab === "carnet" && selectedCarnet) || isPackWithSub || (selectedPlan && (selectedPlan === "week" || selectedPlan === "weekend") && startDate && endDate);
 
   const canConfirm = premiumDeliveryValid && contactName && contactEmail && contactPhone;
 
@@ -278,7 +309,7 @@ const Reservation = () => {
         contact_name: contactName,
         contact_email: contactEmail,
         contact_phone: contactPhone,
-        plan: selectedPlan,
+        plan: selectedCarnet || selectedPlan,
         pack: weekendPack || null,
         vehicle_name: vehicle?.name || "",
         vehicle_id: selectedVehicle,
@@ -467,79 +498,136 @@ const Reservation = () => {
           {step === 0 && (
             <div className="space-y-6">
               <h2 className="text-lg font-semibold">{t("reservation.choosePlan")}</h2>
-              <div className="space-y-3">
-                {ratePlans.map((plan) => (
+
+              {/* Pro tabs */}
+              {isProCheckout && (
+                <div className="flex rounded-lg border border-border overflow-hidden">
                   <button
-                    key={plan.id}
-                    onClick={() => { setSelectedPlan(plan.id as RatePlanId); if (plan.id !== "pack-48h") setWeekendPack(""); }}
-                    className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
-                      selectedPlan === plan.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"
+                    onClick={() => { setProTab("daily"); setSelectedCarnet(""); }}
+                    className={`flex-1 px-4 py-2.5 text-sm font-semibold transition-colors ${
+                      proTab === "daily" ? "bg-primary text-primary-foreground" : "bg-muted/30 text-muted-foreground hover:bg-muted/50"
                     }`}
                   >
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <div className="font-medium">{plan.name}</div>
-                        <div className="text-sm text-muted-foreground">{plan.subtitle}</div>
-                      </div>
-                      <span className="text-lg font-bold text-primary">
-                        {isProCheckout
-                          ? `${fmtCHF(plan.priceValue / (1 + TVA_RATE))} CHF HT${plan.isFlat ? "" : " / jour"}`
-                          : plan.priceDisplay}
-                      </span>
-                    </div>
+                    Journalier / Week-end
                   </button>
-                ))}
-              </div>
-
-              {/* Pack 48h sub-selection */}
-              {selectedPlan === "pack-48h" && (
-                <div className="space-y-3 bg-muted/30 rounded-lg p-4">
-                  <h3 className="font-medium text-sm">Choisissez votre Pack 48h :</h3>
-                  {(Object.entries(WEEKEND_PACKS) as [WeekendPack, { price: number; label: string }][]).map(([key, pack]) => (
-                    <button
-                      key={key}
-                      onClick={() => setWeekendPack(key)}
-                      className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${
-                        weekendPack === key ? "border-accent bg-accent/5" : "border-border hover:border-accent/30"
-                      }`}
-                    >
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                          {key === "premium" && <Truck className="h-4 w-4 text-primary" />}
-                          <span className="font-medium text-sm">{pack.label}</span>
-                        </div>
-                        <span className="text-sm font-bold text-primary">
-                          {isProCheckout
-                            ? `${fmtCHF(pack.price / (1 + TVA_RATE))} CHF HT`
-                            : `${pack.price} CHF (TTC)`}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
+                  <button
+                    onClick={() => { setProTab("carnet"); setSelectedPlan(""); setWeekendPack(""); }}
+                    className={`flex-1 px-4 py-2.5 text-sm font-semibold transition-colors ${
+                      proTab === "carnet" ? "bg-primary text-primary-foreground" : "bg-muted/30 text-muted-foreground hover:bg-muted/50"
+                    }`}
+                  >
+                    Carnet de jours
+                  </button>
                 </div>
               )}
 
-              {selectedPlan && !isPack && (
-                <div className="space-y-4">
-                  <h3 className="font-medium">{t("reservation.rentalDates")}</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium mb-1">{t("reservation.startDate")}</label>
-                      <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{t("reservation.startTime", "Heure de début")}</label>
-                        <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium mb-1">{t("reservation.endDate")}</label>
-                      <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{t("reservation.endTime", "Heure de fin")}</label>
-                        <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
-                      </div>
-                    </div>
+              {/* Daily / Weekend plans (default tab or B2C) */}
+              {(proTab === "daily" || !isProCheckout) && (
+                <>
+                  <div className="space-y-3">
+                    {ratePlans.map((plan) => (
+                      <button
+                        key={plan.id}
+                        onClick={() => { setSelectedPlan(plan.id as RatePlanId); if (plan.id !== "pack-48h") setWeekendPack(""); }}
+                        className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
+                          selectedPlan === plan.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"
+                        }`}
+                      >
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <div className="font-medium">{plan.name}</div>
+                            <div className="text-sm text-muted-foreground">{plan.subtitle}</div>
+                          </div>
+                          <span className="text-lg font-bold text-primary">
+                            {isProCheckout
+                              ? `${fmtCHF(plan.priceValue / (1 + TVA_RATE))} CHF HT${plan.isFlat ? "" : " / jour"}`
+                              : plan.priceDisplay}
+                          </span>
+                        </div>
+                      </button>
+                    ))}
                   </div>
+
+                  {/* Pack 48h sub-selection */}
+                  {selectedPlan === "pack-48h" && (
+                    <div className="space-y-3 bg-muted/30 rounded-lg p-4">
+                      <h3 className="font-medium text-sm">Choisissez votre Pack 48h :</h3>
+                      {(Object.entries(WEEKEND_PACKS) as [WeekendPack, { price: number; label: string }][]).map(([key, pack]) => (
+                        <button
+                          key={key}
+                          onClick={() => setWeekendPack(key)}
+                          className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${
+                            weekendPack === key ? "border-accent bg-accent/5" : "border-border hover:border-accent/30"
+                          }`}
+                        >
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                              {key === "premium" && <Truck className="h-4 w-4 text-primary" />}
+                              <span className="font-medium text-sm">{pack.label}</span>
+                            </div>
+                            <span className="text-sm font-bold text-primary">
+                              {isProCheckout
+                                ? `${fmtCHF(pack.price / (1 + TVA_RATE))} CHF HT`
+                                : `${pack.price} CHF (TTC)`}
+                            </span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {selectedPlan && !isPack && (
+                    <div className="space-y-4">
+                      <h3 className="font-medium">{t("reservation.rentalDates")}</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium mb-1">{t("reservation.startDate")}</label>
+                          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                          <div>
+                            <label className="block text-sm font-medium mb-1">{t("reservation.startTime", "Heure de début")}</label>
+                            <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium mb-1">{t("reservation.endDate")}</label>
+                          <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                          <div>
+                            <label className="block text-sm font-medium mb-1">{t("reservation.endTime", "Heure de fin")}</label>
+                            <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Carnet tab (pro only) */}
+              {isProCheckout && proTab === "carnet" && (
+                <div className="space-y-3">
+                  {CARNETS.map((carnet) => (
+                    <button
+                      key={carnet.id}
+                      onClick={() => setSelectedCarnet(carnet.id)}
+                      className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
+                        selectedCarnet === carnet.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"
+                      }`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <div className="font-medium">Carnet {carnet.days} jours</div>
+                          <div className="text-sm text-muted-foreground">{carnet.kmPerDay} km/jour inclus</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-primary">{fmtCHF(carnet.totalHT)} CHF HT</div>
+                          <div className="text-xs text-muted-foreground">{fmtCHF(carnet.perDayHT)} CHF HT/jour</div>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                  <p className="text-xs text-muted-foreground">
+                    Km supplémentaires : {EXTRA_KM_RATE_PRO_HT.toFixed(2)} CHF HT/km (0,70 CHF TTC)
+                  </p>
                 </div>
               )}
 
@@ -547,8 +635,8 @@ const Reservation = () => {
                 <label className="block text-sm font-medium mb-1">{t("reservation.estKm")}</label>
                 <input type="number" value={estKm} onChange={(e) => setEstKm(Number(e.target.value))} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" min={0} />
                 <p className="text-xs text-muted-foreground mt-1">
-                  {isPack ? t("reservation.kmIncludedPack") : t("reservation.kmIncludedDay")}
-                  {" · "}{EXTRA_KM_RATE.toFixed(2)} {t("reservation.extraKmRate")}
+                  {isPack ? t("reservation.kmIncludedPack") : proTab === "carnet" && selectedCarnet ? `${CARNETS.find(c => c.id === selectedCarnet)?.kmPerDay || 200} km/jour inclus` : t("reservation.kmIncludedDay")}
+                  {" · "}{isProCheckout && proTab === "carnet" ? `${EXTRA_KM_RATE_PRO_HT.toFixed(2)} CHF HT/km` : `${EXTRA_KM_RATE.toFixed(2)} ${t("reservation.extraKmRate")}`}
                 </p>
               </div>
 
