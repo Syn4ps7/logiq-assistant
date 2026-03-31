@@ -232,7 +232,7 @@ const ProPortal = () => {
             <div className="text-center py-16">
               <ShoppingCart className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
               <p className="text-muted-foreground mb-4">Réservez directement un véhicule avec vos informations pré-remplies.</p>
-              <Link to="/reservation">
+              <Link to="/reservation?source=pro">
                 <Button variant="petrol">
                   Accéder à la réservation <ArrowRight className="h-4 w-4 ml-1" />
                 </Button>
