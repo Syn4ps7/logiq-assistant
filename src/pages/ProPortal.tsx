@@ -50,6 +50,11 @@ const ProPortal = () => {
         return;
       }
 
+      // Check if must change password
+      if (session.user.user_metadata?.must_change_password) {
+        setMustChangePassword(true);
+      }
+
       // Fetch profile
       const { data: profileData } = await supabase
         .from("profiles")
