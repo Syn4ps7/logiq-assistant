@@ -55,7 +55,8 @@ const Reservation = () => {
   const [promoChecking, setPromoChecking] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
-  const isProCheckout = searchParams.get("source") === "pro";
+  const [isProUser, setIsProUser] = useState(false);
+  const isProCheckout = searchParams.get("source") === "pro" || isProUser;
 
   // Pre-fill from query params (from Rates page links)
   useEffect(() => {
