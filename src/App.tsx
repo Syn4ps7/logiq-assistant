@@ -63,6 +63,7 @@ function AppContent() {
             <Route path="/pro-login" element={<ProLogin />} />
             <Route path="/pro-register" element={<ProRegister />} />
             <Route path="/pro-portal" element={<ProPortal />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
