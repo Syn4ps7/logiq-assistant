@@ -652,7 +652,7 @@ const Admin = () => {
             ) : (
               <>
                 {/* Desktop */}
-                <div className="hidden md:block rounded-xl border overflow-hidden">
+                <div className="rounded-xl border overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow className="bg-muted/50">
