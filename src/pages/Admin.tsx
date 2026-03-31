@@ -1021,7 +1021,7 @@ const Admin = () => {
 
             {/* Users list */}
             {(() => {
-              const filteredProfiles = profiles.filter((p) => p.user_id !== adminUserId);
+              const filteredProfiles = profiles.filter((p) => p.user_id !== adminUserId).sort((a, b) => (a.company_name || a.contact_name || "").localeCompare(b.company_name || b.contact_name || ""));
               return filteredProfiles.length === 0 ? (
               <div className="text-center py-20">
                 <Users className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
