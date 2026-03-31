@@ -174,12 +174,13 @@ const Admin = () => {
 
   const fetchAll = async () => {
     setLoading(true);
-    const [proRes, contactRes, reservationRes, promoRes, usageRes] = await Promise.all([
+    const [proRes, contactRes, reservationRes, promoRes, usageRes, profilesRes] = await Promise.all([
       supabase.from("pro_leads").select("*").order("created_at", { ascending: false }),
       supabase.from("contact_leads").select("*").order("created_at", { ascending: false }),
       supabase.from("reservations").select("*").order("created_at", { ascending: false }),
       supabase.from("promo_codes").select("*").order("created_at", { ascending: false }),
       supabase.from("promo_usage").select("*").order("created_at", { ascending: false }),
+      supabase.from("profiles").select("*").order("created_at", { ascending: false }),
     ]);
     if (proRes.error) toast({ title: "Erreur", description: proRes.error.message, variant: "destructive" });
     else setLeads(proRes.data || []);
@@ -189,6 +190,7 @@ const Admin = () => {
     else setReservations(reservationRes.data || []);
     setPromoCodes(promoRes.data || []);
     setPromoUsage(usageRes.data || []);
+    setProfiles(profilesRes.data || []);
     setLoading(false);
   };
 
