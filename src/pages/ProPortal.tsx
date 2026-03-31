@@ -132,12 +132,6 @@ const ProPortal = () => {
             <p className="text-xs text-muted-foreground">Total dépensé</p>
             <p className="text-xl font-bold">{totalSpent.toFixed(0)} <span className="text-sm font-normal text-muted-foreground">CHF</span></p>
           </div>
-          <div className="rounded-lg border bg-card p-4 space-y-1">
-            <p className="text-xs text-muted-foreground">Économies promo</p>
-            <p className="text-xl font-bold text-primary">
-              -{reservations.reduce((s, r) => s + (Number(r.discount_amount) || 0), 0).toFixed(0)} <span className="text-sm font-normal">CHF</span>
-            </p>
-          </div>
         </div>
 
         {/* Tabs */}
