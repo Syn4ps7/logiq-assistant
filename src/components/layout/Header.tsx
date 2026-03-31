@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, MessageCircle, Globe } from "lucide-react";
+import { Menu, X, MessageCircle, Globe, Building2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
 import {
   DropdownMenu,
@@ -26,8 +27,15 @@ const LANGS = [
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => setIsLoggedIn(!!session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setIsLoggedIn(!!session));
+    return () => subscription.unsubscribe();
+  }, []);
 
   const setLang = (code: string) => {
     i18n.changeLanguage(code);
@@ -78,6 +86,11 @@ export function Header() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+          <Link to={isLoggedIn ? "/pro-portal" : "/pro-login"}>
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Building2 className="h-3.5 w-3.5" /> Espace Pro
+            </Button>
+          </Link>
           <Link to="/reservation">
             <Button variant="default" size="sm">{t("nav.book")}</Button>
           </Link>
@@ -143,6 +156,11 @@ export function Header() {
               </Link>
             ))}
             <div className="flex gap-2 pt-2 border-t border-border">
+              <Link to={isLoggedIn ? "/pro-portal" : "/pro-login"} className="flex-1" onClick={() => setIsOpen(false)}>
+                <Button variant="outline" className="w-full gap-1.5" size="sm">
+                  <Building2 className="h-3.5 w-3.5" /> Espace Pro
+                </Button>
+              </Link>
               <Link to="/reservation" className="flex-1" onClick={() => setIsOpen(false)}>
                 <Button variant="default" className="w-full" size="sm">{t("nav.book")}</Button>
               </Link>

@@ -69,6 +69,25 @@ const Reservation = () => {
     }
   }, [searchParams]);
 
+  // Pre-fill contact info from pro profile if logged in
+  useEffect(() => {
+    const fillFromProfile = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("contact_name, email, phone, company_name")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+      if (profile) {
+        if (profile.contact_name && !contactName) setContactName(profile.contact_name);
+        if (profile.email && !contactEmail) setContactEmail(profile.email);
+        if (profile.phone && !contactPhone) setContactPhone(profile.phone);
+      }
+    };
+    fillFromProfile();
+  }, []);
+
   useEffect(() => {
     dispatchLogiqEvent("logiq:openReservation", {
       prefillVehicleId: searchParams.get("vehicle") || undefined,
