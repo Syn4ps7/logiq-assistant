@@ -129,6 +129,26 @@ const Reservation = () => {
   const price = useMemo(() => {
     if (!selectedVehicle) return null;
 
+    // Carnet flow
+    if (proTab === "carnet" && selectedCarnet) {
+      const carnet = CARNETS.find((c) => c.id === selectedCarnet);
+      if (!carnet) return null;
+      const days = carnet.days;
+      const baseTotal = carnet.totalTTC;
+      const includedKm = carnet.kmPerDay * days;
+
+      const optionsCost = selectedOptions.reduce((sum, optId) => {
+        const opt = vehicleOptions.find((o) => o.id === optId);
+        return sum + (opt ? opt.price : 0);
+      }, 0);
+
+      const extraKm = Math.max(0, estKm - includedKm);
+      const extraKmCost = Math.round(extraKm * 0.70 * 100) / 100;
+      const total = Math.round((baseTotal + optionsCost + extraKmCost) * 100) / 100;
+
+      return { days, baseTotal, includedKm, optionsCost, extraKm, extraKmCost, total, planName: `Carnet ${days} jours`, isCarnet: true, carnetHT: carnet.totalHT, perDayHT: carnet.perDayHT };
+    }
+
     // Weekend pack flow
     if (isPackWithSub && weekendPack) {
       const pack = WEEKEND_PACKS[weekendPack];
@@ -136,7 +156,6 @@ const Reservation = () => {
       const includedKm = 200;
       const days = 2;
 
-      // For confort & premium, sérénité is already included — don't charge
       const filteredOptions = selectedOptions.filter((optId) => {
         if ((weekendPack === "confort" || weekendPack === "premium") && optId === "serenite") return false;
         if (weekendPack === "premium" && (optId === "diable" || optId === "sangles-couverture")) return false;
@@ -184,7 +203,7 @@ const Reservation = () => {
     const total = Math.round((baseTotal + optionsCost + extraKmCost) * 100) / 100;
 
     return { days, baseTotal, includedKm, optionsCost, extraKm, extraKmCost, total, planName: plan.name };
-  }, [selectedPlan, weekendPack, startDate, endDate, selectedVehicle, selectedOptions, estKm, isPackWithSub]);
+  }, [selectedPlan, weekendPack, startDate, endDate, selectedVehicle, selectedOptions, estKm, isPackWithSub, proTab, selectedCarnet]);
 
   useEffect(() => {
     if (price) {
