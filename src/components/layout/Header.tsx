@@ -28,12 +28,31 @@ const LANGS = [
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [proName, setProName] = useState<string | null>(null);
   const location = useLocation();
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => setIsLoggedIn(!!session));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setIsLoggedIn(!!session));
+    const fetchProfile = async (userId: string) => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("company_name, contact_name")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (data) {
+        setProName(data.company_name || data.contact_name || null);
+      }
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+      if (session) fetchProfile(session.user.id);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+      if (session) fetchProfile(session.user.id);
+      else setProName(null);
+    });
     return () => subscription.unsubscribe();
   }, []);
 
