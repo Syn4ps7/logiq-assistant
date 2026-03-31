@@ -139,6 +139,7 @@ const Admin = () => {
   const [newUserCompany, setNewUserCompany] = useState("");
   const [newUserPhone, setNewUserPhone] = useState("");
   const [newUserCity, setNewUserCity] = useState("");
+  const [newUserIdeTva, setNewUserIdeTva] = useState("");
   const [creatingUser, setCreatingUser] = useState(false);
   const navigate = useNavigate();
 
@@ -319,6 +320,7 @@ const Admin = () => {
         company_name: newUserCompany,
         phone: newUserPhone,
         city: newUserCity,
+        ide_tva: newUserIdeTva,
       },
     });
     if (res.error || res.data?.error) {
@@ -326,11 +328,24 @@ const Admin = () => {
     } else {
       toast({ title: "✅ Utilisateur créé", description: `${newUserEmail} peut se connecter avec le mot de passe temporaire.` });
       setNewUserEmail(""); setNewUserPassword(""); setNewUserContact("");
-      setNewUserCompany(""); setNewUserPhone(""); setNewUserCity("");
+      setNewUserCompany(""); setNewUserPhone(""); setNewUserCity(""); setNewUserIdeTva("");
       setShowNewUser(false);
       fetchAll();
     }
     setCreatingUser(false);
+  };
+
+  const deleteUser = async (userId: string, email: string) => {
+    if (!confirm(`Supprimer le compte de ${email} ? Cette action est irréversible.`)) return;
+    const res = await supabase.functions.invoke("admin-delete-user", {
+      body: { user_id: userId },
+    });
+    if (res.error || res.data?.error) {
+      toast({ title: "Erreur", description: res.data?.error || res.error?.message, variant: "destructive" });
+    } else {
+      toast({ title: "Utilisateur supprimé" });
+      fetchAll();
+    }
   };
 
   if (isAdmin === false) {
@@ -952,6 +967,10 @@ const Admin = () => {
                     <label className="block text-sm font-medium mb-1">Ville</label>
                     <Input value={newUserCity} onChange={(e) => setNewUserCity(e.target.value)} placeholder="Genève" />
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">IDE / TVA</label>
+                    <Input value={newUserIdeTva} onChange={(e) => setNewUserIdeTva(e.target.value)} placeholder="CHE-XXX.XXX.XXX" />
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <Button size="sm" onClick={createUser} disabled={creatingUser}>
@@ -981,7 +1000,9 @@ const Admin = () => {
                       <TableHead>Email</TableHead>
                       <TableHead>Téléphone</TableHead>
                       <TableHead>Ville</TableHead>
+                      <TableHead>IDE/TVA</TableHead>
                       <TableHead>Type</TableHead>
+                      <TableHead className="w-10"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -995,8 +1016,14 @@ const Admin = () => {
                         <TableCell className="text-sm">{p.email}</TableCell>
                         <TableCell className="text-sm">{p.phone || "—"}</TableCell>
                         <TableCell className="text-sm text-muted-foreground">{p.city || "—"}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{p.ide_tva || "—"}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className="text-xs">{p.account_type}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <button onClick={() => deleteUser(p.user_id, p.email)} className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" aria-label="Supprimer">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </TableCell>
                       </TableRow>
                     ))}
