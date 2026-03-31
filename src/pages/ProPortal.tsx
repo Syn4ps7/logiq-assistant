@@ -170,6 +170,7 @@ const ProPortal = () => {
                       <TableHead>Jours</TableHead>
                       <TableHead>Total</TableHead>
                       <TableHead>Statut</TableHead>
+                      <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -185,6 +186,37 @@ const ProPortal = () => {
                           <TableCell className="text-sm font-semibold text-primary">{Number(r.total_chf).toFixed(0)} CHF</TableCell>
                           <TableCell>
                             <Badge variant="outline" className={`text-xs ${config.className}`}>{config.label}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            {r.status === "paid" && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="gap-1 text-xs"
+                                onClick={() => generateProInvoice({
+                                  reference: r.reference,
+                                  date: new Date(r.created_at).toLocaleDateString("fr-CH"),
+                                  companyName: profile?.company_name || "",
+                                  contactName: profile?.contact_name || "",
+                                  email: profile?.email || "",
+                                  phone: profile?.phone || "",
+                                  ideTva: (profile as any)?.ide_tva || undefined,
+                                  vehicleName: r.vehicle_name,
+                                  plan: r.plan,
+                                  days: r.days,
+                                  startDate: r.start_date || undefined,
+                                  endDate: r.end_date || undefined,
+                                  options: r.options || undefined,
+                                  estKm: r.est_km,
+                                  totalTTC: Number(r.total_chf),
+                                  discountPercent: Number(r.discount_percent) || undefined,
+                                  discountAmount: Number(r.discount_amount) || undefined,
+                                  promoCode: r.promo_code || undefined,
+                                })}
+                              >
+                                <FileText className="h-3.5 w-3.5" /> Facture
+                              </Button>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
