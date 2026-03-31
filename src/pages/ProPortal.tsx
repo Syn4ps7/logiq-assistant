@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ShoppingCart, ClipboardList, User, Building2, ArrowRight, FileText, Lock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { generateProInvoice } from "@/lib/invoice";
+import { downloadProInvoice } from "@/lib/invoice";
+import InvoicePreviewDialog from "@/components/InvoicePreviewDialog";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
