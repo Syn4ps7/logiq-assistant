@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN ide_tva text DEFAULT null;

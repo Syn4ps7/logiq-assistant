@@ -452,7 +452,9 @@ const Reservation = () => {
                   <div className="flex items-center gap-2 bg-primary/10 rounded-lg px-3 py-2 border border-primary/20 ml-auto">
                     <div className="text-right">
                       <p className="text-xs text-muted-foreground">Estimation</p>
-                      <p className="text-sm font-bold text-primary">{price.total.toFixed(2)} CHF</p>
+                      <p className="text-sm font-bold text-primary">
+                        {isProCheckout ? `${fmtCHF(price.total / (1 + TVA_RATE))} CHF HT` : `${price.total.toFixed(2)} CHF`}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -477,7 +479,11 @@ const Reservation = () => {
                         <div className="font-medium">{plan.name}</div>
                         <div className="text-sm text-muted-foreground">{plan.subtitle}</div>
                       </div>
-                      <span className="text-lg font-bold text-primary">{plan.priceDisplay}</span>
+                      <span className="text-lg font-bold text-primary">
+                        {isProCheckout
+                          ? `${fmtCHF(plan.priceValue / (1 + TVA_RATE))} CHF HT${plan.isFlat ? "" : " / jour"}`
+                          : plan.priceDisplay}
+                      </span>
                     </div>
                   </button>
                 ))}
@@ -500,7 +506,11 @@ const Reservation = () => {
                           {key === "premium" && <Truck className="h-4 w-4 text-primary" />}
                           <span className="font-medium text-sm">{pack.label}</span>
                         </div>
-                        <span className="text-sm font-bold text-primary">{pack.price} CHF (TTC)</span>
+                        <span className="text-sm font-bold text-primary">
+                          {isProCheckout
+                            ? `${fmtCHF(pack.price / (1 + TVA_RATE))} CHF HT`
+                            : `${pack.price} CHF (TTC)`}
+                        </span>
                       </div>
                     </button>
                   ))}

@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { LogOut, ShoppingCart, ClipboardList, User, Building2, ArrowRight } from "lucide-react";
+import { LogOut, ShoppingCart, ClipboardList, User, Building2, ArrowRight, FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { generateProInvoice } from "@/lib/invoice";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
@@ -131,12 +132,6 @@ const ProPortal = () => {
             <p className="text-xs text-muted-foreground">Total dépensé</p>
             <p className="text-xl font-bold">{totalSpent.toFixed(0)} <span className="text-sm font-normal text-muted-foreground">CHF</span></p>
           </div>
-          <div className="rounded-lg border bg-card p-4 space-y-1">
-            <p className="text-xs text-muted-foreground">Économies promo</p>
-            <p className="text-xl font-bold text-primary">
-              -{reservations.reduce((s, r) => s + (Number(r.discount_amount) || 0), 0).toFixed(0)} <span className="text-sm font-normal">CHF</span>
-            </p>
-          </div>
         </div>
 
         {/* Tabs */}
@@ -159,7 +154,7 @@ const ProPortal = () => {
               <div className="text-center py-16">
                 <ClipboardList className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
                 <p className="text-muted-foreground">Aucune réservation pour le moment.</p>
-                <Link to="/reservation">
+                <Link to="/reservation?source=pro">
                   <Button variant="petrol" className="mt-4">
                     Réserver un véhicule <ArrowRight className="h-4 w-4 ml-1" />
                   </Button>
@@ -175,6 +170,7 @@ const ProPortal = () => {
                       <TableHead>Jours</TableHead>
                       <TableHead>Total</TableHead>
                       <TableHead>Statut</TableHead>
+                      <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -191,6 +187,37 @@ const ProPortal = () => {
                           <TableCell>
                             <Badge variant="outline" className={`text-xs ${config.className}`}>{config.label}</Badge>
                           </TableCell>
+                          <TableCell>
+                            {r.status === "paid" && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="gap-1 text-xs"
+                                onClick={() => generateProInvoice({
+                                  reference: r.reference,
+                                  date: new Date(r.created_at).toLocaleDateString("fr-CH"),
+                                  companyName: profile?.company_name || "",
+                                  contactName: profile?.contact_name || "",
+                                  email: profile?.email || "",
+                                  phone: profile?.phone || "",
+                                  ideTva: (profile as any)?.ide_tva || undefined,
+                                  vehicleName: r.vehicle_name,
+                                  plan: r.plan,
+                                  days: r.days,
+                                  startDate: r.start_date || undefined,
+                                  endDate: r.end_date || undefined,
+                                  options: r.options || undefined,
+                                  estKm: r.est_km,
+                                  totalTTC: Number(r.total_chf),
+                                  discountPercent: Number(r.discount_percent) || undefined,
+                                  discountAmount: Number(r.discount_amount) || undefined,
+                                  promoCode: r.promo_code || undefined,
+                                })}
+                              >
+                                <FileText className="h-3.5 w-3.5" /> Facture
+                              </Button>
+                            )}
+                          </TableCell>
                         </TableRow>
                       );
                     })}
@@ -205,7 +232,7 @@ const ProPortal = () => {
             <div className="text-center py-16">
               <ShoppingCart className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
               <p className="text-muted-foreground mb-4">Réservez directement un véhicule avec vos informations pré-remplies.</p>
-              <Link to="/reservation">
+              <Link to="/reservation?source=pro">
                 <Button variant="petrol">
                   Accéder à la réservation <ArrowRight className="h-4 w-4 ml-1" />
                 </Button>
@@ -237,6 +264,10 @@ const ProPortal = () => {
                 <div>
                   <p className="text-muted-foreground">Ville</p>
                   <p className="font-medium">{profile?.city || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">N° IDE / TVA</p>
+                  <p className="font-medium">{(profile as any)?.ide_tva || "—"}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Type de compte</p>

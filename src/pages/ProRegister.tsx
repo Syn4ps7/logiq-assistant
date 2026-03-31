@@ -17,6 +17,7 @@ const ProRegister = () => {
     contact_name: "",
     phone: "",
     city: "",
+    ide_tva: "",
   });
 
   const update = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -61,7 +62,8 @@ const ProRegister = () => {
         contact_name: form.contact_name,
         phone: form.phone,
         city: form.city,
-      }).eq("user_id", data.user.id);
+        ide_tva: form.ide_tva || null,
+      } as any).eq("user_id", data.user.id);
     }
 
     setLoading(false);
@@ -106,6 +108,11 @@ const ProRegister = () => {
               <label className="block text-sm font-medium mb-1">Ville</label>
               <Input value={form.city} onChange={update("city")} placeholder="Lausanne" />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Numéro IDE / TVA</label>
+            <Input value={form.ide_tva} onChange={update("ide_tva")} placeholder="CHE-123.456.789 TVA" />
           </div>
 
           <div>
