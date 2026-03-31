@@ -62,7 +62,8 @@ const ProRegister = () => {
         contact_name: form.contact_name,
         phone: form.phone,
         city: form.city,
-      }).eq("user_id", data.user.id);
+        ide_tva: form.ide_tva || null,
+      } as any).eq("user_id", data.user.id);
     }
 
     setLoading(false);
