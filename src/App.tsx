@@ -25,12 +25,15 @@ import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import ProLogin from "./pages/ProLogin";
+import ProRegister from "./pages/ProRegister";
+import ProPortal from "./pages/ProPortal";
 
 const queryClient = new QueryClient();
 
 function AppContent() {
   const location = useLocation();
-  const isAdmin = location.pathname.startsWith("/admin") || location.pathname === "/login";
+  const isAdmin = location.pathname.startsWith("/admin") || location.pathname === "/login" || location.pathname.startsWith("/pro-");
 
   useEffect(() => {
     initLogiq();
@@ -56,6 +59,9 @@ function AppContent() {
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/pro-login" element={<ProLogin />} />
+            <Route path="/pro-register" element={<ProRegister />} />
+            <Route path="/pro-portal" element={<ProPortal />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
