@@ -309,7 +309,7 @@ const Reservation = () => {
         contact_name: contactName,
         contact_email: contactEmail,
         contact_phone: contactPhone,
-        plan: selectedPlan,
+        plan: selectedCarnet || selectedPlan,
         pack: weekendPack || null,
         vehicle_name: vehicle?.name || "",
         vehicle_id: selectedVehicle,
