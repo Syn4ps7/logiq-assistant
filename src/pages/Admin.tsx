@@ -139,6 +139,7 @@ const Admin = () => {
   const [newUserCompany, setNewUserCompany] = useState("");
   const [newUserPhone, setNewUserPhone] = useState("");
   const [newUserCity, setNewUserCity] = useState("");
+  const [newUserIdeTva, setNewUserIdeTva] = useState("");
   const [creatingUser, setCreatingUser] = useState(false);
   const navigate = useNavigate();
 
