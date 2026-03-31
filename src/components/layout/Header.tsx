@@ -15,7 +15,7 @@ const navLinks = [
   { labelKey: "nav.vehicles", href: "/vehicles" },
   { labelKey: "nav.howItWorks", href: "/#comment-ca-marche" },
   { labelKey: "nav.rates", href: "/rates" },
-  { labelKey: "nav.pro", href: "/pro" },
+  { labelKey: "nav.pro", href: "/pro", highlight: true },
   { labelKey: "nav.faq", href: "/faq" },
 ];
 
