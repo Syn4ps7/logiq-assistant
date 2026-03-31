@@ -452,7 +452,9 @@ const Reservation = () => {
                   <div className="flex items-center gap-2 bg-primary/10 rounded-lg px-3 py-2 border border-primary/20 ml-auto">
                     <div className="text-right">
                       <p className="text-xs text-muted-foreground">Estimation</p>
-                      <p className="text-sm font-bold text-primary">{price.total.toFixed(2)} CHF</p>
+                      <p className="text-sm font-bold text-primary">
+                        {isProCheckout ? `${fmtCHF(price.total / (1 + TVA_RATE))} CHF HT` : `${price.total.toFixed(2)} CHF`}
+                      </p>
                     </div>
                   </div>
                 )}
