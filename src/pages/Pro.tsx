@@ -90,6 +90,11 @@ const Pro = () => {
               <Button variant="hero-outline" size="lg" onClick={scrollToForm}>
                 {t("pro.ctaQuote")}
               </Button>
+              <Link to="/pro-login">
+                <Button variant="hero-outline" size="lg" className="gap-1.5">
+                  <LogIn className="h-4 w-4" /> Connexion
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </div>
