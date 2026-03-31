@@ -125,7 +125,7 @@ const ProRegister = () => {
           </div>
 
           <Button variant="petrol" type="submit" className="w-full" disabled={loading}>
-            {loading ? "Création…" : "Créer mon compte Pro"}
+            {loading ? "Création…" : "Créer mon compte"}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
