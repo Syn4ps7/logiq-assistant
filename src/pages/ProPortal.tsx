@@ -252,14 +252,14 @@ const ProPortal = () => {
                                 variant="ghost"
                                 size="sm"
                                 className="gap-1 text-xs"
-                                onClick={() => generateProInvoice({
+                                onClick={() => setPreviewInvoice({
                                   reference: r.reference,
                                   date: new Date(r.created_at).toLocaleDateString("fr-CH"),
                                   companyName: profile?.company_name || "",
                                   contactName: profile?.contact_name || "",
                                   email: profile?.email || "",
                                   phone: profile?.phone || "",
-                                  ideTva: (profile as any)?.ide_tva || undefined,
+                                  ideTva: profile?.ide_tva || undefined,
                                   vehicleName: r.vehicle_name,
                                   plan: r.plan,
                                   days: r.days,
