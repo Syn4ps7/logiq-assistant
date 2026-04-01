@@ -96,6 +96,16 @@ const ProPortal = () => {
     navigate("/pro-login");
   };
 
+  const handleDeleteReservation = async (id: string) => {
+    const { error } = await supabase.from("reservations").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Erreur", description: "Impossible de supprimer la réservation.", variant: "destructive" });
+    } else {
+      setReservations((prev) => prev.filter((r) => r.id !== id));
+      toast({ title: "✅ Réservation supprimée" });
+    }
+  };
+
   const handleChangePassword = async () => {
     if (newPassword.length < 6) {
       toast({ title: "Erreur", description: "Le mot de passe doit contenir au moins 6 caractères.", variant: "destructive" });
