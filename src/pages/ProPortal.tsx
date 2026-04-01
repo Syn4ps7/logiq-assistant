@@ -6,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ShoppingCart, ClipboardList, User, Building2, ArrowRight, FileText, Lock } from "lucide-react";
+import { ShoppingCart, ClipboardList, User, Building2, ArrowRight, FileText, Lock, Trash2 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
 import { downloadProInvoice } from "@/lib/invoice";
 import InvoicePreviewDialog from "@/components/InvoicePreviewDialog";
@@ -93,6 +94,16 @@ const ProPortal = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/pro-login");
+  };
+
+  const handleDeleteReservation = async (id: string) => {
+    const { error } = await supabase.from("reservations").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Erreur", description: "Impossible de supprimer la réservation.", variant: "destructive" });
+    } else {
+      setReservations((prev) => prev.filter((r) => r.id !== id));
+      toast({ title: "✅ Réservation supprimée" });
+    }
   };
 
   const handleChangePassword = async () => {
@@ -246,7 +257,7 @@ const ProPortal = () => {
                           <TableCell>
                             <Badge variant="outline" className={`text-xs ${config.className}`}>{config.label}</Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="flex items-center gap-1">
                             {r.status === "paid" && (
                               <Button
                                 variant="ghost"
@@ -276,6 +287,27 @@ const ProPortal = () => {
                                 <FileText className="h-3.5 w-3.5" /> Facture
                               </Button>
                             )}
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive text-xs gap-1">
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Supprimer cette réservation ?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    La réservation pour {r.vehicle_name} ({r.days}j) sera définitivement supprimée.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleDeleteReservation(r.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                    Supprimer
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                           </TableCell>
                         </TableRow>
                       );
