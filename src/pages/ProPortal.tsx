@@ -257,7 +257,7 @@ const ProPortal = () => {
                           <TableCell>
                             <Badge variant="outline" className={`text-xs ${config.className}`}>{config.label}</Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="flex items-center gap-1">
                             {r.status === "paid" && (
                               <Button
                                 variant="ghost"
@@ -287,6 +287,27 @@ const ProPortal = () => {
                                 <FileText className="h-3.5 w-3.5" /> Facture
                               </Button>
                             )}
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive text-xs gap-1">
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Supprimer cette réservation ?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    La réservation pour {r.vehicle_name} ({r.days}j) sera définitivement supprimée.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleDeleteReservation(r.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                    Supprimer
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                           </TableCell>
                         </TableRow>
                       );
