@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageCircle, X, Send, Loader2, Copy, Check, Building2, User } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 
@@ -134,6 +135,7 @@ export function ChatbotWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // Draggable bubble state
   const [bubblePos, setBubblePos] = useState<{ x: number; y: number } | null>(null);
@@ -324,7 +326,24 @@ export function ChatbotWidget() {
                     }`}>
                       {m.role === "assistant" ? (
                         <>
-                          <ReactMarkdown>{m.content}</ReactMarkdown>
+                          <ReactMarkdown
+                            components={{
+                              a: ({ href, children }) => {
+                                const isInternal = href?.startsWith("/");
+                                if (isInternal) {
+                                  return (
+                                    <button
+                                      onClick={() => { navigate(href!); setIsActive(false); }}
+                                      className="inline-flex items-center gap-1 mt-1 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-xs font-semibold hover:opacity-90 transition-opacity no-underline"
+                                    >
+                                      {children} →
+                                    </button>
+                                  );
+                                }
+                                return <a href={href} target="_blank" rel="noopener noreferrer" className="underline text-primary">{children}</a>;
+                              }
+                            }}
+                          >{m.content}</ReactMarkdown>
                           <CopyButton text={m.content} />
                         </>
                       ) : (
