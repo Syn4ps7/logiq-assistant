@@ -287,6 +287,7 @@ const ProPortal = () => {
                                 <FileText className="h-3.5 w-3.5" /> Facture
                               </Button>
                             )}
+                            {r.status === "pending" && (
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive text-xs gap-1">
