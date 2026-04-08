@@ -1,5 +1,6 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useTranslation } from "react-i18next";
+import { useSeo } from "@/hooks/use-seo";
 import { Link } from "react-router-dom";
 import { Fragment } from "react";
 

@@ -1,4 +1,5 @@
 import { cglArticles, CGL_VERSION } from "@/data/cgl-content";
+import { useSeo } from "@/hooks/use-seo";
 
 const CGL = () => {
   return (

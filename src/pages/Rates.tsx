@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check, Star, Crown, MapPin, Truck } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useSeo } from "@/hooks/use-seo";
 import {
   Table,
   TableHeader,

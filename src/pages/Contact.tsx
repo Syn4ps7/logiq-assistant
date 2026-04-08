@@ -2,6 +2,7 @@ import { Phone, Mail, Clock, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSeo } from "@/hooks/use-seo";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
 import { toast } from "sonner";
