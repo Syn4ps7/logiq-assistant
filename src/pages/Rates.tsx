@@ -53,7 +53,9 @@ const Rates = () => {
             {/* Week-end */}
             <div className="p-6 bg-card rounded-lg border-2 border-border transition-shadow hover:shadow-lg">
               <h3 className="text-lg font-bold mb-1">{t("rates.weekend")}</h3>
-              <p className="text-3xl font-bold text-primary mb-2">{t("rates.weekendPrice")}</p>
+              <p className="text-3xl font-bold text-primary mb-1">{t("rates.weekendPrice")}</p>
+              <p className="text-xs text-muted-foreground mb-1">{t("rates.weekendHours")}</p>
+              <p className="text-xs text-muted-foreground italic mb-3">{t("rates.weekendIdeal")}</p>
               <p className="text-sm text-muted-foreground mb-4 flex items-center gap-1.5">
                 <MapPin className="h-4 w-4 shrink-0" /> {t("rates.hubText")}
               </p>
@@ -86,7 +88,8 @@ const Rates = () => {
             {/* Standard */}
             <div className="relative p-6 bg-card rounded-lg border-2 border-border transition-shadow hover:shadow-lg flex flex-col">
               <h3 className="text-lg font-bold mb-1">{t("rates.standardName")}</h3>
-              <p className="text-sm text-muted-foreground italic mb-3">{t("rates.standardHook")}</p>
+              <p className="text-sm text-muted-foreground italic mb-1">{t("rates.standardHook")}</p>
+              <p className="text-xs text-muted-foreground mb-3">{t("rates.standardDetail")}</p>
               <p className="text-3xl font-bold text-primary mb-4">{t("rates.standardPrice")}</p>
               <ul className="space-y-2 mb-5 flex-1">
                 {(t("rates.standardIncludes", { returnObjects: true }) as string[]).map((item) => (

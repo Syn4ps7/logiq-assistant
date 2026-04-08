@@ -117,24 +117,12 @@ const Index = () => {
               className="rounded-xl bg-foreground/10 backdrop-blur-sm border border-foreground/20 p-4 max-w-md"
             >
               <p className="text-xs font-semibold text-foreground mb-2">{t("hero.pricingTitle")}</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
-                {[
-                  { label: t("hero.pricing1") },
-                  { label: t("hero.pricing2"), detail: t("hero.pricing2detail") },
-                  { label: t("hero.pricing3"), detail: t("hero.pricing3detail") },
-                  { label: t("hero.pricing4") },
-                ].map((item) => (
-                  <div key={item.label} className="flex flex-col">
-                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <span className="w-1 h-1 rounded-full bg-primary shrink-0" />
-                      {item.label}
-                    </span>
-                    {item.detail && (
-                      <span className="ml-3 text-[10px] text-muted-foreground/70 leading-tight mt-0.5">
-                        {item.detail}
-                      </span>
-                    )}
-                  </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                {[t("hero.pricing1"), t("hero.pricing2"), t("hero.pricing3"), t("hero.pricing4")].map((item) => (
+                  <span key={item} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <span className="w-1 h-1 rounded-full bg-primary shrink-0" />
+                    {item}
+                  </span>
                 ))}
               </div>
             </motion.div>
