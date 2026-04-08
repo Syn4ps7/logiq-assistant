@@ -20,9 +20,9 @@ type ProTab = "daily" | "carnet";
 type CarnetId = "carnet-10" | "carnet-20" | "carnet-40";
 
 const WEEKEND_PACKS: Record<WeekendPack, { price: number; label: string }> = {
-  standard: { price: 298, label: "Week-end Standard" },
+  standard: { price: 319, label: "Week-end Standard" },
   confort: { price: 399, label: "Pack Déménagement 48h" },
-  premium: { price: 429, label: "Pack Déménagement Premium 48h" },
+  premium: { price: 449, label: "Pack Déménagement Premium 48h" },
 };
 
 const CARNETS: { id: CarnetId; days: number; totalHT: number; totalTTC: number; perDayHT: number; perDayTTC: number; kmPerDay: number }[] = [

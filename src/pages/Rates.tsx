@@ -99,14 +99,14 @@ const Rates = () => {
               </Link>
             </div>
 
-            {/* Confort — mis en avant */}
-            <div className="relative p-6 bg-card rounded-lg border-2 border-accent shadow-md transition-shadow hover:shadow-lg flex flex-col">
+            {/* Confort — pack central mis en avant */}
+            <div className="relative p-6 bg-card rounded-lg border-2 border-accent shadow-lg ring-2 ring-accent/30 transition-shadow hover:shadow-xl flex flex-col md:scale-105 md:z-10">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground px-3 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1">
                 <Star className="h-3 w-3" /> {t("rates.confortBadge")}
               </div>
               <h3 className="text-lg font-bold mb-1">{t("rates.confortName")}</h3>
               <p className="text-sm text-muted-foreground italic mb-3">{t("rates.confortHook")}</p>
-              <p className="text-3xl font-bold text-primary mb-4">{t("rates.confortPrice")}</p>
+              <p className="text-4xl font-extrabold text-primary mb-4">{t("rates.confortPrice")}</p>
               <ul className="space-y-2 mb-5 flex-1">
                 {(t("rates.confortIncludes", { returnObjects: true }) as string[]).map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm">
@@ -116,7 +116,7 @@ const Rates = () => {
                 ))}
               </ul>
               <Link to="/reservation?pack=confort">
-                <Button variant="hero" className="w-full">{t("rates.confortCta")}</Button>
+                <Button variant="hero" size="lg" className="w-full shadow-yellow">{t("rates.confortCta")}</Button>
               </Link>
             </div>
 
@@ -167,9 +167,9 @@ const Rates = () => {
               <TableBody>
                 <TableRow>
                   <TableCell className="font-medium">{t("rates.comparePriceTTC")}</TableCell>
-                  <TableCell className="text-center">298 CHF</TableCell>
+                  <TableCell className="text-center">319 CHF</TableCell>
                   <TableCell className="text-center font-semibold">399 CHF</TableCell>
-                  <TableCell className="text-center">429 CHF</TableCell>
+                  <TableCell className="text-center">449 CHF</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">{t("rates.compareRetrait")}</TableCell>
