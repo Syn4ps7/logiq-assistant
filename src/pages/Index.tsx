@@ -181,7 +181,7 @@ const Index = () => {
         </div>
       </section>
 
-      <AboutSection />
+      
 
       {/* Pourquoi LogIQ */}
       <section className="py-16 bg-card border-t border-border" aria-label="Pourquoi LogIQ">
