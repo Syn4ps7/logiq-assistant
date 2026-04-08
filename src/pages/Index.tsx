@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Check, CalendarCheck, Smartphone, Truck, ShieldCheck, ClipboardCheck, Headphones, RotateCcw } from "lucide-react";
+import { ChevronRight, Check, CalendarCheck, Smartphone, Truck, ShieldCheck, ClipboardCheck, Headphones, RotateCcw, CreditCard, Star, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import heroFleet from "@/assets/hero-fleet.webp";
-
 
 const Index = () => {
   const { t } = useTranslation();
@@ -18,12 +17,6 @@ const Index = () => {
   const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
   const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 0.6, 0]);
-
-  const reassuranceItems = [
-    t("hero.reassurance1"),
-    t("hero.reassurance2"),
-    t("hero.reassurance3"),
-  ];
 
   const howItWorksSteps = [
     { icon: CalendarCheck, titleKey: "howItWorks.step1Title", descKey: "howItWorks.step1Desc" },
@@ -42,7 +35,7 @@ const Index = () => {
 
   return (
     <main>
-      {/* Hero – dark industrial */}
+      {/* Hero */}
       <section ref={heroRef} className="relative min-h-[600px] lg:min-h-[700px] flex items-center overflow-hidden bg-background" aria-label="Présentation">
         <motion.img
           src={heroFleet}
@@ -112,18 +105,23 @@ const Index = () => {
                 <Button variant="hero-outline" size="lg">{t("hero.ctaRates")}</Button>
               </Link>
             </motion.div>
+
+            {/* Pricing block */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.5 }}
-              className="flex flex-col sm:flex-row gap-2 sm:gap-4"
+              className="rounded-xl bg-foreground/10 backdrop-blur-sm border border-foreground/20 p-4 max-w-md"
             >
-              {reassuranceItems.map((item) => (
-                <span key={item} className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground">
-                  <Check className="h-3.5 w-3.5 text-primary shrink-0" />
-                  {item}
-                </span>
-              ))}
+              <p className="text-xs font-semibold text-foreground mb-2">{t("hero.pricingTitle")}</p>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                {[t("hero.pricing1"), t("hero.pricing2"), t("hero.pricing3"), t("hero.pricing4")].map((item) => (
+                  <span key={item} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <span className="w-1 h-1 rounded-full bg-primary shrink-0" />
+                    {item}
+                  </span>
+                ))}
+              </div>
             </motion.div>
           </div>
         </motion.div>
@@ -132,15 +130,21 @@ const Index = () => {
       {/* Comment ça marche */}
       <section id="comment-ca-marche" className="py-16 lg:py-20 bg-card border-t border-border scroll-mt-20" aria-label="Comment ça marche">
         <div className="container max-w-4xl">
-          <motion.h2
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-2xl sm:text-3xl font-extrabold text-center mb-12"
+            className="text-center mb-12"
           >
-            {t("howItWorks.title")}
-          </motion.h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold mb-2">
+              {t("howItWorks.title")}
+            </h2>
+            <p className="text-sm text-muted-foreground flex items-center justify-center gap-1.5">
+              <Clock className="h-4 w-4 text-primary" />
+              {t("howItWorks.subtitle")}
+            </p>
+          </motion.div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {howItWorksSteps.map((step, i) => (
               <motion.div
@@ -181,8 +185,6 @@ const Index = () => {
         </div>
       </section>
 
-      
-
       {/* Pourquoi LogIQ */}
       <section className="py-16 bg-card border-t border-border" aria-label="Pourquoi LogIQ">
         <div className="container max-w-3xl text-center">
@@ -205,7 +207,7 @@ const Index = () => {
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className="flex items-center gap-2"
               >
-                <Check className="h-4 w-4 text-primary shrink-0" />
+                <Star className="h-4 w-4 text-primary shrink-0" />
                 <span className="text-sm text-foreground">{item}</span>
               </motion.div>
             ))}
@@ -213,8 +215,41 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Caution */}
+      <section className="py-16 border-t border-border" aria-label="Caution">
+        <div className="container max-w-3xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-8"
+          >
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <CreditCard className="h-7 w-7 text-primary" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold">{t("caution.title")}</h2>
+          </motion.div>
+          <div className="max-w-md mx-auto space-y-3">
+            {[t("caution.item1"), t("caution.item2"), t("caution.item3")].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -15 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+                className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card"
+              >
+                <Check className="h-5 w-5 text-primary shrink-0" />
+                <span className="text-sm font-medium text-foreground">{item}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Trust / Confiance */}
-      <section className="py-16 border-t border-border" aria-label="Confiance">
+      <section className="py-16 bg-card border-t border-border" aria-label="Confiance">
         <div className="container max-w-4xl">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -250,14 +285,12 @@ const Index = () => {
         <div className="container text-center max-w-2xl">
           <h2 className="text-3xl font-bold mb-4 text-white">{t("cta.title")}</h2>
           <p className="text-lg text-white/70 mb-8">{t("cta.subtitle")}</p>
-          <div className="flex justify-center gap-3">
-            <Link to="/reservation">
-              <Button variant="hero" size="lg" className="shadow-yellow">{t("cta.book")}</Button>
-            </Link>
-            <Link to="/contact">
-              <Button variant="hero-outline" size="lg" className="border-white text-white hover:bg-white hover:text-background">{t("cta.contact")}</Button>
-            </Link>
-          </div>
+          <Link to="/reservation">
+            <Button variant="hero" size="lg" className="shadow-yellow">
+              {t("cta.book")}
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
+          </Link>
         </div>
       </section>
     </main>
