@@ -135,6 +135,7 @@ export function ChatbotWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // Draggable bubble state
   const [bubblePos, setBubblePos] = useState<{ x: number; y: number } | null>(null);
