@@ -28,6 +28,7 @@ export function Footer() {
             <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider text-primary">{t("footer.information")}</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/faq" className="text-muted-foreground hover:text-foreground transition-colors">{t("nav.faq")}</Link></li>
+              <li><Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">{t("nav.about")}</Link></li>
               <li><Link to="/cgl" className="text-muted-foreground hover:text-foreground transition-colors">{t("footer.conditions")}</Link></li>
               <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">{t("footer.privacy")}</Link></li>
               <li><Link to="/legal" className="text-muted-foreground hover:text-foreground transition-colors">{t("footer.legal")}</Link></li>

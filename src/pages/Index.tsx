@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import heroFleet from "@/assets/hero-fleet.webp";
-import AboutSection from "@/components/about/AboutSection";
+
 
 const Index = () => {
   const { t } = useTranslation();
@@ -181,7 +181,7 @@ const Index = () => {
         </div>
       </section>
 
-      <AboutSection />
+      
 
       {/* Pourquoi LogIQ */}
       <section className="py-16 bg-card border-t border-border" aria-label="Pourquoi LogIQ">
