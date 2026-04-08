@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { VehicleCard } from "@/components/VehicleCard";
 import { vehicles } from "@/data/vehicles";
 import { useTranslation } from "react-i18next";
+import { useSeo } from "@/hooks/use-seo";
 
 function FadeInOnScroll({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -35,6 +36,7 @@ function FadeInOnScroll({ children, delay = 0 }: { children: React.ReactNode; de
 
 const Vehicles = () => {
   const { t } = useTranslation();
+  useSeo("seo.vehiclesTitle", "seo.vehiclesDesc");
 
   return (
     <main className="py-12">

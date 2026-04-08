@@ -1,5 +1,6 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useTranslation } from "react-i18next";
+import { useSeo } from "@/hooks/use-seo";
 import { Link } from "react-router-dom";
 import { Fragment } from "react";
 
@@ -52,6 +53,7 @@ const renderAnswer = (text: string) => {
 
 const FAQ = () => {
   const { t, i18n } = useTranslation();
+  useSeo("seo.faqTitle", "seo.faqDesc");
   const currentFaqs = i18n.language === "en" ? faqsEn : faqs;
 
   return (

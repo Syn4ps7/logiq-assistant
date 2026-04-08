@@ -1,6 +1,9 @@
 import { cglArticles, CGL_VERSION } from "@/data/cgl-content";
+import { useSeo } from "@/hooks/use-seo";
 
 const CGL = () => {
+  useSeo("seo.cglTitle", "seo.cglDesc");
+
   return (
     <main className="py-12">
       <div className="container max-w-3xl">

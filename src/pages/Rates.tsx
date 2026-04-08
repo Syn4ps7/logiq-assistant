@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check, Star, Crown, MapPin, Truck } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useSeo } from "@/hooks/use-seo";
 import {
   Table,
   TableHeader,
@@ -14,6 +15,7 @@ import {
 
 const Rates = () => {
   const { t } = useTranslation();
+  useSeo("seo.ratesTitle", "seo.ratesDesc");
 
   return (
     <main className="py-12">

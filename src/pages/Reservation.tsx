@@ -7,6 +7,7 @@ import { vehicles, vehicleOptions, ratePlans, EXTRA_KM_RATE } from "@/data/vehic
 import { updateBookingDraft, dispatchLogiqEvent } from "@/lib/logiq";
 import { Check, ChevronRight, Info, Truck, Loader2, CalendarDays, Car, Package, Tag } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useSeo } from "@/hooks/use-seo";
 import emailjs from "@emailjs/browser";
 import { toast } from "sonner";
 
@@ -35,6 +36,7 @@ const EXTRA_KM_RATE_PRO_HT = 0.65;
 
 const Reservation = () => {
   const { t } = useTranslation();
+  useSeo("seo.reservationTitle", "seo.reservationDesc");
   const steps = t("reservation.steps", { returnObjects: true }) as string[];
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(0);

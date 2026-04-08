@@ -4,10 +4,12 @@ import { ChevronRight, Check, CalendarCheck, Smartphone, Truck, ShieldCheck, Cli
 import { useTranslation } from "react-i18next";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { useSeo } from "@/hooks/use-seo";
 import heroFleet from "@/assets/hero-fleet.webp";
 
 const Index = () => {
   const { t } = useTranslation();
+  useSeo("seo.homeTitle", "seo.homeDesc");
 
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({

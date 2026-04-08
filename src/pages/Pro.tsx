@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import { useSeo } from "@/hooks/use-seo";
 import { useState } from "react";
 import { Building2, ChevronRight, Fuel, CreditCard, MapPin, IdCard, ShieldCheck, LogIn } from "lucide-react";
 import { motion } from "framer-motion";
@@ -25,6 +26,7 @@ const PriceHT = ({ ht, ttc, suffix = "" }: { ht: number; ttc: number; suffix?: s
 
 const Pro = () => {
   const { t } = useTranslation();
+  useSeo("seo.proTitle", "seo.proDesc");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 

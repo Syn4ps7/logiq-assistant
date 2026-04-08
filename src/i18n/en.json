@@ -386,6 +386,24 @@
     "quickPro3": "🧾 Net-30 invoicing?",
     "integrating": "Powered by LogIQ Transport"
   },
+  "seo": {
+    "homeTitle": "24/7 Van Rental in Vevey",
+    "homeDesc": "Rent a van in 3 clicks, no agency, 24/7. Self-service pickup in Vevey from 129 CHF/day. Book online in under 2 minutes.",
+    "ratesTitle": "Van Rental Rates",
+    "ratesDesc": "Discover our transparent rates: from 129 CHF/day weekdays, 149 CHF weekends. Moving packs and options available.",
+    "vehiclesTitle": "Our Utility Vehicles",
+    "vehiclesDesc": "Browse our fleet of clean, ready-to-go vans. Available 24/7 in Vevey for self-service pickup.",
+    "faqTitle": "Frequently Asked Questions",
+    "faqDesc": "Find answers about LogIQ van rental: documents, insurance, mileage, cancellation and payment.",
+    "contactTitle": "Contact Us",
+    "contactDesc": "Contact LogIQ Transport for any questions about van rental in Vevey. Quick response by email or phone.",
+    "proTitle": "Professional Offer",
+    "proDesc": "Van rental solutions for businesses and contractors. Preferential rates, monthly invoicing and Pro booklets.",
+    "cglTitle": "General Rental Terms",
+    "cglDesc": "Read LogIQ Transport general rental terms: responsibilities, insurance, mileage and cancellation policy.",
+    "reservationTitle": "Reservation",
+    "reservationDesc": "Book your van online in under 2 minutes. 24/7 self-service pickup in Vevey. Instant confirmation."
+  },
   "notFound": {
     "title": "404",
     "message": "Oops! Page not found",
