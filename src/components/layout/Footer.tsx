@@ -21,6 +21,7 @@ export function Footer() {
               <li><Link to="/vehicles" className="text-muted-foreground hover:text-foreground transition-colors">{t("footer.ourVehicles")}</Link></li>
               <li><Link to="/rates" className="text-muted-foreground hover:text-foreground transition-colors">{t("nav.rates")}</Link></li>
               <li><Link to="/reservation" className="text-muted-foreground hover:text-foreground transition-colors">{t("footer.booking")}</Link></li>
+              <li><Link to="/suivi" className="text-muted-foreground hover:text-foreground transition-colors">Suivi de réservation</Link></li>
               <li><Link to="/pro" className="text-muted-foreground hover:text-foreground transition-colors">{t("footer.pro")}</Link></li>
             </ul>
           </div>
