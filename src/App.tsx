@@ -31,6 +31,7 @@ import ProLogin from "./pages/ProLogin";
 import ProRegister from "./pages/ProRegister";
 import ProPortal from "./pages/ProPortal";
 import AuthCallback from "./pages/AuthCallback";
+import Suivi from "./pages/Suivi";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,7 @@ function AppContent() {
             <Route path="/pro-register" element={<ProRegister />} />
             <Route path="/pro-portal" element={<ProPortal />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/suivi" element={<Suivi />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
