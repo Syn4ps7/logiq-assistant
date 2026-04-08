@@ -80,9 +80,14 @@ const Suivi = () => {
 
   // Available options not yet on the reservation
   const availableOptions = useMemo(() => {
-    return vehicleOptions.filter(
-      (opt) => !existingOptions.some((eo) => eo.includes(opt.name.toLowerCase()))
-    );
+    const optStr = (reservation?.options || "").toLowerCase();
+    return vehicleOptions.filter((opt) => {
+      // Check by id keyword and by name fragments
+      const idMatch = optStr.includes(opt.id.replace(/-/g, " ").split(" ")[0]);
+      const nameWords = opt.name.toLowerCase().split(/[\s&,]+/).filter(w => w.length > 2);
+      const nameMatch = nameWords.some((w) => optStr.includes(w));
+      return !idMatch && !nameMatch;
+    });
   }, [existingOptions]);
 
   const optionsSurplus = useMemo(() => {
