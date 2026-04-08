@@ -26,6 +26,7 @@ import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
 import ProLogin from "./pages/ProLogin";
 import ProRegister from "./pages/ProRegister";
 import ProPortal from "./pages/ProPortal";
@@ -71,6 +72,7 @@ function AppContent() {
             <Route path="/" element={<Index />} />
             <Route path="/vehicles" element={<Vehicles />} />
             <Route path="/rates" element={<Rates />} />
+            <Route path="/about" element={<About />} />
             <Route path="/reservation" element={<Reservation />} />
             <Route path="/cgl" element={<CGL />} />
             <Route path="/contact" element={<Contact />} />
