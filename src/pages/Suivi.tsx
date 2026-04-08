@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -87,10 +87,11 @@ const Suivi = () => {
   };
 
   // Auto-lookup if ref in URL
-  useState(() => {
+  useEffect(() => {
     const urlRef = searchParams.get("ref");
     if (urlRef) lookup(urlRef);
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleModRequest = async () => {
     if (!reservation || !modMessage.trim()) return;
