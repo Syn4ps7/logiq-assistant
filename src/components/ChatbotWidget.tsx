@@ -189,11 +189,11 @@ export function ChatbotWidget() {
   // Proactive message after 12 seconds OR on scroll
   useEffect(() => {
     proactiveTimerRef.current = setTimeout(() => {
-      if (!isActive) setShowProactive(true);
+      if (!isActive && !dismissedByUser.current) setShowProactive(true);
     }, 12000);
 
     const handleScroll = () => {
-      if (!isActive && window.scrollY > 300) {
+      if (!isActive && !dismissedByUser.current && window.scrollY > 300) {
         setShowProactive(true);
       }
     };
@@ -298,7 +298,7 @@ export function ChatbotWidget() {
                   ↩
                 </button>
               )}
-              <button onClick={() => setIsActive(false)} className="p-1 rounded-full hover:bg-primary-foreground/10 transition-colors" aria-label="Fermer">
+              <button onClick={() => { dismissedByUser.current = true; setIsActive(false); setShowProactive(false); }} className="p-1 rounded-full hover:bg-primary-foreground/10 transition-colors" aria-label="Fermer">
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -386,7 +386,7 @@ export function ChatbotWidget() {
           className="mb-3 hidden md:block bg-card border shadow-lg rounded-xl px-4 py-3 text-sm text-foreground max-w-[260px] text-left animate-fade-in-up hover:shadow-xl transition-shadow relative"
         >
           <button
-            onClick={(e) => { e.stopPropagation(); setShowProactive(false); }}
+            onClick={(e) => { e.stopPropagation(); dismissedByUser.current = true; setShowProactive(false); }}
             className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-muted border flex items-center justify-center hover:bg-muted-foreground/10"
             aria-label="Fermer"
           >
