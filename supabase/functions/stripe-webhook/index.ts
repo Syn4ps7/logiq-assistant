@@ -57,7 +57,7 @@ serve(async (req) => {
         // Fetch current reservation
         const { data: reservation, error: fetchError } = await supabase
           .from("reservations")
-          .select("options, total_chf")
+          .select("options, total_chf, contact_name, contact_email, vehicle_name, start_date, end_date")
           .eq("reference", reference)
           .maybeSingle();
 
@@ -89,6 +89,28 @@ serve(async (req) => {
         }
 
         console.log(`[WEBHOOK] Updated ${reference}: options="${mergedOptions}", total=${newTotal}`);
+
+        // Send confirmation email via EmailJS REST API
+        try {
+          const trackingUrl = `https://logiq-transport.ch/suivi?ref=${reference}`;
+          const emailRes = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              service_id: "service_g37dgi8",
+              template_id: "template_51gqxra",
+              user_id: "txxckOr0_mZu2OaXQ",
+              template_params: {
+                from_name: reservation.contact_name,
+                from_email: reservation.contact_email,
+                message: `[CONFIRMATION D'AJOUT D'OPTIONS - ${reference}]\n\nBonjour ${reservation.contact_name},\n\nVos options ont été ajoutées avec succès à votre réservation !\n\n📋 Référence : ${reference}\n🚛 Véhicule : ${reservation.vehicle_name}\n📅 Dates : ${reservation.start_date} → ${reservation.end_date}\n\n✅ Options ajoutées : ${newOptions}\n💰 Montant payé : ${amountPaid.toFixed(2)} CHF\n📦 Total options : ${mergedOptions}\n💵 Nouveau total : ${newTotal.toFixed(2)} CHF\n\n🔗 Suivez votre réservation : ${trackingUrl}\n\nMerci pour votre confiance !\nL'équipe LOGiQ Transport`,
+              },
+            }),
+          });
+          console.log(`[WEBHOOK] Email sent for ${reference}: status=${emailRes.status}`);
+        } catch (emailErr) {
+          console.error("[WEBHOOK] Email error (non-blocking):", emailErr);
+        }
       }
 
       // Handle initial reservation payment
