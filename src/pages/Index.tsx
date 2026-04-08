@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Check, CalendarCheck, Smartphone, Truck, ShieldCheck, ClipboardCheck, Headphones, RotateCcw, CreditCard, Star, Clock } from "lucide-react";
+import { ChevronRight, Check, CalendarCheck, Smartphone, Truck, ShieldCheck, ClipboardCheck, Headphones, RotateCcw, CreditCard, Star, Clock, Quote } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
@@ -24,7 +24,7 @@ const Index = () => {
     { icon: Truck, titleKey: "howItWorks.step3Title", descKey: "howItWorks.step3Desc" },
   ];
 
-  const whyLogiqItems = t("whyLogiq.items", { returnObjects: true }) as string[];
+  const reviews = t("whyLogiq.reviews", { returnObjects: true }) as { name: string; role: string; text: string; stars: number }[];
 
   const trustItems = [
     { icon: ShieldCheck, text: (t("trust.items", { returnObjects: true }) as string[])[0] },
@@ -185,30 +185,39 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Pourquoi LogIQ */}
-      <section className="py-16 bg-card border-t border-border" aria-label="Pourquoi LogIQ">
-        <div className="container max-w-3xl text-center">
+      {/* Avis clients */}
+      <section className="py-16 bg-card border-t border-border" aria-label="Avis clients">
+        <div className="container max-w-5xl">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-2xl sm:text-3xl font-extrabold mb-8"
+            className="text-2xl sm:text-3xl font-extrabold text-center mb-10"
           >
             {t("whyLogiq.title")}
           </motion.h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto text-left">
-            {whyLogiqItems.map((item, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {reviews.map((review, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, x: -15 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="flex items-center gap-2"
+                transition={{ duration: 0.5, delay: i * 0.12 }}
+                className="relative flex flex-col p-5 rounded-xl border border-border bg-card shadow-sm"
               >
-                <Star className="h-4 w-4 text-primary shrink-0" />
-                <span className="text-sm text-foreground">{item}</span>
+                <Quote className="absolute top-4 right-4 h-5 w-5 text-primary/20" />
+                <div className="flex gap-0.5 mb-3">
+                  {Array.from({ length: review.stars }).map((_, s) => (
+                    <Star key={s} className="h-4 w-4 fill-primary text-primary" />
+                  ))}
+                </div>
+                <p className="text-sm text-foreground leading-relaxed mb-4 flex-1">"{review.text}"</p>
+                <div className="border-t border-border pt-3">
+                  <p className="text-sm font-semibold text-foreground">{review.name}</p>
+                  <p className="text-xs text-muted-foreground">{review.role}</p>
+                </div>
               </motion.div>
             ))}
           </div>
