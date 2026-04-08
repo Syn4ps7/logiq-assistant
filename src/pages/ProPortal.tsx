@@ -309,6 +309,7 @@ const ProPortal = () => {
                                 </AlertDialogFooter>
                               </AlertDialogContent>
                             </AlertDialog>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
