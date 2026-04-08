@@ -23,7 +23,12 @@
     "ctaRates": "View rates",
     "reassurance1": "Autonomous access 24/7",
     "reassurance2": "Insurance included",
-    "reassurance3": "Quick pickup at LogIQ Hub"
+    "reassurance3": "Quick pickup at LogIQ Hub",
+    "pricingTitle": "Starting from:",
+    "pricing1": "129 CHF / day (weekday)",
+    "pricing2": "149 CHF / day (weekend)",
+    "pricing3": "319 CHF full weekend",
+    "pricing4": "399 CHF moving pack"
   },
   "howItWorks": {
     "title": "Renting a van has never been this easy",
