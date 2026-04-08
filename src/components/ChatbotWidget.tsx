@@ -181,13 +181,22 @@ export function ChatbotWidget() {
     }
   }, [isActive]);
 
-  // Proactive message after 8 seconds if chat not opened
+  // Proactive message after 12 seconds OR on scroll
   useEffect(() => {
     proactiveTimerRef.current = setTimeout(() => {
       if (!isActive) setShowProactive(true);
-    }, 8000);
+    }, 12000);
+
+    const handleScroll = () => {
+      if (!isActive && window.scrollY > 300) {
+        setShowProactive(true);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
     return () => {
       if (proactiveTimerRef.current) clearTimeout(proactiveTimerRef.current);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
