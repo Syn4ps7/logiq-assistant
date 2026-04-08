@@ -326,7 +326,24 @@ export function ChatbotWidget() {
                     }`}>
                       {m.role === "assistant" ? (
                         <>
-                          <ReactMarkdown>{m.content}</ReactMarkdown>
+                          <ReactMarkdown
+                            components={{
+                              a: ({ href, children }) => {
+                                const isInternal = href?.startsWith("/");
+                                if (isInternal) {
+                                  return (
+                                    <button
+                                      onClick={() => { navigate(href!); setIsActive(false); }}
+                                      className="inline-flex items-center gap-1 mt-1 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-xs font-semibold hover:opacity-90 transition-opacity no-underline"
+                                    >
+                                      {children} →
+                                    </button>
+                                  );
+                                }
+                                return <a href={href} target="_blank" rel="noopener noreferrer" className="underline text-primary">{children}</a>;
+                              }
+                            }}
+                          >{m.content}</ReactMarkdown>
                           <CopyButton text={m.content} />
                         </>
                       ) : (
