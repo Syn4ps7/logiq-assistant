@@ -792,7 +792,7 @@ const Reservation = () => {
                             ? t("reservation.packFlat")
                             : `${price.planName} (${price.days} ${price.days > 1 ? t("reservation.days") : t("reservation.day")})`}
                       </span>
-                      <span>{price.baseTotal} CHF</span>
+                      <span>{isProCheckout ? `${fmtCHF(price.baseTotal / (1 + TVA_RATE))} CHF HT` : `${price.baseTotal} CHF`}</span>
                     </div>
                     {selectedOptions
                       .filter((optId) => {
@@ -806,7 +806,7 @@ const Reservation = () => {
                         return (
                           <div key={optId} className="flex justify-between">
                             <span>{opt.name} ({t("reservation.perRental")})</span>
-                            <span>{opt.price} CHF</span>
+                            <span>{isProCheckout ? `${fmtCHF(opt.price / (1 + TVA_RATE))} CHF HT` : `${opt.price} CHF`}</span>
                           </div>
                         );
                       })}
@@ -816,8 +816,8 @@ const Reservation = () => {
                     </div>
                     {price.extraKm > 0 && (
                       <div className="flex justify-between">
-                        <span>{t("reservation.extraKmLabel")} ({price.extraKm} km × {EXTRA_KM_RATE.toFixed(2)} CHF)</span>
-                        <span>{price.extraKmCost.toFixed(2)} CHF</span>
+                        <span>{t("reservation.extraKmLabel")} ({price.extraKm} km × {isProCheckout ? `${EXTRA_KM_RATE_PRO_HT.toFixed(2)} CHF HT` : `${EXTRA_KM_RATE.toFixed(2)} CHF`})</span>
+                        <span>{isProCheckout ? `${fmtCHF(price.extraKmCost / (1 + TVA_RATE))} CHF HT` : `${price.extraKmCost.toFixed(2)} CHF`}</span>
                       </div>
                     )}
                     {isPremium && deliveryAddress && (
