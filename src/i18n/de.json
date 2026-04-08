@@ -23,7 +23,12 @@
     "ctaRates": "Tarife ansehen",
     "reassurance1": "Autonomer Zugang 24/7",
     "reassurance2": "Versicherung inklusive",
-    "reassurance3": "Schnelle Abholung am LogIQ Hub"
+    "reassurance3": "Schnelle Abholung am LogIQ Hub",
+    "pricingTitle": "Ab:",
+    "pricing1": "129 CHF / Tag (Wochentag)",
+    "pricing2": "149 CHF / Tag (Wochenende)",
+    "pricing3": "319 CHF ganzes Wochenende",
+    "pricing4": "399 CHF Umzugspaket"
   },
   "howItWorks": {
     "title": "Einen Transporter mieten war noch nie so einfach",
