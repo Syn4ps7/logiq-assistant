@@ -344,6 +344,7 @@ const Reservation = () => {
       }
 
       // Send email notification (non-blocking)
+      const trackingUrl = `${window.location.origin}/suivi?ref=${reference}`;
       emailjs.send(
         "service_g37dgi8",
         "template_51gqxra",
@@ -359,6 +360,7 @@ const Reservation = () => {
           vehicule: vehicle?.name || "",
           options: optionNames || "Aucune",
           tarif: finalTotal.toFixed(2) + " CHF",
+          lien_suivi: trackingUrl,
         },
         "txxckOr0_mZu2OaXQ"
       ).catch((err) => console.error("EmailJS error:", err));
