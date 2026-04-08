@@ -386,6 +386,24 @@
     "quickPro3": "🧾 30-Tage-Rechnungsstellung?",
     "integrating": "Betrieben von LogIQ Transport"
   },
+  "seo": {
+    "homeTitle": "24/7 Transporter-Vermietung in Vevey",
+    "homeDesc": "Mieten Sie einen Transporter in 3 Klicks, ohne Agentur, 24/7. Selbstbedienungsabholung in Vevey ab 129 CHF/Tag.",
+    "ratesTitle": "Mietpreise Transporter",
+    "ratesDesc": "Entdecken Sie unsere transparenten Tarife: ab 129 CHF/Tag unter der Woche, 149 CHF am Wochenende. Umzugspakete verfügbar.",
+    "vehiclesTitle": "Unsere Nutzfahrzeuge",
+    "vehiclesDesc": "Entdecken Sie unsere Flotte sauberer, fahrbereiter Transporter. 24/7 in Vevey verfügbar.",
+    "faqTitle": "Häufig gestellte Fragen",
+    "faqDesc": "Finden Sie Antworten zur LogIQ Transporter-Vermietung: Dokumente, Versicherung, Kilometer, Stornierung und Zahlung.",
+    "contactTitle": "Kontakt",
+    "contactDesc": "Kontaktieren Sie LogIQ Transport für Fragen zur Transporter-Vermietung in Vevey. Schnelle Antwort per E-Mail oder Telefon.",
+    "proTitle": "Professionelles Angebot",
+    "proDesc": "Transporter-Mietlösungen für Unternehmen und Handwerker. Vorzugstarife, monatliche Rechnungsstellung und Pro-Hefte.",
+    "cglTitle": "Allgemeine Mietbedingungen",
+    "cglDesc": "Lesen Sie die allgemeinen Mietbedingungen von LogIQ Transport: Verantwortlichkeiten, Versicherung und Stornierung.",
+    "reservationTitle": "Reservierung",
+    "reservationDesc": "Buchen Sie Ihren Transporter online in weniger als 2 Minuten. 24/7 Selbstbedienung in Vevey. Sofortige Bestätigung."
+  },
   "notFound": {
     "title": "404",
     "message": "Hoppla! Seite nicht gefunden",

@@ -392,6 +392,24 @@
     "quickPro3": "🧾 Facturation à 30 jours ?",
     "integrating": "Propulsé par LogIQ Transport"
   },
+  "seo": {
+    "homeTitle": "Location utilitaire 24/7 à Vevey",
+    "homeDesc": "Louez un utilitaire en 3 clics, sans agence, 24/7. Retrait autonome à Vevey dès 129 CHF/jour. Réservation en ligne en moins de 2 minutes.",
+    "ratesTitle": "Tarifs location utilitaire",
+    "ratesDesc": "Découvrez nos tarifs transparents : dès 129 CHF/jour en semaine, 149 CHF le week-end. Packs déménagement et options disponibles.",
+    "vehiclesTitle": "Nos véhicules utilitaires",
+    "vehiclesDesc": "Découvrez notre flotte d'utilitaires propres et prêts à partir. Fourgons et camionnettes disponibles 24/7 à Vevey.",
+    "faqTitle": "Questions fréquentes",
+    "faqDesc": "Trouvez les réponses à vos questions sur la location d'utilitaires LogIQ : documents, assurance, kilométrage, annulation et paiement.",
+    "contactTitle": "Contactez-nous",
+    "contactDesc": "Contactez LogIQ Transport pour toute question sur la location d'utilitaires à Vevey. Réponse rapide par email ou téléphone.",
+    "proTitle": "Offre professionnelle",
+    "proDesc": "Solutions de location d'utilitaires pour entreprises et artisans. Tarifs préférentiels, facturation mensuelle et carnets Pro.",
+    "cglTitle": "Conditions Générales de Location",
+    "cglDesc": "Consultez les conditions générales de location de LogIQ Transport : responsabilités, assurance, kilométrage et politique d'annulation.",
+    "reservationTitle": "Réservation",
+    "reservationDesc": "Réservez votre utilitaire en ligne en moins de 2 minutes. Retrait autonome 24/7 à Vevey. Confirmation instantanée."
+  },
   "notFound": {
     "title": "404",
     "message": "Oops ! Page introuvable",
