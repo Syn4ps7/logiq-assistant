@@ -97,12 +97,16 @@ const ProPortal = () => {
   };
 
   const handleDeleteReservation = async (id: string) => {
+    const res = reservations.find((r) => r.id === id);
     const { error } = await supabase.from("reservations").delete().eq("id", id);
     if (error) {
       toast({ title: "Erreur", description: "Impossible de supprimer la réservation.", variant: "destructive" });
     } else {
       setReservations((prev) => prev.filter((r) => r.id !== id));
-      toast({ title: "✅ Réservation supprimée" });
+      toast({
+        title: "✅ Réservation supprimée",
+        description: res ? `${res.vehicle_name} — ${res.days}j supprimée avec succès.` : "Supprimée avec succès.",
+      });
     }
   };
 
