@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 type Msg = { role: "user" | "assistant"; content: string };
 type ClientType = "pro" | "particulier" | null;
 
+const NUDGE_DELAY = 25000; // 25 seconds idle before nudge
+
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 async function streamChat({
@@ -125,7 +127,9 @@ export function ChatbotWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const [showProactive, setShowProactive] = useState(false);
   const [clientType, setClientType] = useState<ClientType>(null);
+  const [nudgeSent, setNudgeSent] = useState(false);
   const proactiveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const nudgeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
@@ -181,13 +185,22 @@ export function ChatbotWidget() {
     }
   }, [isActive]);
 
-  // Proactive message after 8 seconds if chat not opened
+  // Proactive message after 12 seconds OR on scroll
   useEffect(() => {
     proactiveTimerRef.current = setTimeout(() => {
       if (!isActive) setShowProactive(true);
-    }, 8000);
+    }, 12000);
+
+    const handleScroll = () => {
+      if (!isActive && window.scrollY > 300) {
+        setShowProactive(true);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
     return () => {
       if (proactiveTimerRef.current) clearTimeout(proactiveTimerRef.current);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -241,6 +254,22 @@ export function ChatbotWidget() {
   }, [isLoading, messages, clientType]);
 
   const send = useCallback(() => sendText(input), [input, sendText]);
+
+  // Auto-nudge after inactivity when chat is open and user hasn't interacted
+  useEffect(() => {
+    if (!isActive || !clientType || nudgeSent || isLoading) return;
+    if (nudgeTimerRef.current) clearTimeout(nudgeTimerRef.current);
+    nudgeTimerRef.current = setTimeout(() => {
+      const lastMsg = messages[messages.length - 1];
+      if (lastMsg?.role === "assistant" && messages.length >= 1) {
+        setMessages((prev) => [...prev, { role: "assistant", content: t("chatbot.nudge") }]);
+        setNudgeSent(true);
+      }
+    }, NUDGE_DELAY);
+    return () => {
+      if (nudgeTimerRef.current) clearTimeout(nudgeTimerRef.current);
+    };
+  }, [isActive, clientType, messages, nudgeSent, isLoading, t]);
 
   return (
     <div
