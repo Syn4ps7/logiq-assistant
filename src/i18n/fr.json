@@ -50,13 +50,26 @@
     "fastDesc": "Processus simplifié, confirmation instantanée."
   },
   "whyLogiq": {
-    "title": "Pourquoi les clients choisissent LogIQ",
-    "items": [
-      "Disponible même le dimanche et en soirée",
-      "Pas d'agence, pas d'attente",
-      "Réservation en moins de 2 minutes",
-      "Véhicules propres et prêts à partir",
-      "Process simple, clair et sans surprise"
+    "title": "Ce que nos clients disent",
+    "reviews": [
+      {
+        "name": "Marc D.",
+        "role": "Déménagement privé",
+        "text": "Réservé un dimanche soir, véhicule disponible le lendemain matin. Aucune agence, aucune attente. Top !",
+        "stars": 5
+      },
+      {
+        "name": "Sophie L.",
+        "role": "Livraison meuble",
+        "text": "En moins de 2 minutes c'était réservé. Le van était propre et prêt à partir. Je recommande.",
+        "stars": 5
+      },
+      {
+        "name": "Julien R.",
+        "role": "Artisan indépendant",
+        "text": "Process simple, clair et sans surprise. C'est exactement ce qu'il me fallait pour mes chantiers.",
+        "stars": 5
+      }
     ]
   },
   "trust": {

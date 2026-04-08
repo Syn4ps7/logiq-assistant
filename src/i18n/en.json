@@ -44,13 +44,26 @@
     "fastDesc": "Streamlined process, instant confirmation."
   },
   "whyLogiq": {
-    "title": "Why choose LogIQ Transport",
-    "items": [
-      "100% online booking",
-      "Digital vehicle access",
-      "Fleet centralised in secure hubs",
-      "Transparent pricing",
-      "Service available 24/7"
+    "title": "What our customers say",
+    "reviews": [
+      {
+        "name": "Marc D.",
+        "role": "Private move",
+        "text": "Booked on a Sunday evening, vehicle available the next morning. No agency, no waiting. Excellent!",
+        "stars": 5
+      },
+      {
+        "name": "Sophie L.",
+        "role": "Furniture delivery",
+        "text": "Booked in under 2 minutes. The van was clean and ready to go. Highly recommend.",
+        "stars": 5
+      },
+      {
+        "name": "Julien R.",
+        "role": "Independent contractor",
+        "text": "Simple, clear process with no surprises. Exactly what I needed for my job sites.",
+        "stars": 5
+      }
     ]
   },
   "trust": {
