@@ -81,7 +81,7 @@ const Suivi = () => {
   // Available options not yet on the reservation
   const availableOptions = useMemo(() => {
     return vehicleOptions.filter(
-      (opt) => !existingOptions.some((eo) => eo.includes(opt.name.toLowerCase()))
+      (opt) => !existingOptions.some((eo) => opt.name.toLowerCase().includes(eo) || eo.includes(opt.name.toLowerCase()))
     );
   }, [existingOptions]);
 
