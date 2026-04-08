@@ -26,6 +26,7 @@ const PriceHT = ({ ht, ttc, suffix = "" }: { ht: number; ttc: number; suffix?: s
 
 const Pro = () => {
   const { t } = useTranslation();
+  useSeo("seo.proTitle", "seo.proDesc");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 

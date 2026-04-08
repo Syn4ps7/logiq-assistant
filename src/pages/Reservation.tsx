@@ -36,6 +36,7 @@ const EXTRA_KM_RATE_PRO_HT = 0.65;
 
 const Reservation = () => {
   const { t } = useTranslation();
+  useSeo("seo.reservationTitle", "seo.reservationDesc");
   const steps = t("reservation.steps", { returnObjects: true }) as string[];
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(0);

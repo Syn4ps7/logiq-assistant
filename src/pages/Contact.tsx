@@ -15,6 +15,7 @@ const Contact = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const { t } = useTranslation();
+  useSeo("seo.contactTitle", "seo.contactDesc");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

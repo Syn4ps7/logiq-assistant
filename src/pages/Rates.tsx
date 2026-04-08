@@ -15,6 +15,7 @@ import {
 
 const Rates = () => {
   const { t } = useTranslation();
+  useSeo("seo.ratesTitle", "seo.ratesDesc");
 
   return (
     <main className="py-12">

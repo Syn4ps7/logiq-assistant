@@ -36,6 +36,7 @@ function FadeInOnScroll({ children, delay = 0 }: { children: React.ReactNode; de
 
 const Vehicles = () => {
   const { t } = useTranslation();
+  useSeo("seo.vehiclesTitle", "seo.vehiclesDesc");
 
   return (
     <main className="py-12">

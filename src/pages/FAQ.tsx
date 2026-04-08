@@ -53,6 +53,7 @@ const renderAnswer = (text: string) => {
 
 const FAQ = () => {
   const { t, i18n } = useTranslation();
+  useSeo("seo.faqTitle", "seo.faqDesc");
   const currentFaqs = i18n.language === "en" ? faqsEn : faqs;
 
   return (
