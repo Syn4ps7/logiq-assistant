@@ -24,7 +24,8 @@ const Index = () => {
     { icon: Truck, titleKey: "howItWorks.step3Title", descKey: "howItWorks.step3Desc" },
   ];
 
-  const reviews = t("whyLogiq.reviews", { returnObjects: true }) as { name: string; role: string; text: string; stars: number }[];
+  const reviewsRaw = t("whyLogiq.reviews", { returnObjects: true });
+  const reviews = Array.isArray(reviewsRaw) ? reviewsRaw as { name: string; role: string; text: string; stars: number }[] : [];
 
   const trustItems = [
     { icon: ShieldCheck, text: (t("trust.items", { returnObjects: true }) as string[])[0] },
