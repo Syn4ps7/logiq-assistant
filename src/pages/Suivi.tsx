@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -8,9 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useSeo } from "@/hooks/use-seo";
 import { motion } from "framer-motion";
-import { Search, Truck, CalendarDays, MapPin, Phone, Mail, Package, AlertCircle, CheckCircle2, Clock, Loader2, Send } from "lucide-react";
+import { Search, Truck, CalendarDays, MapPin, Phone, Mail, Package, AlertCircle, CheckCircle2, Clock, Loader2, Send, Plus, XCircle, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import emailjs from "@emailjs/browser";
+import { vehicleOptions } from "@/data/vehicles";
 
 const fmtCHF = (v: number) => Number(v).toLocaleString("fr-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -57,11 +58,39 @@ const Suivi = () => {
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
-  // Modification request
+  // Modification request (for dates/times only)
   const [showModForm, setShowModForm] = useState(false);
   const [modMessage, setModMessage] = useState("");
   const [modSending, setModSending] = useState(false);
   const [modSent, setModSent] = useState(false);
+
+  // Option addition
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [optionPaymentLoading, setOptionPaymentLoading] = useState(false);
+
+  // Cancellation
+  const [cancelConfirm, setCancelConfirm] = useState(false);
+  const [canceling, setCanceling] = useState(false);
+
+  // Parse existing options from reservation
+  const existingOptions = useMemo(() => {
+    if (!reservation?.options) return [];
+    return reservation.options.split(",").map((o) => o.trim().toLowerCase());
+  }, [reservation]);
+
+  // Available options not yet on the reservation
+  const availableOptions = useMemo(() => {
+    return vehicleOptions.filter(
+      (opt) => !existingOptions.some((eo) => eo.includes(opt.name.toLowerCase()))
+    );
+  }, [existingOptions]);
+
+  const optionsSurplus = useMemo(() => {
+    return selectedOptions.reduce((sum, id) => {
+      const opt = vehicleOptions.find((o) => o.id === id);
+      return sum + (opt?.price || 0);
+    }, 0);
+  }, [selectedOptions]);
 
   const lookup = async (refCode?: string) => {
     const code = (refCode || ref).trim().toUpperCase();
@@ -71,6 +100,8 @@ const Suivi = () => {
     setReservation(null);
     setShowModForm(false);
     setModSent(false);
+    setSelectedOptions([]);
+    setCancelConfirm(false);
 
     const { data, error } = await supabase
       .from("reservations")
@@ -93,6 +124,16 @@ const Suivi = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Show toast on return from option payment
+  useEffect(() => {
+    if (searchParams.get("options_added") === "true") {
+      toast.success("Options ajoutées avec succès ! Votre réservation sera mise à jour.");
+    }
+    if (searchParams.get("options_canceled") === "true") {
+      toast.info("Ajout d'options annulé.");
+    }
+  }, [searchParams]);
+
   const handleModRequest = async () => {
     if (!reservation || !modMessage.trim()) return;
     setModSending(true);
@@ -114,6 +155,71 @@ const Suivi = () => {
     } finally {
       setModSending(false);
     }
+  };
+
+  const handleOptionPayment = async () => {
+    if (!reservation || selectedOptions.length === 0) return;
+    setOptionPaymentLoading(true);
+    try {
+      const optionNames = selectedOptions.map((id) => vehicleOptions.find((o) => o.id === id)!.name);
+      const { data, error } = await supabase.functions.invoke("create-option-checkout", {
+        body: {
+          reference: reservation.reference,
+          customerEmail: reservation.contact_email,
+          optionNames,
+          totalAmountCHF: optionsSurplus,
+        },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("Pas de lien de paiement reçu");
+      }
+    } catch (err: any) {
+      toast.error("Erreur lors de la création du paiement. Réessayez.");
+      console.error(err);
+    } finally {
+      setOptionPaymentLoading(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    if (!reservation) return;
+    setCanceling(true);
+    try {
+      const { error } = await supabase
+        .from("reservations")
+        .update({ status: "canceled" })
+        .eq("reference", reservation.reference);
+      if (error) throw error;
+
+      // Send email notification
+      await emailjs.send(
+        "service_g37dgi8",
+        "template_51gqxra",
+        {
+          from_name: reservation.contact_name,
+          from_email: reservation.contact_email,
+          message: `[ANNULATION - ${reservation.reference}]\n\nLe client ${reservation.contact_name} a annulé sa réservation.\nEmail: ${reservation.contact_email}\nTéléphone: ${reservation.contact_phone}\nVéhicule: ${reservation.vehicle_name}\nDates: ${reservation.start_date} → ${reservation.end_date}`,
+        },
+        "txxckOr0_mZu2OaXQ"
+      );
+
+      setReservation({ ...reservation, status: "canceled" });
+      setCancelConfirm(false);
+      toast.success("Votre réservation a été annulée.");
+    } catch {
+      toast.error("Erreur lors de l'annulation. Veuillez nous contacter.");
+    } finally {
+      setCanceling(false);
+    }
+  };
+
+  const toggleOption = (id: string) => {
+    setSelectedOptions((prev) =>
+      prev.includes(id) ? prev.filter((o) => o !== id) : [...prev, id]
+    );
   };
 
   const status = reservation ? STATUS_MAP[reservation.status] || STATUS_MAP.pending : null;
@@ -248,41 +354,152 @@ const Suivi = () => {
                 </CardContent>
               </Card>
 
-              {/* Modification request */}
+              {/* Actions — only for non-canceled reservations */}
               {reservation.status !== "canceled" && (
-                <Card className="border-primary/20">
-                  <CardContent className="py-5">
-                    {modSent ? (
-                      <div className="text-center py-4">
-                        <CheckCircle2 className="w-10 h-10 text-primary mx-auto mb-3" />
-                        <p className="font-medium text-foreground">Demande envoyée !</p>
-                        <p className="text-sm text-muted-foreground mt-1">Nous reviendrons vers vous rapidement.</p>
-                      </div>
-                    ) : !showModForm ? (
-                      <Button variant="outline" className="w-full" onClick={() => setShowModForm(true)}>
-                        Demander une modification
-                      </Button>
-                    ) : (
-                      <div className="space-y-3">
-                        <p className="text-sm font-medium text-foreground">Décrivez la modification souhaitée :</p>
-                        <p className="text-xs text-muted-foreground">Changement de dates, ajout/suppression d'options, annulation, etc.</p>
-                        <Textarea
-                          placeholder="Ex : Je souhaite décaler ma réservation du 15 au 17 avril..."
-                          value={modMessage}
-                          onChange={(e) => setModMessage(e.target.value)}
-                          rows={4}
-                        />
-                        <div className="flex gap-2">
-                          <Button variant="ghost" onClick={() => setShowModForm(false)} className="flex-1">Annuler</Button>
-                          <Button onClick={handleModRequest} disabled={modSending || !modMessage.trim()} className="flex-1">
-                            {modSending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
-                            Envoyer
+                <div className="space-y-4">
+                  {/* 1. Add options */}
+                  {availableOptions.length > 0 && (
+                    <Card className="border-primary/20">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Plus className="w-4 h-4 text-primary" /> Ajouter des options
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <p className="text-xs text-muted-foreground">Sélectionnez les options à ajouter. Le paiement du surplus se fera directement en ligne.</p>
+                        <div className="space-y-2">
+                          {availableOptions.map((opt) => {
+                            const isSelected = selectedOptions.includes(opt.id);
+                            return (
+                              <button
+                                key={opt.id}
+                                onClick={() => toggleOption(opt.id)}
+                                className={`w-full flex items-center justify-between p-3 rounded-lg border text-left transition-colors ${
+                                  isSelected
+                                    ? "border-primary bg-primary/5"
+                                    : "border-border hover:border-primary/40"
+                                }`}
+                              >
+                                <div>
+                                  <p className="font-medium text-sm text-foreground">{opt.name}</p>
+                                  <p className="text-xs text-muted-foreground">{opt.description}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-semibold text-foreground whitespace-nowrap">
+                                    {fmtCHF(opt.price)} CHF
+                                  </span>
+                                  {isSelected && <CheckCircle2 className="w-4 h-4 text-primary" />}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {selectedOptions.length > 0 && (
+                          <div className="pt-2 border-t space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-muted-foreground">Supplément à payer</span>
+                              <span className="text-lg font-bold text-foreground">CHF {fmtCHF(optionsSurplus)}</span>
+                            </div>
+                            <Button
+                              onClick={handleOptionPayment}
+                              disabled={optionPaymentLoading}
+                              className="w-full"
+                            >
+                              {optionPaymentLoading ? (
+                                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                              ) : (
+                                <CreditCard className="w-4 h-4 mr-2" />
+                              )}
+                              Payer et ajouter les options
+                            </Button>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* 2. Request date/time modification */}
+                  <Card className="border-border">
+                    <CardContent className="py-5">
+                      {modSent ? (
+                        <div className="text-center py-4">
+                          <CheckCircle2 className="w-10 h-10 text-primary mx-auto mb-3" />
+                          <p className="font-medium text-foreground">Demande envoyée !</p>
+                          <p className="text-sm text-muted-foreground mt-1">Nous reviendrons vers vous rapidement.</p>
+                        </div>
+                      ) : !showModForm ? (
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-3">Changement de dates, d'horaires ou autre demande spécifique ?</p>
+                          <Button variant="outline" className="w-full" onClick={() => setShowModForm(true)}>
+                            <Send className="w-4 h-4 mr-2" />
+                            Demander une modification
                           </Button>
                         </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                      ) : (
+                        <div className="space-y-3">
+                          <p className="text-sm font-medium text-foreground">Décrivez la modification souhaitée :</p>
+                          <p className="text-xs text-muted-foreground">Changement de dates, d'horaires, etc. Ces demandes seront traitées par notre équipe.</p>
+                          <Textarea
+                            placeholder="Ex : Je souhaite décaler ma réservation du 15 au 17 avril..."
+                            value={modMessage}
+                            onChange={(e) => setModMessage(e.target.value)}
+                            rows={4}
+                          />
+                          <div className="flex gap-2">
+                            <Button variant="ghost" onClick={() => setShowModForm(false)} className="flex-1">Annuler</Button>
+                            <Button onClick={handleModRequest} disabled={modSending || !modMessage.trim()} className="flex-1">
+                              {modSending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
+                              Envoyer
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* 3. Cancel reservation */}
+                  <Card className="border-destructive/20">
+                    <CardContent className="py-5">
+                      {!cancelConfirm ? (
+                        <Button
+                          variant="ghost"
+                          className="w-full text-destructive hover:text-destructive hover:bg-destructive/5"
+                          onClick={() => setCancelConfirm(true)}
+                        >
+                          <XCircle className="w-4 h-4 mr-2" />
+                          Annuler ma réservation
+                        </Button>
+                      ) : (
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-3 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+                            <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="text-sm font-medium text-foreground">Confirmer l'annulation ?</p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Cette action annulera votre réservation pour le véhicule <strong>{reservation.vehicle_name}</strong> du {reservation.start_date} au {reservation.end_date}. Cette action est irréversible.
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button variant="ghost" onClick={() => setCancelConfirm(false)} className="flex-1">
+                              Non, garder
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              onClick={handleCancel}
+                              disabled={canceling}
+                              className="flex-1"
+                            >
+                              {canceling ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <XCircle className="w-4 h-4 mr-2" />}
+                              Oui, annuler
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
               )}
 
               <p className="text-xs text-muted-foreground text-center mt-6">
