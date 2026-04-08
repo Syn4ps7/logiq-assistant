@@ -4,6 +4,7 @@ import { useSeo } from "@/hooks/use-seo";
 const CGL = () => {
   useSeo("seo.cglTitle", "seo.cglDesc");
 
+  return (
     <main className="py-12">
       <div className="container max-w-3xl">
         <h1 className="text-3xl font-bold mb-2">Conditions Générales de Location</h1>
