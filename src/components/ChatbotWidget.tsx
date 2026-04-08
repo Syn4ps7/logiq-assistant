@@ -128,7 +128,7 @@ export function ChatbotWidget() {
   const [showProactive, setShowProactive] = useState(false);
   const [clientType, setClientType] = useState<ClientType>(null);
   const [nudgeSent, setNudgeSent] = useState(false);
-  const proactiveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dismissedByUser = useRef(false);
   const nudgeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
