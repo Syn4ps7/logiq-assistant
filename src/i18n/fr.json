@@ -14,19 +14,25 @@
     "openChat": "Ouvrir le chat"
   },
   "hero": {
-    "title1": "Réservez et déverrouillez votre utilitaire en quelques secondes.",
-    "subtitle": "Location d'utilitaires connectés sur la Riviera Vaudoise.",
-    "highlight1": "Disponible 24h/24",
-    "highlight2": "Réservation en 3 clics",
-    "highlight3": "À partir de 129 CHF / jour",
-    "cta": "Réserver un utilitaire",
+    "title1": "Louez un utilitaire en 3 clics, sans agence, 24/7.",
+    "subtitle": "Disponible immédiatement à Vevey — dès 129 CHF / jour",
+    "highlight1": "Accès autonome 24/7",
+    "highlight2": "Réservation en moins de 2 minutes",
+    "highlight3": "Assurance incluse",
+    "cta": "Réserver maintenant",
     "ctaRates": "Voir les tarifs",
     "reassurance1": "Accès autonome 24/7",
     "reassurance2": "Assurance incluse",
-    "reassurance3": "Retrait rapide au Hub LogIQ"
+    "reassurance3": "Retrait rapide au Hub LogIQ",
+    "pricingTitle": "À partir de :",
+    "pricing1": "129 CHF / jour (semaine)",
+    "pricing2": "149 CHF / jour (week-end)",
+    "pricing3": "298 CHF le week-end complet",
+    "pricing4": "399 CHF pack déménagement"
   },
   "howItWorks": {
     "title": "Louer un utilitaire n'a jamais été aussi simple",
+    "subtitle": "Temps total : moins de 2 minutes",
     "step1Title": "Réservez en ligne",
     "step1Desc": "Choisissez votre utilitaire et votre créneau en quelques secondes.",
     "step2Title": "Accédez au véhicule",
@@ -44,13 +50,13 @@
     "fastDesc": "Processus simplifié, confirmation instantanée."
   },
   "whyLogiq": {
-    "title": "Pourquoi choisir LogIQ Transport",
+    "title": "Pourquoi les clients choisissent LogIQ",
     "items": [
-      "Réservation 100 % en ligne",
-      "Accès digital aux véhicules",
-      "Flotte centralisée dans des hubs sécurisés",
-      "Tarification transparente",
-      "Service disponible 24/7"
+      "Disponible même le dimanche et en soirée",
+      "Pas d'agence, pas d'attente",
+      "Réservation en moins de 2 minutes",
+      "Véhicules propres et prêts à partir",
+      "Process simple, clair et sans surprise"
     ]
   },
   "trust": {
@@ -113,10 +119,16 @@
     "mission3": "LogIQ Transport s'adresse à celles et ceux qui recherchent un service moderne, efficace et sans complications.",
     "mission4": "Parce que lorsqu'un utilitaire est nécessaire, la seule chose qui devrait compter est de pouvoir prendre le volant et avancer."
   },
+  "caution": {
+    "title": "Caution simple et rapide",
+    "item1": "Empreinte bancaire uniquement (non débitée)",
+    "item2": "Aucun montant prélevé sans justification",
+    "item3": "Libération automatique après la location"
+  },
   "cta": {
-    "title": "Prêt à réserver votre utilitaire ?",
-    "subtitle": "Accédez à un véhicule en quelques secondes grâce au Hub LogIQ.",
-    "book": "Réserver un utilitaire",
+    "title": "Prêt à louer votre utilitaire ?",
+    "subtitle": "Disponible immédiatement à Vevey, 24/7",
+    "book": "Réserver maintenant",
     "contact": "Nous contacter"
   },
   "vehicleCard": {
