@@ -169,6 +169,8 @@
     "weekdayPrice": "129 CHF / jour (TTC)",
     "weekend": "Week-end",
     "weekendPrice": "149 CHF / jour (TTC)",
+    "weekendHours": "Horaires : 08h00 → 17h00",
+    "weekendIdeal": "Idéal pour : transport rapide, IKEA, missions courtes",
     "normalIncludes": ["Assurance RC incluse", "100 km / jour inclus"],
     "packsTitle": "Nos packs les plus populaires",
     "packsSubtitle": "Choisissez l'offre adaptée à votre besoin.",

@@ -168,6 +168,8 @@
     "weekdayPrice": "129 CHF / day (incl. VAT)",
     "weekend": "Weekend",
     "weekendPrice": "149 CHF / day (incl. VAT)",
+    "weekendHours": "Hours: 08:00 → 17:00",
+    "weekendIdeal": "Ideal for: quick transport, IKEA, short missions",
     "normalIncludes": ["Liability insurance included", "100 km / day included"],
     "packsTitle": "Our most popular packs",
     "packsSubtitle": "Choose the offer that fits your need.",

@@ -168,6 +168,8 @@
     "weekdayPrice": "129 CHF / Tag (inkl. MwSt.)",
     "weekend": "Wochenende",
     "weekendPrice": "149 CHF / Tag (inkl. MwSt.)",
+    "weekendHours": "Zeiten: 08:00 → 17:00",
+    "weekendIdeal": "Ideal für: schnellen Transport, IKEA, kurze Einsätze",
     "normalIncludes": ["Haftpflichtversicherung inklusive", "100 km / Tag inklusive"],
     "packsTitle": "Unsere beliebtesten Pakete",
     "packsSubtitle": "Wählen Sie das Angebot, das zu Ihrem Bedarf passt.",
