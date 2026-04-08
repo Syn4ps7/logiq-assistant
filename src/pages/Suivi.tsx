@@ -15,9 +15,9 @@ import emailjs from "@emailjs/browser";
 const fmtCHF = (v: number) => Number(v).toLocaleString("fr-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const STATUS_MAP: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-  pending: { label: "En attente", color: "bg-yellow-100 text-yellow-800 border-yellow-300", icon: <Clock className="w-3.5 h-3.5" /> },
-  paid: { label: "Confirmée", color: "bg-green-100 text-green-800 border-green-300", icon: <CheckCircle2 className="w-3.5 h-3.5" /> },
-  canceled: { label: "Annulée", color: "bg-red-100 text-red-800 border-red-300", icon: <AlertCircle className="w-3.5 h-3.5" /> },
+  pending: { label: "En attente", color: "bg-amber-100 text-amber-800 border-amber-300", icon: <Clock className="w-3.5 h-3.5" /> },
+  paid: { label: "Confirmée", color: "bg-emerald-100 text-emerald-800 border-emerald-300", icon: <CheckCircle2 className="w-3.5 h-3.5" /> },
+  canceled: { label: "Annulée", color: "bg-destructive/10 text-destructive border-destructive/30", icon: <AlertCircle className="w-3.5 h-3.5" /> },
 };
 
 interface Reservation {
@@ -231,7 +231,7 @@ const Suivi = () => {
                     <span className="text-xl font-bold text-foreground">CHF {fmtCHF(reservation.total_chf)}</span>
                   </div>
                   {reservation.promo_code && (
-                    <p className="text-xs text-green-600 mt-1 text-right">Code promo {reservation.promo_code} appliqué (-{reservation.discount_percent}%)</p>
+                    <p className="text-xs text-primary mt-1 text-right">Code promo {reservation.promo_code} appliqué (-{reservation.discount_percent}%)</p>
                   )}
                 </CardContent>
               </Card>
@@ -253,7 +253,7 @@ const Suivi = () => {
                   <CardContent className="py-5">
                     {modSent ? (
                       <div className="text-center py-4">
-                        <CheckCircle2 className="w-10 h-10 text-green-500 mx-auto mb-3" />
+                        <CheckCircle2 className="w-10 h-10 text-primary mx-auto mb-3" />
                         <p className="font-medium text-foreground">Demande envoyée !</p>
                         <p className="text-sm text-muted-foreground mt-1">Nous reviendrons vers vous rapidement.</p>
                       </div>
