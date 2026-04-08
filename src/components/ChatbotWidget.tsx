@@ -255,6 +255,22 @@ export function ChatbotWidget() {
 
   const send = useCallback(() => sendText(input), [input, sendText]);
 
+  // Auto-nudge after inactivity when chat is open and user hasn't interacted
+  useEffect(() => {
+    if (!isActive || !clientType || nudgeSent || isLoading) return;
+    if (nudgeTimerRef.current) clearTimeout(nudgeTimerRef.current);
+    nudgeTimerRef.current = setTimeout(() => {
+      const lastMsg = messages[messages.length - 1];
+      if (lastMsg?.role === "assistant" && messages.length >= 1) {
+        setMessages((prev) => [...prev, { role: "assistant", content: t("chatbot.nudge") }]);
+        setNudgeSent(true);
+      }
+    }, NUDGE_DELAY);
+    return () => {
+      if (nudgeTimerRef.current) clearTimeout(nudgeTimerRef.current);
+    };
+  }, [isActive, clientType, messages, nudgeSent, isLoading, t]);
+
   return (
     <div
       id="logiq-chatbot"
