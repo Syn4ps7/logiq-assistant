@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 type Msg = { role: "user" | "assistant"; content: string };
 type ClientType = "pro" | "particulier" | null;
 
+const NUDGE_DELAY = 25000; // 25 seconds idle before nudge
+
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 async function streamChat({
