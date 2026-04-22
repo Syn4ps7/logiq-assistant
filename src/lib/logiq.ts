@@ -137,17 +137,23 @@ export interface LogiqVehicleClickPayload extends LogiqPlanContext {
   vehicleName: string;
 }
 
+export interface LogiqPriceBreakdown {
+  days: number;
+  baseTotal: number;
+  includedKm: number;
+  optionsCost: number;
+  extraKm: number;
+  extraKmCost: number;
+  total: number;
+  planName: string;
+  /** Carnet flow only — present when the plan is a B2B Carnet. */
+  isCarnet?: boolean;
+  carnetHT?: number;
+  perDayHT?: number;
+}
+
 export interface LogiqPriceCalculatedPayload extends LogiqPlanContext {
-  priceBreakdown: {
-    days: number;
-    baseTotal: number;
-    includedKm: number;
-    optionsCost: number;
-    extraKm: number;
-    extraKmCost: number;
-    total: number;
-    planName: string;
-  };
+  priceBreakdown: LogiqPriceBreakdown;
 }
 
 export interface LogiqBookingCompletedPayload extends LogiqPlanContext {
