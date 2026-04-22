@@ -312,8 +312,30 @@ export function updateLogiq(updates: Partial<LogiqGlobal>): void {
   (window as any).LOGIQ = Object.freeze({ ...current, ...updates });
 }
 
-// Dispatch custom event
-export function dispatchLogiqEvent(type: LogiqEventType, payload: Record<string, any>): void {
+/**
+ * Dispatch a typed LogIQ event with runtime validation.
+ *
+ * - Static type-check: `payload` must match `LogiqEventMap[T]`.
+ * - Runtime check: every reservation-flow event must include a complete
+ *   `LogiqPlanContext` block, and `isFlexPro` must agree with `plan`.
+ *
+ * On invalid payloads the event is **not** dispatched (fail-closed) and an
+ * error is logged so the bug surfaces during development. This prevents
+ * downstream listeners (chatbot, analytics) from ever seeing a half-formed
+ * flex-pro event.
+ */
+export function dispatchLogiqEvent<T extends LogiqEventType>(
+  type: T,
+  payload: LogiqEventMap[T],
+): void {
+  const errors = validatePayload(type, payload);
+  if (errors.length > 0) {
+    console.error(
+      `[LogIQ] Refusing to dispatch "${type}" — invalid payload:\n  • ${errors.join("\n  • ")}`,
+      { payload },
+    );
+    return;
+  }
   const event = new CustomEvent(type, {
     detail: payload,
     bubbles: true,
