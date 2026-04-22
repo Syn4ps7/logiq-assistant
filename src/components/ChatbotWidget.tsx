@@ -187,6 +187,15 @@ export function ChatbotWidget() {
       inputRef.current?.focus();
       setShowProactive(false);
       if (proactiveTimerRef.current) clearTimeout(proactiveTimerRef.current);
+      // Force a vehicle-data refresh whenever the chat opens so the LLM
+      // never reads a stale `vehicleList` / pricing — `useLogiqReady`
+      // observes the resulting `logiq:vehicleDataRefreshed` event and
+      // keeps `vehicleDataFresh` true for the duration of the session.
+      try {
+        (window as any).LOGIQ?.refreshVehicleData?.();
+      } catch {
+        /* refresh is best-effort; never block the UI */
+      }
     }
   }, [isActive]);
 
@@ -224,6 +233,23 @@ export function ChatbotWidget() {
 
   const sendText = useCallback(async (text: string) => {
     if (!text.trim() || isLoading) return;
+
+    // Verify vehicle data is fresh before any LLM call. If the live
+    // version drifted, force a refresh and re-check — only proceed once
+    // we have a confirmed match. This prevents the chatbot from quoting
+    // stale availability or pricing if the bundle changed mid-session.
+    const liveVersion: string | null = (window as any).LOGIQ?.vehicleDataVersion ?? null;
+    if (
+      !logiqReady.vehicleDataFresh ||
+      (logiqReady.vehicleDataVersion && liveVersion !== logiqReady.vehicleDataVersion)
+    ) {
+      try {
+        (window as any).LOGIQ?.refreshVehicleData?.();
+      } catch {
+        /* best-effort */
+      }
+    }
+
     const userMsg: Msg = { role: "user", content: text.trim() };
     setMessages((prev) => [...prev, userMsg]);
     setIsLoading(true);
@@ -258,7 +284,7 @@ export function ChatbotWidget() {
       setMessages((prev) => [...prev, { role: "assistant", content: "⚠️ Erreur de connexion." }]);
       setIsLoading(false);
     }
-  }, [isLoading, messages, clientType]);
+  }, [isLoading, messages, clientType, logiqReady.vehicleDataFresh, logiqReady.vehicleDataVersion]);
 
   const send = useCallback(() => sendText(input), [input, sendText]);
 
@@ -287,6 +313,8 @@ export function ChatbotWidget() {
     <div
       id="logiq-chatbot"
       data-logiq-ready-reason={logiqReady.reason}
+      data-logiq-vehicle-data-fresh={logiqReady.vehicleDataFresh ? "1" : "0"}
+      data-logiq-vehicle-data-version={logiqReady.vehicleDataVersion ?? ""}
       className="fixed z-50"
       style={bubblePos ? { left: bubblePos.x, top: bubblePos.y, right: "auto", bottom: "auto" } : { bottom: 24, right: 24 }}
     >
