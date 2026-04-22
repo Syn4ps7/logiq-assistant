@@ -531,10 +531,33 @@ const Reservation = () => {
           {/* Step 0 */}
           {step === 0 && (
             <div className="space-y-6">
-              <h2 className="text-lg font-semibold">{t("reservation.choosePlan")}</h2>
+              <h2 className="text-lg font-semibold">
+                {isFlexPro ? "Choisissez vos dates" : t("reservation.choosePlan")}
+              </h2>
 
-              {/* Pro tabs */}
-              {isProCheckout && (
+              {/* Flex Pro banner — bypass plan selection */}
+              {isFlexPro && (
+                <div className="rounded-lg border-2 border-primary bg-primary/5 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-wider font-semibold text-primary mb-1">
+                        Tarif sélectionné
+                      </p>
+                      <p className="font-semibold text-foreground">Location à la journée — B2B Flex</p>
+                      <p className="text-xs text-foreground/70 mt-1">
+                        100 km inclus / jour · Prix fixe semaine &amp; week-end
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-lg font-bold text-primary">{FLEX_PRO_DAILY_HT.toFixed(2)} CHF HT</p>
+                      <p className="text-xs text-foreground/70">/ jour</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Pro tabs (hidden in flex-pro single-rate flow) */}
+              {isProCheckout && !isFlexPro && (
                 <div className="flex rounded-lg border border-border overflow-hidden">
                   <button
                     onClick={() => { setProTab("daily"); setSelectedCarnet(""); }}
@@ -555,8 +578,8 @@ const Reservation = () => {
                 </div>
               )}
 
-              {/* Daily / Weekend plans (default tab or B2C) */}
-              {(proTab === "daily" || !isProCheckout) && (
+              {/* Daily / Weekend plans (B2C / B2B daily tab — never in flex-pro) */}
+              {!isFlexPro && (proTab === "daily" || !isProCheckout) && (
                 <>
                   <div className="space-y-3">
                     {ratePlans.map((plan) => (
@@ -609,35 +632,36 @@ const Reservation = () => {
                       ))}
                     </div>
                   )}
-
-                  {selectedPlan && !isPack && (
-                    <div className="space-y-4">
-                      <h3 className="font-medium">{t("reservation.rentalDates")}</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <label className="block text-sm font-medium mb-1">{t("reservation.startDate")}</label>
-                          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
-                          <div>
-                            <label className="block text-sm font-medium mb-1">{t("reservation.startTime", "Heure de début")}</label>
-                            <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <label className="block text-sm font-medium mb-1">{t("reservation.endDate")}</label>
-                          <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
-                          <div>
-                            <label className="block text-sm font-medium mb-1">{t("reservation.endTime", "Heure de fin")}</label>
-                            <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </>
               )}
 
-              {/* Carnet tab (pro only) */}
-              {isProCheckout && proTab === "carnet" && (
+              {/* Date pickers — shown for non-pack flows: standard week/weekend AND flex-pro */}
+              {((selectedPlan && !isPack && selectedPlan !== "flex-pro") || isFlexPro) && (
+                <div className="space-y-4">
+                  <h3 className="font-medium">{t("reservation.rentalDates")}</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium mb-1">{t("reservation.startDate")}</label>
+                      <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      <div>
+                        <label className="block text-sm font-medium mb-1">{t("reservation.startTime", "Heure de début")}</label>
+                        <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium mb-1">{t("reservation.endDate")}</label>
+                      <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      <div>
+                        <label className="block text-sm font-medium mb-1">{t("reservation.endTime", "Heure de fin")}</label>
+                        <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Carnet tab (pro only — never in flex-pro) */}
+              {isProCheckout && !isFlexPro && proTab === "carnet" && (
                 <div className="space-y-3">
                   {CARNETS.map((carnet) => (
                     <button
@@ -669,8 +693,12 @@ const Reservation = () => {
                 <label className="block text-sm font-medium mb-1">{t("reservation.estKm")}</label>
                 <input type="number" value={estKm} onChange={(e) => setEstKm(Number(e.target.value))} className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:ring-2 focus:ring-primary focus:outline-none" min={0} />
                 <p className="text-xs text-muted-foreground mt-1">
-                  {isPack ? t("reservation.kmIncludedPack") : proTab === "carnet" && selectedCarnet ? `${CARNETS.find(c => c.id === selectedCarnet)?.kmPerDay || 200} km/jour inclus` : t("reservation.kmIncludedDay")}
-                  {" · "}{isProCheckout && proTab === "carnet" ? `${EXTRA_KM_RATE_PRO_HT.toFixed(2)} CHF HT/km` : `${EXTRA_KM_RATE.toFixed(2)} ${t("reservation.extraKmRate")}`}
+                  {isFlexPro
+                    ? `${FLEX_PRO_KM_PER_DAY} km/jour inclus · ${EXTRA_KM_RATE_PRO_HT.toFixed(2)} CHF HT/km`
+                    : <>
+                        {isPack ? t("reservation.kmIncludedPack") : proTab === "carnet" && selectedCarnet ? `${CARNETS.find(c => c.id === selectedCarnet)?.kmPerDay || 200} km/jour inclus` : t("reservation.kmIncludedDay")}
+                        {" · "}{isProCheckout && proTab === "carnet" ? `${EXTRA_KM_RATE_PRO_HT.toFixed(2)} CHF HT/km` : `${EXTRA_KM_RATE.toFixed(2)} ${t("reservation.extraKmRate")}`}
+                      </>}
                 </p>
               </div>
 
