@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import { useLogiqReady } from "@/hooks/use-logiq-ready";
 
 type Msg = { role: "user" | "assistant"; content: string };
 type ClientType = "pro" | "particulier" | null;
@@ -136,6 +137,7 @@ export function ChatbotWidget() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const logiqReady = useLogiqReady();
 
   // Draggable bubble state
   const [bubblePos, setBubblePos] = useState<{ x: number; y: number } | null>(null);
@@ -188,8 +190,10 @@ export function ChatbotWidget() {
     }
   }, [isActive]);
 
-  // Proactive message after 12 seconds OR on scroll
+  // Proactive message after 12 seconds OR on scroll — gated on LOGIQ readiness
+  // so the bubble never appears before consent state is hydrated.
   useEffect(() => {
+    if (!logiqReady.ready) return;
     proactiveTimerRef.current = setTimeout(() => {
       if (!isActive && !dismissedByUser.current) setShowProactive(true);
     }, 12000);
@@ -205,7 +209,7 @@ export function ChatbotWidget() {
       if (proactiveTimerRef.current) clearTimeout(proactiveTimerRef.current);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [logiqReady.ready]);
 
   const quickKeys = clientType === "pro"
     ? (["quickPro1", "quickPro2", "quickPro3"] as const)
@@ -274,9 +278,15 @@ export function ChatbotWidget() {
     };
   }, [isActive, clientType, messages, nudgeSent, isLoading, t]);
 
+  // Readiness gate — don't render the widget (no bubble, no streaming) until
+  // LOGIQ is hydrated or the timeout elapses. Prevents the chatbot from
+  // reading a half-initialized window.LOGIQ on first paint.
+  if (!logiqReady.ready) return null;
+
   return (
     <div
       id="logiq-chatbot"
+      data-logiq-ready-reason={logiqReady.reason}
       className="fixed z-50"
       style={bubblePos ? { left: bubblePos.x, top: bubblePos.y, right: "auto", bottom: "auto" } : { bottom: 24, right: 24 }}
     >
