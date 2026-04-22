@@ -274,6 +274,11 @@ function validatePayload(type: LogiqEventType, payload: any): string[] {
   return [];
 }
 
+// localStorage keys — kept here so the hydration helper below stays in sync
+// with the writers in CookieBanner.tsx and CGL.tsx.
+const LS_COOKIE_CONSENT = "logiq-cookie-consent";
+const LS_CGL_ACCEPTED = "logiq.cgl.accepted";
+
 // Initialize window.LOGIQ
 export function initLogiq(): void {
   const logiq: LogiqGlobal = {
@@ -310,6 +315,54 @@ export function initLogiq(): void {
 
   // Freeze to make read-only from external access
   (window as any).LOGIQ = Object.freeze({ ...logiq });
+
+  // Re-hydrate consent + CGL acceptance from previous sessions so the chatbot
+  // can read them on first paint without waiting for the user to interact.
+  hydrateLogiqFromStorage();
+}
+
+/**
+ * Re-seed `userConsent` and `termsVersion` from localStorage on boot so the
+ * chatbot doesn't see stale defaults (`cookies: false`, `accepted: false`)
+ * for users who have already consented in a previous session.
+ *
+ * - Cookies: `"accepted"` → cookies=true, `"declined"` → cookies=false.
+ * - CGL: only valid if the stored hash still matches the current `CGL_HASH`
+ *   (any text change invalidates prior consent — Swiss nLPD / CGL Art. 14).
+ *
+ * Safe to call multiple times; never throws on broken/disabled localStorage.
+ */
+export function hydrateLogiqFromStorage(): void {
+  if (typeof window === "undefined") return;
+
+  // 1. Cookie consent
+  try {
+    const cookieValue = localStorage.getItem(LS_COOKIE_CONSENT);
+    if (cookieValue === "accepted" || cookieValue === "declined") {
+      updateUserConsent({ cookies: cookieValue === "accepted" });
+    }
+  } catch {
+    // localStorage unavailable — keep defaults.
+  }
+
+  // 2. CGL acceptance
+  try {
+    const raw = localStorage.getItem(LS_CGL_ACCEPTED);
+    if (!raw) return;
+    const parsed = JSON.parse(raw) as { cglHash?: string; acceptedAt?: string };
+    if (parsed?.cglHash === CGL_HASH && parsed.acceptedAt) {
+      updateLogiq({
+        termsVersion: {
+          cglHash: CGL_HASH,
+          cglUrl: "/cgl",
+          accepted: true,
+          acceptedAt: parsed.acceptedAt,
+        },
+      });
+    }
+  } catch {
+    // Malformed JSON or localStorage unavailable — keep defaults.
+  }
 }
 
 // Update a specific property in LOGIQ (internal use)
