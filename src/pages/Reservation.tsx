@@ -212,8 +212,19 @@ const Reservation = () => {
 
   useEffect(() => {
     dispatchLogiqEvent("logiq:openReservation", {
-      prefillVehicleId: searchParams.get("vehicle") || undefined,
+      ...buildPlanContext({
+        plan: searchParams.get("plan") ?? selectedPlan,
+        pack: searchParams.get("pack") ?? weekendPack,
+        carnet: selectedCarnet,
+        source: searchParams.get("source"),
+      }),
+      prefillVehicleId: searchParams.get("vehicle") || null,
+      startDate: startDate || null,
+      endDate: endDate || null,
     });
+    // Intentionally only re-fires on URL changes — vehicle-click handler
+    // dispatches a fresh openReservation with up-to-date state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   useEffect(() => {
