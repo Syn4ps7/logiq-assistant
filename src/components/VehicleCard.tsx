@@ -19,18 +19,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
   const { t } = useTranslation();
 
   const handleClick = () => {
-    // Vehicle cards live outside the reservation flow (Vehicles page),
-    // so we have no plan/pack/carnet context yet — emit a neutral payload
-    // that still satisfies the typed schema.
-    dispatchLogiqEvent("logiq:vehicleClick", {
-      vehicleId: vehicle.id,
-      vehicleName: vehicle.name,
-      plan: null,
-      pack: null,
-      carnet: null,
-      isFlexPro: false,
-      source: "direct",
-    });
+    dispatchLogiqEvent("logiq:vehicleClick", { vehicleId: vehicle.id });
   };
 
   const isComingSoon = vehicle.comingSoon === true;

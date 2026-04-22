@@ -96,188 +96,85 @@ export interface LogiqGlobal {
   flexPro: FlexProSnapshot;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Event payload schema (single source of truth)
-// ─────────────────────────────────────────────────────────────────────────────
+// Custom event types
+export type LogiqEventType =
+  | "logiq:vehicleClick"
+  | "logiq:openReservation"
+  | "logiq:priceCalculated"
+  | "logiq:bookingCompleted"
+  | "logiq:cglAccepted"
+  | "logiq:tamperDetected";
+
+// ============================================================================
+// Read-only enforcement
+// ============================================================================
 //
-// Every dispatchLogiqEvent() call is statically typed against this map and
-// validated at runtime by `dispatchLogiqEvent`. Flex-pro events MUST always
-// carry { plan, pack, isFlexPro } so external listeners (chatbot, analytics)
-// can branch on a stable, normalized shape — no field is allowed to be
-// silently omitted.
+// The chatbot — and any third-party script — must only ever observe a fully
+// committed snapshot of LOGIQ. To guarantee this we:
+//   1. Deep-freeze every snapshot before publishing it on `window.LOGIQ`.
+//   2. Track the last published snapshot in a module-private reference.
+//   3. Re-validate on every read path (`updateLogiq`) that the live
+//      `window.LOGIQ` is still that exact frozen reference. If something
+//      reassigned or mutated it from outside, we restore the canonical
+//      snapshot and emit `logiq:tamperDetected` so the chatbot can react.
+//   4. Internal writers MUST go through `updateLogiq` — no module touches
+//      `(window as any).LOGIQ = ...` directly.
 
-/** Identifier of the active rate plan, or null when none is selected. */
-export type LogiqPlan = "week" | "weekend" | "pack-48h" | "flex-pro" | null;
-/** Optional B2C weekend pack tier. */
-export type LogiqPack = "standard" | "confort" | "premium" | null;
-/** Optional B2B carnet identifier. */
-export type LogiqCarnet = "carnet-10" | "carnet-20" | "carnet-40" | null;
-/** Origin of the visit: "pro" comes from the Espace Pro CTAs, "direct" otherwise. */
-export type LogiqSource = "direct" | "pro";
+let canonicalSnapshot: Readonly<LogiqGlobal> | null = null;
+let tamperWatcherStarted = false;
 
-/** Discriminator block embedded in *every* reservation-flow event. */
-export interface LogiqPlanContext {
-  plan: LogiqPlan;
-  pack: LogiqPack;
-  carnet: LogiqCarnet;
-  /** True iff `plan === "flex-pro"`. Always present (never undefined). */
-  isFlexPro: boolean;
-  source: LogiqSource;
-}
-
-export interface LogiqOpenReservationPayload extends LogiqPlanContext {
-  prefillVehicleId: string | null;
-  /** Date inputs are ISO YYYY-MM-DD; null until set. */
-  startDate: string | null;
-  endDate: string | null;
-}
-
-export interface LogiqVehicleClickPayload extends LogiqPlanContext {
-  vehicleId: string;
-  vehicleName: string;
-}
-
-export interface LogiqPriceBreakdown {
-  days: number;
-  baseTotal: number;
-  includedKm: number;
-  optionsCost: number;
-  extraKm: number;
-  extraKmCost: number;
-  total: number;
-  planName: string;
-  /** Carnet flow only — present when the plan is a B2B Carnet. */
-  isCarnet?: boolean;
-  carnetHT?: number;
-  perDayHT?: number;
-}
-
-export interface LogiqPriceCalculatedPayload extends LogiqPlanContext {
-  priceBreakdown: LogiqPriceBreakdown;
-}
-
-export interface LogiqBookingCompletedPayload extends LogiqPlanContext {
-  bookingRef: string;
-  amount: number | null;
-  currency: "CHF";
-  /** ISO datetime (date or `${date}T${time}`); null when missing in DB. */
-  start: string | null;
-  end: string | null;
-  vehicleId: string | null;
-  confirmedAt: string;
-}
-
-export interface LogiqCglAcceptedPayload {
-  cglHash: string;
-  /** ISO timestamp of acceptance. */
-  timestamp: string;
-  /** Always true — emitted only on positive consent. */
-  accepted: true;
-}
-
-/** Map event names → payload shape. Add new events here, NOT inline. */
-export interface LogiqEventMap {
-  "logiq:openReservation": LogiqOpenReservationPayload;
-  "logiq:vehicleClick": LogiqVehicleClickPayload;
-  "logiq:priceCalculated": LogiqPriceCalculatedPayload;
-  "logiq:bookingCompleted": LogiqBookingCompletedPayload;
-  "logiq:cglAccepted": LogiqCglAcceptedPayload;
-}
-
-export type LogiqEventType = keyof LogiqEventMap;
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Runtime validation
-// ─────────────────────────────────────────────────────────────────────────────
-//
-// Static types prevent most issues, but runtime checks catch:
-//   • payloads built from untyped sources (URL params, DB rows)
-//   • drift if a future caller does `dispatchLogiqEvent(... as any)`
-//   • the specific class of bug we want to prevent: a flex-pro flow event
-//     missing one of { plan, pack, isFlexPro } or with an inconsistent flag.
-
-const PLAN_VALUES = ["week", "weekend", "pack-48h", "flex-pro"] as const;
-const PACK_VALUES = ["standard", "confort", "premium"] as const;
-const CARNET_VALUES = ["carnet-10", "carnet-20", "carnet-40"] as const;
-const SOURCE_VALUES = ["direct", "pro"] as const;
-
-/** Events that carry a LogiqPlanContext block. */
-const PLAN_CONTEXT_EVENTS: ReadonlySet<LogiqEventType> = new Set([
-  "logiq:openReservation",
-  "logiq:vehicleClick",
-  "logiq:priceCalculated",
-  "logiq:bookingCompleted",
-]);
-
-function validatePlanContext(type: LogiqEventType, p: any): string[] {
-  const errors: string[] = [];
-  const has = (k: string) => Object.prototype.hasOwnProperty.call(p, k);
-
-  // 1. Required fields must be *present* (null is allowed for plan/pack/carnet,
-  //    but the key itself must exist — that's the whole point of a schema).
-  for (const key of ["plan", "pack", "carnet", "isFlexPro", "source"] as const) {
-    if (!has(key)) errors.push(`missing key "${key}"`);
+function deepFreeze<T>(value: T): T {
+  if (value === null || typeof value !== "object" || Object.isFrozen(value)) {
+    return value;
   }
+  // Freeze children first so freezing the parent locks a fully-immutable graph.
+  for (const key of Object.keys(value as object)) {
+    deepFreeze((value as Record<string, unknown>)[key]);
+  }
+  return Object.freeze(value);
+}
 
-  // 2. Enum membership (when non-null).
-  if (p.plan !== null && p.plan !== undefined && !PLAN_VALUES.includes(p.plan)) {
-    errors.push(`plan="${p.plan}" not in [${PLAN_VALUES.join("|")}]`);
-  }
-  if (p.pack !== null && p.pack !== undefined && !PACK_VALUES.includes(p.pack)) {
-    errors.push(`pack="${p.pack}" not in [${PACK_VALUES.join("|")}]`);
-  }
-  if (p.carnet !== null && p.carnet !== undefined && !CARNET_VALUES.includes(p.carnet)) {
-    errors.push(`carnet="${p.carnet}" not in [${CARNET_VALUES.join("|")}]`);
-  }
-  if (p.source !== undefined && !SOURCE_VALUES.includes(p.source)) {
-    errors.push(`source="${p.source}" not in [${SOURCE_VALUES.join("|")}]`);
-  }
+function publishSnapshot(next: LogiqGlobal): void {
+  const frozen = deepFreeze({ ...next }) as Readonly<LogiqGlobal>;
+  canonicalSnapshot = frozen;
+  (window as any).LOGIQ = frozen;
+}
 
-  // 3. Critical invariant: isFlexPro must mirror plan === "flex-pro" exactly.
-  if (typeof p.isFlexPro !== "boolean") {
-    errors.push(`isFlexPro must be boolean (got ${typeof p.isFlexPro})`);
-  } else if (p.isFlexPro !== (p.plan === "flex-pro")) {
-    errors.push(
-      `isFlexPro=${p.isFlexPro} contradicts plan="${p.plan}" — they must agree`,
+/**
+ * Verify that `window.LOGIQ` still points at the canonical frozen snapshot.
+ * If anything reassigned or replaced it, restore the canonical reference and
+ * dispatch `logiq:tamperDetected` so observers (chatbot, analytics) know the
+ * external view was briefly inconsistent.
+ */
+export function assertLogiqIntegrity(): boolean {
+  if (typeof window === "undefined" || !canonicalSnapshot) return true;
+  const live = (window as any).LOGIQ;
+  if (live === canonicalSnapshot) return true;
+
+  // Restore canonical snapshot atomically.
+  (window as any).LOGIQ = canonicalSnapshot;
+
+  try {
+    document.dispatchEvent(
+      new CustomEvent("logiq:tamperDetected", {
+        detail: { restoredAt: new Date().toISOString() },
+        bubbles: true,
+        cancelable: false,
+      }),
     );
+  } catch {
+    /* no-op: dispatch errors must never break the app */
   }
-
-  // 4. Flex-pro can never co-exist with a B2C pack or a Carnet.
-  if (p.plan === "flex-pro") {
-    if (p.pack !== null) errors.push(`flex-pro must have pack=null (got "${p.pack}")`);
-    if (p.carnet !== null) errors.push(`flex-pro must have carnet=null (got "${p.carnet}")`);
-  }
-
-  return errors;
+  return false;
 }
 
-function validatePayload(type: LogiqEventType, payload: any): string[] {
-  if (!payload || typeof payload !== "object") {
-    return [`payload must be an object, got ${typeof payload}`];
-  }
-  if (PLAN_CONTEXT_EVENTS.has(type)) {
-    return validatePlanContext(type, payload);
-  }
-  if (type === "logiq:cglAccepted") {
-    const errors: string[] = [];
-    if (typeof payload.cglHash !== "string" || !payload.cglHash) {
-      errors.push("cglHash must be a non-empty string");
-    }
-    if (typeof payload.timestamp !== "string" || !payload.timestamp) {
-      errors.push("timestamp must be a non-empty ISO string");
-    }
-    if (payload.accepted !== true) {
-      errors.push(`accepted must be true (got ${payload.accepted})`);
-    }
-    return errors;
-  }
-  return [];
+function startTamperWatcher(): void {
+  if (tamperWatcherStarted || typeof window === "undefined") return;
+  tamperWatcherStarted = true;
+  // Lightweight heartbeat — verifies integrity ~4×/s without measurable cost.
+  // Catches any external `window.LOGIQ = {...}` reassignment between writes.
+  window.setInterval(assertLogiqIntegrity, 250);
 }
-
-// localStorage keys — kept here so the hydration helper below stays in sync
-// with the writers in CookieBanner.tsx and CGL.tsx.
-const LS_COOKIE_CONSENT = "logiq-cookie-consent";
-const LS_CGL_ACCEPTED = "logiq.cgl.accepted";
 
 // Initialize window.LOGIQ
 export function initLogiq(): void {
@@ -313,88 +210,29 @@ export function initLogiq(): void {
     flexPro: { ...DEFAULT_FLEX_PRO_SNAPSHOT },
   };
 
-  // Freeze to make read-only from external access
-  (window as any).LOGIQ = Object.freeze({ ...logiq });
-
-  // Re-hydrate consent + CGL acceptance from previous sessions so the chatbot
-  // can read them on first paint without waiting for the user to interact.
-  hydrateLogiqFromStorage();
+  publishSnapshot(logiq);
+  startTamperWatcher();
 }
 
 /**
- * Re-seed `userConsent` and `termsVersion` from localStorage on boot so the
- * chatbot doesn't see stale defaults (`cookies: false`, `accepted: false`)
- * for users who have already consented in a previous session.
- *
- * - Cookies: `"accepted"` → cookies=true, `"declined"` → cookies=false.
- * - CGL: only valid if the stored hash still matches the current `CGL_HASH`
- *   (any text change invalidates prior consent — Swiss nLPD / CGL Art. 14).
- *
- * Safe to call multiple times; never throws on broken/disabled localStorage.
+ * Atomically replace `window.LOGIQ` with a new fully-frozen snapshot.
+ * This is the **only** sanctioned write path — direct assignment to
+ * `window.LOGIQ` from anywhere else will be reverted by the tamper watcher.
  */
-export function hydrateLogiqFromStorage(): void {
-  if (typeof window === "undefined") return;
-
-  // 1. Cookie consent
-  try {
-    const cookieValue = localStorage.getItem(LS_COOKIE_CONSENT);
-    if (cookieValue === "accepted" || cookieValue === "declined") {
-      updateUserConsent({ cookies: cookieValue === "accepted" });
-    }
-  } catch {
-    // localStorage unavailable — keep defaults.
-  }
-
-  // 2. CGL acceptance
-  try {
-    const raw = localStorage.getItem(LS_CGL_ACCEPTED);
-    if (!raw) return;
-    const parsed = JSON.parse(raw) as { cglHash?: string; acceptedAt?: string };
-    if (parsed?.cglHash === CGL_HASH && parsed.acceptedAt) {
-      updateLogiq({
-        termsVersion: {
-          cglHash: CGL_HASH,
-          cglUrl: "/cgl",
-          accepted: true,
-          acceptedAt: parsed.acceptedAt,
-        },
-      });
-    }
-  } catch {
-    // Malformed JSON or localStorage unavailable — keep defaults.
-  }
-}
-
-// Update a specific property in LOGIQ (internal use)
 export function updateLogiq(updates: Partial<LogiqGlobal>): void {
-  const current = (window as any).LOGIQ || {};
-  (window as any).LOGIQ = Object.freeze({ ...current, ...updates });
+  // Always read from the canonical snapshot (not `window.LOGIQ`) so a
+  // concurrent external mutation can never bleed into the next snapshot.
+  const base: LogiqGlobal =
+    canonicalSnapshot ?? ((window as any).LOGIQ as LogiqGlobal) ?? ({} as LogiqGlobal);
+
+  // Detect & repair tampering before committing the next state.
+  assertLogiqIntegrity();
+
+  publishSnapshot({ ...base, ...updates });
 }
 
-/**
- * Dispatch a typed LogIQ event with runtime validation.
- *
- * - Static type-check: `payload` must match `LogiqEventMap[T]`.
- * - Runtime check: every reservation-flow event must include a complete
- *   `LogiqPlanContext` block, and `isFlexPro` must agree with `plan`.
- *
- * On invalid payloads the event is **not** dispatched (fail-closed) and an
- * error is logged so the bug surfaces during development. This prevents
- * downstream listeners (chatbot, analytics) from ever seeing a half-formed
- * flex-pro event.
- */
-export function dispatchLogiqEvent<T extends LogiqEventType>(
-  type: T,
-  payload: LogiqEventMap[T],
-): void {
-  const errors = validatePayload(type, payload);
-  if (errors.length > 0) {
-    console.error(
-      `[LogIQ] Refusing to dispatch "${type}" — invalid payload:\n  • ${errors.join("\n  • ")}`,
-      { payload },
-    );
-    return;
-  }
+// Dispatch custom event
+export function dispatchLogiqEvent(type: LogiqEventType, payload: Record<string, any>): void {
   const event = new CustomEvent(type, {
     detail: payload,
     bubbles: true,
@@ -405,13 +243,13 @@ export function dispatchLogiqEvent<T extends LogiqEventType>(
 
 // Update booking draft
 export function updateBookingDraft(draft: Partial<BookingDraft>): void {
-  const current = (window as any).LOGIQ?.bookingDraft || {};
+  const current = canonicalSnapshot?.bookingDraft ?? (window as any).LOGIQ?.bookingDraft ?? {};
   updateLogiq({ bookingDraft: { ...current, ...draft } });
 }
 
 // Update consent
 export function updateUserConsent(consent: Partial<UserConsent>): void {
-  const current = (window as any).LOGIQ?.userConsent || {};
+  const current = canonicalSnapshot?.userConsent ?? (window as any).LOGIQ?.userConsent ?? {};
   updateLogiq({ userConsent: { ...current, ...consent } });
 }
 
@@ -424,7 +262,9 @@ export function updateUserConsent(consent: Partial<UserConsent>): void {
  */
 export function updateFlexProSnapshot(snapshot: Partial<FlexProSnapshot>): void {
   const current: FlexProSnapshot =
-    (window as any).LOGIQ?.flexPro || { ...DEFAULT_FLEX_PRO_SNAPSHOT };
+    canonicalSnapshot?.flexPro ??
+    (window as any).LOGIQ?.flexPro ??
+    { ...DEFAULT_FLEX_PRO_SNAPSHOT };
 
   // Explicit reset path — collapse back to defaults instead of merging stale fields.
   if (snapshot.active === false) {
@@ -449,6 +289,5 @@ export function acceptCGL(): void {
   dispatchLogiqEvent("logiq:cglAccepted", {
     cglHash: CGL_HASH,
     timestamp: now,
-    accepted: true,
   });
 }
