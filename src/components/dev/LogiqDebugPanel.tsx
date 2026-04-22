@@ -25,6 +25,14 @@ export function LogiqDebugPanel() {
   const [collapsed, setCollapsed] = useState(false);
   const [tab, setTab] = useState<"all" | "consent" | "terms" | "booking" | "flexPro">("all");
   const [tamperedAt, setTamperedAt] = useState<string | null>(null);
+  // Last vehicle-data refresh signal — drives the new status line so QA can
+  // confirm post-navigation freshness at a glance without expanding the JSON.
+  const [lastRefresh, setLastRefresh] = useState<{
+    version: string | null;
+    refreshedAt: string | null;
+    changed: boolean | null;
+    trigger: string | null;
+  }>({ version: null, refreshedAt: null, changed: null, trigger: null });
 
   useEffect(() => {
     if (!enabled) return;
@@ -37,8 +45,26 @@ export function LogiqDebugPanel() {
       "logiq:priceCalculated",
       "logiq:bookingCompleted",
       "logiq:cglAccepted",
+      "logiq:consentHydrated",
+      "logiq:vehicleDataRefreshed",
+      "logiq:vehicleDataVersionLoaded",
     ];
     events.forEach((e) => document.addEventListener(e, read));
+
+    const onRefresh = (e: Event) => {
+      const d = (e as CustomEvent).detail as
+        | { vehicleDataVersion?: string; refreshedAt?: string; changed?: boolean; trigger?: string }
+        | undefined;
+      setLastRefresh({
+        version: d?.vehicleDataVersion ?? null,
+        refreshedAt: d?.refreshedAt ?? null,
+        changed: typeof d?.changed === "boolean" ? d.changed : null,
+        trigger: d?.trigger ?? null,
+      });
+      read();
+    };
+    document.addEventListener("logiq:vehicleDataRefreshed", onRefresh);
+
     const onTamper = (e: Event) => {
       setTamperedAt(((e as CustomEvent).detail?.restoredAt as string) ?? new Date().toISOString());
       read();
@@ -48,6 +74,7 @@ export function LogiqDebugPanel() {
     const id = window.setInterval(read, 500);
     return () => {
       events.forEach((e) => document.removeEventListener(e, read));
+      document.removeEventListener("logiq:vehicleDataRefreshed", onRefresh);
       document.removeEventListener("logiq:tamperDetected", onTamper);
       window.clearInterval(id);
     };
