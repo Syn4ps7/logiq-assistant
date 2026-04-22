@@ -102,7 +102,79 @@ export type LogiqEventType =
   | "logiq:openReservation"
   | "logiq:priceCalculated"
   | "logiq:bookingCompleted"
-  | "logiq:cglAccepted";
+  | "logiq:cglAccepted"
+  | "logiq:tamperDetected";
+
+// ============================================================================
+// Read-only enforcement
+// ============================================================================
+//
+// The chatbot — and any third-party script — must only ever observe a fully
+// committed snapshot of LOGIQ. To guarantee this we:
+//   1. Deep-freeze every snapshot before publishing it on `window.LOGIQ`.
+//   2. Track the last published snapshot in a module-private reference.
+//   3. Re-validate on every read path (`updateLogiq`) that the live
+//      `window.LOGIQ` is still that exact frozen reference. If something
+//      reassigned or mutated it from outside, we restore the canonical
+//      snapshot and emit `logiq:tamperDetected` so the chatbot can react.
+//   4. Internal writers MUST go through `updateLogiq` — no module touches
+//      `(window as any).LOGIQ = ...` directly.
+
+let canonicalSnapshot: Readonly<LogiqGlobal> | null = null;
+let tamperWatcherStarted = false;
+
+function deepFreeze<T>(value: T): T {
+  if (value === null || typeof value !== "object" || Object.isFrozen(value)) {
+    return value;
+  }
+  // Freeze children first so freezing the parent locks a fully-immutable graph.
+  for (const key of Object.keys(value as object)) {
+    deepFreeze((value as Record<string, unknown>)[key]);
+  }
+  return Object.freeze(value);
+}
+
+function publishSnapshot(next: LogiqGlobal): void {
+  const frozen = deepFreeze({ ...next }) as Readonly<LogiqGlobal>;
+  canonicalSnapshot = frozen;
+  (window as any).LOGIQ = frozen;
+}
+
+/**
+ * Verify that `window.LOGIQ` still points at the canonical frozen snapshot.
+ * If anything reassigned or replaced it, restore the canonical reference and
+ * dispatch `logiq:tamperDetected` so observers (chatbot, analytics) know the
+ * external view was briefly inconsistent.
+ */
+export function assertLogiqIntegrity(): boolean {
+  if (typeof window === "undefined" || !canonicalSnapshot) return true;
+  const live = (window as any).LOGIQ;
+  if (live === canonicalSnapshot) return true;
+
+  // Restore canonical snapshot atomically.
+  (window as any).LOGIQ = canonicalSnapshot;
+
+  try {
+    document.dispatchEvent(
+      new CustomEvent("logiq:tamperDetected", {
+        detail: { restoredAt: new Date().toISOString() },
+        bubbles: true,
+        cancelable: false,
+      }),
+    );
+  } catch {
+    /* no-op: dispatch errors must never break the app */
+  }
+  return false;
+}
+
+function startTamperWatcher(): void {
+  if (tamperWatcherStarted || typeof window === "undefined") return;
+  tamperWatcherStarted = true;
+  // Lightweight heartbeat — verifies integrity ~4×/s without measurable cost.
+  // Catches any external `window.LOGIQ = {...}` reassignment between writes.
+  window.setInterval(assertLogiqIntegrity, 250);
+}
 
 // Initialize window.LOGIQ
 export function initLogiq(): void {
@@ -138,14 +210,25 @@ export function initLogiq(): void {
     flexPro: { ...DEFAULT_FLEX_PRO_SNAPSHOT },
   };
 
-  // Freeze to make read-only from external access
-  (window as any).LOGIQ = Object.freeze({ ...logiq });
+  publishSnapshot(logiq);
+  startTamperWatcher();
 }
 
-// Update a specific property in LOGIQ (internal use)
+/**
+ * Atomically replace `window.LOGIQ` with a new fully-frozen snapshot.
+ * This is the **only** sanctioned write path — direct assignment to
+ * `window.LOGIQ` from anywhere else will be reverted by the tamper watcher.
+ */
 export function updateLogiq(updates: Partial<LogiqGlobal>): void {
-  const current = (window as any).LOGIQ || {};
-  (window as any).LOGIQ = Object.freeze({ ...current, ...updates });
+  // Always read from the canonical snapshot (not `window.LOGIQ`) so a
+  // concurrent external mutation can never bleed into the next snapshot.
+  const base: LogiqGlobal =
+    canonicalSnapshot ?? ((window as any).LOGIQ as LogiqGlobal) ?? ({} as LogiqGlobal);
+
+  // Detect & repair tampering before committing the next state.
+  assertLogiqIntegrity();
+
+  publishSnapshot({ ...base, ...updates });
 }
 
 // Dispatch custom event
@@ -160,13 +243,13 @@ export function dispatchLogiqEvent(type: LogiqEventType, payload: Record<string,
 
 // Update booking draft
 export function updateBookingDraft(draft: Partial<BookingDraft>): void {
-  const current = (window as any).LOGIQ?.bookingDraft || {};
+  const current = canonicalSnapshot?.bookingDraft ?? (window as any).LOGIQ?.bookingDraft ?? {};
   updateLogiq({ bookingDraft: { ...current, ...draft } });
 }
 
 // Update consent
 export function updateUserConsent(consent: Partial<UserConsent>): void {
-  const current = (window as any).LOGIQ?.userConsent || {};
+  const current = canonicalSnapshot?.userConsent ?? (window as any).LOGIQ?.userConsent ?? {};
   updateLogiq({ userConsent: { ...current, ...consent } });
 }
 
@@ -179,7 +262,9 @@ export function updateUserConsent(consent: Partial<UserConsent>): void {
  */
 export function updateFlexProSnapshot(snapshot: Partial<FlexProSnapshot>): void {
   const current: FlexProSnapshot =
-    (window as any).LOGIQ?.flexPro || { ...DEFAULT_FLEX_PRO_SNAPSHOT };
+    canonicalSnapshot?.flexPro ??
+    (window as any).LOGIQ?.flexPro ??
+    { ...DEFAULT_FLEX_PRO_SNAPSHOT };
 
   // Explicit reset path — collapse back to defaults instead of merging stale fields.
   if (snapshot.active === false) {
