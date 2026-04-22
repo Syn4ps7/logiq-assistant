@@ -262,7 +262,7 @@ function startTamperWatcher(): void {
 // Initialize window.LOGIQ
 export function initLogiq(): void {
   const now = new Date().toISOString();
-  const logiq: LogiqGlobal = {
+  const logiq: Omit<LogiqGlobal, "refreshVehicleData"> = {
     vehicleList: buildVehicleListSnapshot(),
     ratePlans,
     vehicleOptions,
