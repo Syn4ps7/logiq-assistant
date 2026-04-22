@@ -39,6 +39,55 @@ const CARNETS: { id: CarnetId; days: number; totalHT: number; totalTTC: number; 
   { id: "carnet-40", days: 40, totalHT: 4255.30, totalTTC: 4600, perDayHT: 106.40, perDayTTC: 115, kmPerDay: 200 },
 ];
 
+// ─────────────────────────────────────────────────────────────────────────────
+// LogIQ event payload normalizers
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// All `dispatchLogiqEvent` calls below go through `buildPlanContext()` so the
+// { plan, pack, carnet, isFlexPro, source } block is consistent everywhere
+// and `isFlexPro` is *derived* from `plan` (never set independently).
+
+const VALID_PLANS = new Set<string>(["week", "weekend", "pack-48h", "flex-pro"]);
+const VALID_PACKS = new Set<string>(["standard", "confort", "premium"]);
+const VALID_CARNETS = new Set<string>(["carnet-10", "carnet-20", "carnet-40"]);
+
+function normalizePlan(value: string | null | undefined): LogiqPlan {
+  return value && VALID_PLANS.has(value) ? (value as LogiqPlan) : null;
+}
+function normalizePack(value: string | null | undefined): LogiqPack {
+  return value && VALID_PACKS.has(value) ? (value as LogiqPack) : null;
+}
+function normalizeCarnet(value: string | null | undefined): LogiqCarnet {
+  return value && VALID_CARNETS.has(value) ? (value as LogiqCarnet) : null;
+}
+function normalizeSource(value: string | null | undefined): LogiqSource {
+  return value === "pro" ? "pro" : "direct";
+}
+
+interface PlanContextInput {
+  plan?: string | null;
+  pack?: string | null;
+  carnet?: string | null;
+  source?: string | null;
+}
+
+/**
+ * Build a complete, validated LogiqPlanContext.
+ * - `isFlexPro` is *always* derived from `plan === "flex-pro"`.
+ * - When the plan is flex-pro, `pack` and `carnet` are forced to null
+ *   (B2B Flex is mutually exclusive with B2C packs and Carnets).
+ */
+function buildPlanContext(input: PlanContextInput): LogiqPlanContext {
+  const plan = normalizePlan(input.plan);
+  const isFlexPro = plan === "flex-pro";
+  return {
+    plan,
+    pack: isFlexPro ? null : normalizePack(input.pack),
+    carnet: isFlexPro ? null : normalizeCarnet(input.carnet),
+    isFlexPro,
+    source: normalizeSource(input.source),
+  };
+}
 
 
 const Reservation = () => {
