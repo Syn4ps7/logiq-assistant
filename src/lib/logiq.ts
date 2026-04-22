@@ -274,6 +274,11 @@ function validatePayload(type: LogiqEventType, payload: any): string[] {
   return [];
 }
 
+// localStorage keys — kept here so the hydration helper below stays in sync
+// with the writers in CookieBanner.tsx and CGL.tsx.
+const LS_COOKIE_CONSENT = "logiq-cookie-consent";
+const LS_CGL_ACCEPTED = "logiq.cgl.accepted";
+
 // Initialize window.LOGIQ
 export function initLogiq(): void {
   const logiq: LogiqGlobal = {
