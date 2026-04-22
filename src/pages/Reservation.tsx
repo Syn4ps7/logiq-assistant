@@ -46,11 +46,33 @@ const Reservation = () => {
   useSeo("seo.reservationTitle", "seo.reservationDesc");
   const steps = t("reservation.steps", { returnObjects: true }) as string[];
   const [searchParams] = useSearchParams();
+
+  // Read URL params synchronously *before* any state is initialized so the very
+  // first render already reflects flex-pro (no flash of B2C plans, no useEffect lag).
+  const initialPlanParam = searchParams.get("plan");
+  const initialPackParam = searchParams.get("pack") as WeekendPack | null;
+  const initialIsFlexPro = initialPlanParam === "flex-pro";
+
   const [step, setStep] = useState(0);
-  const [selectedPlan, setSelectedPlan] = useState<RatePlanId | "">("");
+  const [selectedPlan, setSelectedPlan] = useState<RatePlanId | "">(() => {
+    // Flex Pro takes absolute precedence — never fall back to a B2C plan.
+    if (initialIsFlexPro) return "flex-pro";
+    if (initialPackParam && initialPackParam in WEEKEND_PACKS) return "pack-48h";
+    if (initialPlanParam && ["week", "weekend", "pack-48h"].includes(initialPlanParam)) {
+      return initialPlanParam as RatePlanId;
+    }
+    return "";
+  });
+  // proTab is irrelevant for flex-pro (B2C tab) — pin it to "daily" so no Carnet UI flashes.
   const [proTab, setProTab] = useState<ProTab>("daily");
+  // selectedCarnet must stay empty when flex-pro is active (Carnet ≠ Flex).
   const [selectedCarnet, setSelectedCarnet] = useState<CarnetId | "">("");
-  const [weekendPack, setWeekendPack] = useState<WeekendPack | "">("");
+  // weekendPack is a B2C-only concept — must stay empty under flex-pro.
+  const [weekendPack, setWeekendPack] = useState<WeekendPack | "">(() => {
+    if (initialIsFlexPro) return "";
+    if (initialPackParam && initialPackParam in WEEKEND_PACKS) return initialPackParam;
+    return "";
+  });
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("07:00");
   const [endDate, setEndDate] = useState("");
