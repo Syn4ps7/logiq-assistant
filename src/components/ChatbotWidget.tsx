@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import { useLogiqReady } from "@/hooks/use-logiq-ready";
 
 type Msg = { role: "user" | "assistant"; content: string };
 type ClientType = "pro" | "particulier" | null;
