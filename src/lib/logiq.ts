@@ -334,6 +334,11 @@ export function initLogiq(): void {
   startTamperWatcher();
   startVehicleRefreshWatcher();
 
+  // Read previous version BEFORE persisting the new one, so the
+  // `logiq:vehicleDataVersionLoaded` payload can compare them.
+  const previousStoredVersion = readStoredVehicleDataVersion();
+  persistVehicleDataVersion(logiq.vehicleDataVersion);
+
   // Emit initial publish so listeners (chatbot, debug panel) know fresh
   // vehicle data is available — even on cold start without a deploy diff.
   dispatchLogiqEvent("logiq:vehicleDataRefreshed", {
@@ -345,6 +350,19 @@ export function initLogiq(): void {
     vehicleCount: logiq.vehicleList.length,
     availableCount: logiq.vehicleList.filter((v) => v.availability).length,
   } satisfies VehicleDataRefreshedPayload);
+
+  // Confirmation event — fired once per page load. After client-side
+  // navigation in the SPA, sessionStorage already holds the version from
+  // the previous route, so consumers can verify continuity.
+  dispatchLogiqEvent("logiq:vehicleDataVersionLoaded", {
+    vehicleDataVersion: logiq.vehicleDataVersion,
+    previousStoredVersion,
+    matchesPrevious:
+      previousStoredVersion !== null &&
+      previousStoredVersion === logiq.vehicleDataVersion,
+    source: "init",
+    loadedAt: now,
+  } satisfies VehicleDataVersionLoadedPayload);
 }
 
 /**
