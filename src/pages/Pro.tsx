@@ -185,7 +185,7 @@ const Pro = () => {
             <article
               role="listitem"
               aria-labelledby="plan-discovery-title"
-              className="flex flex-col rounded-2xl border bg-background p-6 lg:p-8 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+              className="flex flex-col rounded-2xl border bg-background p-6 lg:p-8"
             >
               <header className="mb-6">
                 <h3
