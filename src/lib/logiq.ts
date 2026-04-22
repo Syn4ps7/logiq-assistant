@@ -103,6 +103,13 @@ export interface LogiqGlobal {
   termsVersion: TermsVersion;
   /** Live snapshot of the Flex Pro reservation flow (B2B daily). */
   flexPro: FlexProSnapshot;
+  /**
+   * Imperatively re-publish vehicle/rate data and return the resulting
+   * `vehicleDataVersion`. Available on `window.LOGIQ` for the chatbot or
+   * any external script that wants a guaranteed-fresh read without
+   * importing module code. Always emits `logiq:vehicleDataRefreshed`.
+   */
+  refreshVehicleData: () => string;
 }
 
 // Custom event types
