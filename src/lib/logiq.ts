@@ -170,6 +170,26 @@ export function updateUserConsent(consent: Partial<UserConsent>): void {
   updateLogiq({ userConsent: { ...current, ...consent } });
 }
 
+/**
+ * Update the Flex Pro snapshot exposed on `window.LOGIQ.flexPro`.
+ * Called by the reservation flow on every relevant state change so
+ * the chatbot can read live values without parsing the UI.
+ *
+ * Pass `{ active: false }` to reset the snapshot to defaults.
+ */
+export function updateFlexProSnapshot(snapshot: Partial<FlexProSnapshot>): void {
+  const current: FlexProSnapshot =
+    (window as any).LOGIQ?.flexPro || { ...DEFAULT_FLEX_PRO_SNAPSHOT };
+
+  // Explicit reset path — collapse back to defaults instead of merging stale fields.
+  if (snapshot.active === false) {
+    updateLogiq({ flexPro: { ...DEFAULT_FLEX_PRO_SNAPSHOT } });
+    return;
+  }
+
+  updateLogiq({ flexPro: { ...current, ...snapshot } });
+}
+
 // Accept CGL
 export function acceptCGL(): void {
   const now = new Date().toISOString();
