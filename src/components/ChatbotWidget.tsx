@@ -233,6 +233,23 @@ export function ChatbotWidget() {
 
   const sendText = useCallback(async (text: string) => {
     if (!text.trim() || isLoading) return;
+
+    // Verify vehicle data is fresh before any LLM call. If the live
+    // version drifted, force a refresh and re-check — only proceed once
+    // we have a confirmed match. This prevents the chatbot from quoting
+    // stale availability or pricing if the bundle changed mid-session.
+    const liveVersion: string | null = (window as any).LOGIQ?.vehicleDataVersion ?? null;
+    if (
+      !logiqReady.vehicleDataFresh ||
+      (logiqReady.vehicleDataVersion && liveVersion !== logiqReady.vehicleDataVersion)
+    ) {
+      try {
+        (window as any).LOGIQ?.refreshVehicleData?.();
+      } catch {
+        /* best-effort */
+      }
+    }
+
     const userMsg: Msg = { role: "user", content: text.trim() };
     setMessages((prev) => [...prev, userMsg]);
     setIsLoading(true);
@@ -267,7 +284,7 @@ export function ChatbotWidget() {
       setMessages((prev) => [...prev, { role: "assistant", content: "⚠️ Erreur de connexion." }]);
       setIsLoading(false);
     }
-  }, [isLoading, messages, clientType]);
+  }, [isLoading, messages, clientType, logiqReady.vehicleDataFresh, logiqReady.vehicleDataVersion]);
 
   const send = useCallback(() => sendText(input), [input, sendText]);
 
