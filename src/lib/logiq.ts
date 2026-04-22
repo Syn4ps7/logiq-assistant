@@ -112,7 +112,61 @@ export type LogiqEventType =
   | "logiq:priceCalculated"
   | "logiq:bookingCompleted"
   | "logiq:cglAccepted"
-  | "logiq:tamperDetected";
+  | "logiq:tamperDetected"
+  | "logiq:vehicleDataRefreshed";
+
+/** Payload of `logiq:vehicleDataRefreshed` — fires whenever vehicle/rate
+ *  data is (re)published to `window.LOGIQ`. */
+export interface VehicleDataRefreshedPayload {
+  vehicleDataVersion: string;
+  previousVersion: string | null;
+  changed: boolean;
+  refreshedAt: string;
+  trigger: "init" | "focus" | "visibility" | "manual" | "event";
+  vehicleCount: number;
+  availableCount: number;
+}
+
+/**
+ * Build a stable, order-insensitive hash of the current vehicle/rate
+ * fixtures. Used to power `vehicleDataVersion` so the chatbot can detect
+ * bundle-level changes without diffing entire arrays.
+ */
+function buildVehicleDataVersion(): string {
+  const payload = {
+    v: vehicles.map((v) => ({
+      id: v.id,
+      name: v.name,
+      priceDay: v.priceDay,
+      avail: v.availability,
+      // Only spec fields the chatbot exposes — keeps the hash stable across
+      // visual-only edits (taglines, image paths, features, etc.).
+      specs: v.specs,
+    })),
+    r: ratePlans,
+    o: vehicleOptions,
+    k: EXTRA_KM_RATE,
+  };
+  // Cheap, deterministic 32-bit FNV-1a — no crypto dependency, plenty
+  // strong enough to detect any meaningful change.
+  const json = JSON.stringify(payload);
+  let h = 0x811c9dc5;
+  for (let i = 0; i < json.length; i++) {
+    h ^= json.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return `v1-${(h >>> 0).toString(16)}`;
+}
+
+function buildVehicleListSnapshot(): LogiqGlobal["vehicleList"] {
+  return vehicles.map((v) => ({
+    id: v.id,
+    name: v.name,
+    priceDay: v.priceDay,
+    specs: v.specs,
+    availability: v.availability,
+  }));
+}
 
 // ============================================================================
 // Read-only enforcement
