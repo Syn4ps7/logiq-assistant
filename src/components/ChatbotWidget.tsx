@@ -278,9 +278,15 @@ export function ChatbotWidget() {
     };
   }, [isActive, clientType, messages, nudgeSent, isLoading, t]);
 
+  // Readiness gate — don't render the widget (no bubble, no streaming) until
+  // LOGIQ is hydrated or the timeout elapses. Prevents the chatbot from
+  // reading a half-initialized window.LOGIQ on first paint.
+  if (!logiqReady.ready) return null;
+
   return (
     <div
       id="logiq-chatbot"
+      data-logiq-ready-reason={logiqReady.reason}
       className="fixed z-50"
       style={bubblePos ? { left: bubblePos.x, top: bubblePos.y, right: "auto", bottom: "auto" } : { bottom: 24, right: 24 }}
     >
