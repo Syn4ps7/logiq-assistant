@@ -11,14 +11,18 @@ import { useSeo } from "@/hooks/use-seo";
 import emailjs from "@emailjs/browser";
 import { toast } from "sonner";
 
-const TVA_RATE = 0.081;
+import {
+  TVA_RATE,
+  FLEX_PRO_DAILY_HT,
+  FLEX_PRO_KM_PER_DAY,
+  EXTRA_KM_RATE_PRO_HT,
+  computeFlexProBreakdown,
+} from "@/lib/pricing";
+
 const roundCHF = (v: number) => Math.round(v / 0.05) * 0.05;
 const fmtCHF = (v: number) => roundCHF(v).toLocaleString("fr-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 type RatePlanId = "week" | "weekend" | "pack-48h" | "flex-pro";
-
-const FLEX_PRO_DAILY_HT = 155;
-const FLEX_PRO_KM_PER_DAY = 100;
 type WeekendPack = "standard" | "confort" | "premium";
 type ProTab = "daily" | "carnet";
 type CarnetId = "carnet-10" | "carnet-20" | "carnet-40";
@@ -35,7 +39,7 @@ const CARNETS: { id: CarnetId; days: number; totalHT: number; totalTTC: number; 
   { id: "carnet-40", days: 40, totalHT: 4255.30, totalTTC: 4600, perDayHT: 106.40, perDayTTC: 115, kmPerDay: 200 },
 ];
 
-const EXTRA_KM_RATE_PRO_HT = 0.65;
+
 
 const Reservation = () => {
   const { t } = useTranslation();
@@ -206,23 +210,26 @@ const Reservation = () => {
       return { days, baseTotal, includedKm, optionsCost, extraKm, extraKmCost, total, planName: pack.label };
     }
 
-    // Flex Pro flow (B2B daily)
+    // Flex Pro flow (B2B daily) — delegate to the unit-tested pure helper
     if (selectedPlan === "flex-pro") {
-      if (!startDate || !endDate) return null;
-      const days = Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / 86400000));
-      const baseTotal = Math.round(days * FLEX_PRO_DAILY_HT * (1 + TVA_RATE) * 100) / 100;
-      const includedKm = FLEX_PRO_KM_PER_DAY * days;
-
       const optionsCost = selectedOptions.reduce((sum, optId) => {
         const opt = vehicleOptions.find((o) => o.id === optId);
         return sum + (opt ? opt.price : 0);
       }, 0);
 
-      const extraKm = Math.max(0, estKm - includedKm);
-      const extraKmCost = Math.round(extraKm * (EXTRA_KM_RATE_PRO_HT * (1 + TVA_RATE)) * 100) / 100;
-      const total = Math.round((baseTotal + optionsCost + extraKmCost) * 100) / 100;
+      const breakdown = computeFlexProBreakdown(startDate, endDate, estKm, optionsCost);
+      if (!breakdown) return null;
 
-      return { days, baseTotal, includedKm, optionsCost, extraKm, extraKmCost, total, planName: "B2B Flex – Journalier" };
+      return {
+        days: breakdown.days,
+        baseTotal: breakdown.baseTotalTTC,
+        includedKm: breakdown.includedKm,
+        optionsCost,
+        extraKm: breakdown.extraKm,
+        extraKmCost: breakdown.extraKmCostTTC,
+        total: breakdown.totalTTC,
+        planName: "B2B Flex – Journalier",
+      };
     }
 
     // Standard flow
