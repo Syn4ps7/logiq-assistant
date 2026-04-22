@@ -320,7 +320,9 @@ const Reservation = () => {
     ? roundCHF(price.total - (discountedTotal || price.total))
     : 0;
 
-  const isFlexPro = selectedPlan === "flex-pro";
+  // Either the URL says flex-pro OR state has settled into flex-pro.
+  // Using an OR ensures the guard is active on the very first paint.
+  const isFlexPro = isFlexProRoute || selectedPlan === "flex-pro";
   const canProceedStep0 =
     (proTab === "carnet" && selectedCarnet) ||
     isPackWithSub ||
