@@ -105,13 +105,15 @@ const Reservation = () => {
   // Computed synchronously from the URL so the UI never flashes B2C plans on first paint.
   const isFlexProRoute = searchParams.get("plan") === "flex-pro";
 
-  // Pre-fill from query params (from Rates page links)
+  // Sync state when the URL changes *after* mount (e.g. client-side navigation
+  // from another page that updates ?plan=…). Initial render is already handled
+  // synchronously by the useState initializers above, so there is no flash of
+  // B2C plans before this effect runs.
   useEffect(() => {
     const pack = searchParams.get("pack") as WeekendPack | null;
     const plan = searchParams.get("plan") as RatePlanId | null;
 
-    // Flex Pro guard: force-reset any B2C/Carnet state that might linger
-    // from a previous navigation, browser back/forward, or hot reload.
+    // Flex Pro takes absolute precedence — wipe any B2C/Carnet residue.
     if (plan === "flex-pro") {
       setSelectedPlan("flex-pro");
       setProTab("daily");
@@ -128,10 +130,9 @@ const Reservation = () => {
     }
   }, [searchParams]);
 
-  // Defensive guard: if the URL says flex-pro but state has drifted (e.g. user
-  // tampered with state via devtools, stale Suspense render, or a future code
-  // path mutates selectedPlan), snap state back to "flex-pro" every render
-  // *before* the JSX is evaluated.
+  // Defensive runtime invariant: if the URL still says flex-pro but state has
+  // drifted (devtools tampering, stale render, future code mutation), snap back.
+  // Kept narrow on purpose — only fires when there is an actual desync.
   useEffect(() => {
     if (!isFlexProRoute) return;
     if (selectedPlan !== "flex-pro") setSelectedPlan("flex-pro");
