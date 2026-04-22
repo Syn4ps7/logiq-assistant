@@ -182,6 +182,25 @@ const Reservation = () => {
       return { days, baseTotal, includedKm, optionsCost, extraKm, extraKmCost, total, planName: pack.label };
     }
 
+    // Flex Pro flow (B2B daily)
+    if (selectedPlan === "flex-pro") {
+      if (!startDate || !endDate) return null;
+      const days = Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / 86400000));
+      const baseTotal = Math.round(days * FLEX_PRO_DAILY_HT * (1 + TVA_RATE) * 100) / 100;
+      const includedKm = FLEX_PRO_KM_PER_DAY * days;
+
+      const optionsCost = selectedOptions.reduce((sum, optId) => {
+        const opt = vehicleOptions.find((o) => o.id === optId);
+        return sum + (opt ? opt.price : 0);
+      }, 0);
+
+      const extraKm = Math.max(0, estKm - includedKm);
+      const extraKmCost = Math.round(extraKm * (EXTRA_KM_RATE_PRO_HT * (1 + TVA_RATE)) * 100) / 100;
+      const total = Math.round((baseTotal + optionsCost + extraKmCost) * 100) / 100;
+
+      return { days, baseTotal, includedKm, optionsCost, extraKm, extraKmCost, total, planName: "B2B Flex – Journalier" };
+    }
+
     // Standard flow
     const plan = ratePlans.find((p) => p.id === selectedPlan);
     if (!plan) return null;
