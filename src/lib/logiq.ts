@@ -135,6 +135,7 @@ export function initLogiq(): void {
       accepted: false,
       acceptedAt: null,
     },
+    flexPro: { ...DEFAULT_FLEX_PRO_SNAPSHOT },
   };
 
   // Freeze to make read-only from external access
