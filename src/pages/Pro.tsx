@@ -154,7 +154,7 @@ const Pro = () => {
 
             <Button asChild variant="default" size="lg" className="w-full sm:w-auto">
               <Link
-                to="/reservation"
+                to="/reservation?source=pro&plan=flex-pro"
                 aria-label="Réserver à la journée au tarif Flex 155 CHF hors taxes"
               >
                 Réserver maintenant
