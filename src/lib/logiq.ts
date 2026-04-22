@@ -89,6 +89,15 @@ export interface LogiqGlobal {
   ratePlans: RatePlan[];
   vehicleOptions: VehicleOption[];
   extraKmRate: number;
+  /**
+   * Stable hash of the vehicle/rate fixtures currently exposed.
+   * Lets the chatbot detect bundle-level changes (e.g. after a deploy)
+   * without diffing the full lists. Bumps whenever any of
+   * `vehicles`, `ratePlans`, `vehicleOptions`, or `extraKmRate` change.
+   */
+  vehicleDataVersion: string;
+  /** ISO timestamp of the last `refreshVehicleData()` run. */
+  vehicleDataRefreshedAt: string;
   bookingDraft: BookingDraft;
   userConsent: UserConsent;
   termsVersion: TermsVersion;
@@ -103,7 +112,61 @@ export type LogiqEventType =
   | "logiq:priceCalculated"
   | "logiq:bookingCompleted"
   | "logiq:cglAccepted"
-  | "logiq:tamperDetected";
+  | "logiq:tamperDetected"
+  | "logiq:vehicleDataRefreshed";
+
+/** Payload of `logiq:vehicleDataRefreshed` — fires whenever vehicle/rate
+ *  data is (re)published to `window.LOGIQ`. */
+export interface VehicleDataRefreshedPayload {
+  vehicleDataVersion: string;
+  previousVersion: string | null;
+  changed: boolean;
+  refreshedAt: string;
+  trigger: "init" | "focus" | "visibility" | "manual" | "event";
+  vehicleCount: number;
+  availableCount: number;
+}
+
+/**
+ * Build a stable, order-insensitive hash of the current vehicle/rate
+ * fixtures. Used to power `vehicleDataVersion` so the chatbot can detect
+ * bundle-level changes without diffing entire arrays.
+ */
+function buildVehicleDataVersion(): string {
+  const payload = {
+    v: vehicles.map((v) => ({
+      id: v.id,
+      name: v.name,
+      priceDay: v.priceDay,
+      avail: v.availability,
+      // Only spec fields the chatbot exposes — keeps the hash stable across
+      // visual-only edits (taglines, image paths, features, etc.).
+      specs: v.specs,
+    })),
+    r: ratePlans,
+    o: vehicleOptions,
+    k: EXTRA_KM_RATE,
+  };
+  // Cheap, deterministic 32-bit FNV-1a — no crypto dependency, plenty
+  // strong enough to detect any meaningful change.
+  const json = JSON.stringify(payload);
+  let h = 0x811c9dc5;
+  for (let i = 0; i < json.length; i++) {
+    h ^= json.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return `v1-${(h >>> 0).toString(16)}`;
+}
+
+function buildVehicleListSnapshot(): LogiqGlobal["vehicleList"] {
+  return vehicles.map((v) => ({
+    id: v.id,
+    name: v.name,
+    priceDay: v.priceDay,
+    specs: v.specs,
+    availability: v.availability,
+  }));
+}
 
 // ============================================================================
 // Read-only enforcement
@@ -178,17 +241,14 @@ function startTamperWatcher(): void {
 
 // Initialize window.LOGIQ
 export function initLogiq(): void {
+  const now = new Date().toISOString();
   const logiq: LogiqGlobal = {
-    vehicleList: vehicles.map((v) => ({
-      id: v.id,
-      name: v.name,
-      priceDay: v.priceDay,
-      specs: v.specs,
-      availability: v.availability,
-    })),
+    vehicleList: buildVehicleListSnapshot(),
     ratePlans,
     vehicleOptions,
     extraKmRate: EXTRA_KM_RATE,
+    vehicleDataVersion: buildVehicleDataVersion(),
+    vehicleDataRefreshedAt: now,
     bookingDraft: {
       start: null,
       end: null,
@@ -212,6 +272,80 @@ export function initLogiq(): void {
 
   publishSnapshot(logiq);
   startTamperWatcher();
+  startVehicleRefreshWatcher();
+
+  // Emit initial publish so listeners (chatbot, debug panel) know fresh
+  // vehicle data is available — even on cold start without a deploy diff.
+  dispatchLogiqEvent("logiq:vehicleDataRefreshed", {
+    vehicleDataVersion: logiq.vehicleDataVersion,
+    previousVersion: null,
+    changed: true,
+    refreshedAt: now,
+    trigger: "init",
+    vehicleCount: logiq.vehicleList.length,
+    availableCount: logiq.vehicleList.filter((v) => v.availability).length,
+  } satisfies VehicleDataRefreshedPayload);
+}
+
+/**
+ * Re-derive `vehicleList`, `ratePlans`, `vehicleOptions`, `extraKmRate`,
+ * and `vehicleDataVersion` from the latest imported fixtures and atomically
+ * publish them on `window.LOGIQ`. The chatbot can call this — or listen for
+ * `logiq:vehicleDataRefreshed` — to be sure it's never reading stale pricing
+ * or availability after a long-lived SPA session or a deploy.
+ *
+ * No-op-safe: when the freshly built version matches the canonical one we
+ * still publish (so `vehicleDataRefreshedAt` advances) but the event payload
+ * carries `changed: false` so consumers can skip cache-invalidation work.
+ */
+export function refreshVehicleData(
+  trigger: VehicleDataRefreshedPayload["trigger"] = "manual",
+): VehicleDataRefreshedPayload {
+  const previousVersion = canonicalSnapshot?.vehicleDataVersion ?? null;
+  const nextVersion = buildVehicleDataVersion();
+  const refreshedAt = new Date().toISOString();
+  const vehicleList = buildVehicleListSnapshot();
+
+  updateLogiq({
+    vehicleList,
+    ratePlans,
+    vehicleOptions,
+    extraKmRate: EXTRA_KM_RATE,
+    vehicleDataVersion: nextVersion,
+    vehicleDataRefreshedAt: refreshedAt,
+  });
+
+  const payload: VehicleDataRefreshedPayload = {
+    vehicleDataVersion: nextVersion,
+    previousVersion,
+    changed: previousVersion !== nextVersion,
+    refreshedAt,
+    trigger,
+    vehicleCount: vehicleList.length,
+    availableCount: vehicleList.filter((v) => v.availability).length,
+  };
+  dispatchLogiqEvent("logiq:vehicleDataRefreshed", payload);
+  return payload;
+}
+
+/** Auto-refresh triggers — keep `window.LOGIQ` fresh across long sessions. */
+let vehicleRefreshWatcherStarted = false;
+function startVehicleRefreshWatcher(): void {
+  if (vehicleRefreshWatcherStarted || typeof window === "undefined") return;
+  vehicleRefreshWatcherStarted = true;
+
+  // Tab regains focus → user is back, may have missed a deploy.
+  window.addEventListener("focus", () => refreshVehicleData("focus"));
+
+  // Page becomes visible after being hidden (mobile tab switch, lock screen).
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") refreshVehicleData("visibility");
+  });
+
+  // Imperative trigger for chatbot / external callers without imports.
+  document.addEventListener("logiq:requestVehicleRefresh", () =>
+    refreshVehicleData("event"),
+  );
 }
 
 /**
