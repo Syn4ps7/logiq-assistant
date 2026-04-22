@@ -905,33 +905,26 @@ const Reservation = () => {
                     onClick={() => {
                       setSelectedVehicle(v.id);
 
-                      // Mirror the reservation flow for the chatbot:
-                      // re-dispatch openReservation with the now-known vehicle
-                      // plus the active plan/pack so external listeners can
-                      // reconstruct the exact state without scraping the DOM.
-                      const planParam = searchParams.get("plan");
-                      const packParam = searchParams.get("pack");
-                      const sourceParam = searchParams.get("source");
+                      // Build a single normalized plan context so both events
+                      // expose IDENTICAL { plan, pack, carnet, isFlexPro, source }.
+                      const ctx = buildPlanContext({
+                        plan: selectedPlan || searchParams.get("plan"),
+                        pack: weekendPack || searchParams.get("pack"),
+                        carnet: selectedCarnet,
+                        source: searchParams.get("source"),
+                      });
 
                       dispatchLogiqEvent("logiq:openReservation", {
+                        ...ctx,
                         prefillVehicleId: v.id,
-                        prefillPlan: selectedPlan || planParam || undefined,
-                        prefillPack: weekendPack || packParam || undefined,
-                        prefillCarnet: selectedCarnet || undefined,
-                        source: sourceParam || "direct",
-                        isFlexPro: selectedPlan === "flex-pro",
                         startDate: startDate || null,
                         endDate: endDate || null,
                       });
 
                       dispatchLogiqEvent("logiq:vehicleClick", {
+                        ...ctx,
                         vehicleId: v.id,
                         vehicleName: v.name,
-                        plan: selectedPlan || undefined,
-                        pack: weekendPack || undefined,
-                        carnet: selectedCarnet || undefined,
-                        isFlexPro: selectedPlan === "flex-pro",
-                        source: searchParams.get("source") || "direct",
                       });
                     }}
                     className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
