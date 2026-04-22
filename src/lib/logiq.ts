@@ -396,5 +396,6 @@ export function acceptCGL(): void {
   dispatchLogiqEvent("logiq:cglAccepted", {
     cglHash: CGL_HASH,
     timestamp: now,
+    accepted: true,
   });
 }
