@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { vehicles, vehicleOptions, ratePlans, EXTRA_KM_RATE } from "@/data/vehicles";
-import { updateBookingDraft, dispatchLogiqEvent, updateFlexProSnapshot } from "@/lib/logiq";
+import { updateBookingDraft, dispatchLogiqEvent, updateFlexProSnapshot, type LogiqPlanContext, type LogiqPlan, type LogiqPack, type LogiqCarnet, type LogiqSource } from "@/lib/logiq";
 import { Check, ChevronRight, Info, Truck, Loader2, CalendarDays, Car, Package, Tag } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSeo } from "@/hooks/use-seo";
@@ -39,6 +39,55 @@ const CARNETS: { id: CarnetId; days: number; totalHT: number; totalTTC: number; 
   { id: "carnet-40", days: 40, totalHT: 4255.30, totalTTC: 4600, perDayHT: 106.40, perDayTTC: 115, kmPerDay: 200 },
 ];
 
+// ─────────────────────────────────────────────────────────────────────────────
+// LogIQ event payload normalizers
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// All `dispatchLogiqEvent` calls below go through `buildPlanContext()` so the
+// { plan, pack, carnet, isFlexPro, source } block is consistent everywhere
+// and `isFlexPro` is *derived* from `plan` (never set independently).
+
+const VALID_PLANS = new Set<string>(["week", "weekend", "pack-48h", "flex-pro"]);
+const VALID_PACKS = new Set<string>(["standard", "confort", "premium"]);
+const VALID_CARNETS = new Set<string>(["carnet-10", "carnet-20", "carnet-40"]);
+
+function normalizePlan(value: string | null | undefined): LogiqPlan {
+  return value && VALID_PLANS.has(value) ? (value as LogiqPlan) : null;
+}
+function normalizePack(value: string | null | undefined): LogiqPack {
+  return value && VALID_PACKS.has(value) ? (value as LogiqPack) : null;
+}
+function normalizeCarnet(value: string | null | undefined): LogiqCarnet {
+  return value && VALID_CARNETS.has(value) ? (value as LogiqCarnet) : null;
+}
+function normalizeSource(value: string | null | undefined): LogiqSource {
+  return value === "pro" ? "pro" : "direct";
+}
+
+interface PlanContextInput {
+  plan?: string | null;
+  pack?: string | null;
+  carnet?: string | null;
+  source?: string | null;
+}
+
+/**
+ * Build a complete, validated LogiqPlanContext.
+ * - `isFlexPro` is *always* derived from `plan === "flex-pro"`.
+ * - When the plan is flex-pro, `pack` and `carnet` are forced to null
+ *   (B2B Flex is mutually exclusive with B2C packs and Carnets).
+ */
+function buildPlanContext(input: PlanContextInput): LogiqPlanContext {
+  const plan = normalizePlan(input.plan);
+  const isFlexPro = plan === "flex-pro";
+  return {
+    plan,
+    pack: isFlexPro ? null : normalizePack(input.pack),
+    carnet: isFlexPro ? null : normalizeCarnet(input.carnet),
+    isFlexPro,
+    source: normalizeSource(input.source),
+  };
+}
 
 
 const Reservation = () => {
@@ -163,8 +212,19 @@ const Reservation = () => {
 
   useEffect(() => {
     dispatchLogiqEvent("logiq:openReservation", {
-      prefillVehicleId: searchParams.get("vehicle") || undefined,
+      ...buildPlanContext({
+        plan: searchParams.get("plan") ?? selectedPlan,
+        pack: searchParams.get("pack") ?? weekendPack,
+        carnet: selectedCarnet,
+        source: searchParams.get("source"),
+      }),
+      prefillVehicleId: searchParams.get("vehicle") || null,
+      startDate: startDate || null,
+      endDate: endDate || null,
     });
+    // Intentionally only re-fires on URL changes — vehicle-click handler
+    // dispatches a fresh openReservation with up-to-date state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   useEffect(() => {
@@ -289,7 +349,15 @@ const Reservation = () => {
   useEffect(() => {
     if (price) {
       updateBookingDraft({ priceEstimate: price.total });
-      dispatchLogiqEvent("logiq:priceCalculated", { priceBreakdown: price });
+      dispatchLogiqEvent("logiq:priceCalculated", {
+        ...buildPlanContext({
+          plan: selectedPlan,
+          pack: weekendPack,
+          carnet: selectedCarnet,
+          source: searchParams.get("source"),
+        }),
+        priceBreakdown: price,
+      });
     }
   }, [price?.total]);
 
@@ -403,7 +471,7 @@ const Reservation = () => {
 
         const { data: row } = await supabase
           .from("reservations")
-          .select("reference, total_chf, start_date, start_time, end_date, end_time, vehicle_id, plan, source")
+          .select("reference, total_chf, start_date, start_time, end_date, end_time, vehicle_id, plan, pack, source")
           .eq("reference", ref)
           .maybeSingle();
 
@@ -413,14 +481,21 @@ const Reservation = () => {
           date ? (time ? `${date}T${time}` : date) : null;
 
         dispatchLogiqEvent("logiq:bookingCompleted", {
+          ...buildPlanContext({
+            plan: row?.plan,
+            // DB doesn't store pack/carnet separately — `plan` carries either
+            // a plan id or a carnet id. Pass it on both axes; buildPlanContext
+            // ignores invalid values via its enum whitelists.
+            pack: row?.pack,
+            carnet: row?.plan,
+            source: row?.source,
+          }),
           bookingRef: ref,
           amount: row?.total_chf ?? null,
           currency: "CHF",
           start: composeIso(row?.start_date ?? null, row?.start_time ?? null),
           end: composeIso(row?.end_date ?? null, row?.end_time ?? null),
           vehicleId: row?.vehicle_id ?? null,
-          plan: row?.plan ?? null,
-          source: row?.source ?? null,
           confirmedAt: new Date().toISOString(),
         });
 
@@ -830,33 +905,26 @@ const Reservation = () => {
                     onClick={() => {
                       setSelectedVehicle(v.id);
 
-                      // Mirror the reservation flow for the chatbot:
-                      // re-dispatch openReservation with the now-known vehicle
-                      // plus the active plan/pack so external listeners can
-                      // reconstruct the exact state without scraping the DOM.
-                      const planParam = searchParams.get("plan");
-                      const packParam = searchParams.get("pack");
-                      const sourceParam = searchParams.get("source");
+                      // Build a single normalized plan context so both events
+                      // expose IDENTICAL { plan, pack, carnet, isFlexPro, source }.
+                      const ctx = buildPlanContext({
+                        plan: selectedPlan || searchParams.get("plan"),
+                        pack: weekendPack || searchParams.get("pack"),
+                        carnet: selectedCarnet,
+                        source: searchParams.get("source"),
+                      });
 
                       dispatchLogiqEvent("logiq:openReservation", {
+                        ...ctx,
                         prefillVehicleId: v.id,
-                        prefillPlan: selectedPlan || planParam || undefined,
-                        prefillPack: weekendPack || packParam || undefined,
-                        prefillCarnet: selectedCarnet || undefined,
-                        source: sourceParam || "direct",
-                        isFlexPro: selectedPlan === "flex-pro",
                         startDate: startDate || null,
                         endDate: endDate || null,
                       });
 
                       dispatchLogiqEvent("logiq:vehicleClick", {
+                        ...ctx,
                         vehicleId: v.id,
                         vehicleName: v.name,
-                        plan: selectedPlan || undefined,
-                        pack: weekendPack || undefined,
-                        carnet: selectedCarnet || undefined,
-                        isFlexPro: selectedPlan === "flex-pro",
-                        source: searchParams.get("source") || "direct",
                       });
                     }}
                     className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
