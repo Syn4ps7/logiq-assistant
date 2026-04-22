@@ -402,6 +402,21 @@ export function refreshVehicleData(
     vehicleCount: vehicleList.length,
     availableCount: vehicleList.filter((v) => v.availability).length,
   };
+
+  // Persist the live version + dispatch confirmation. We read the
+  // previously-stored value first so the payload can flag when navigation
+  // (or a deploy) caused the hash to drift.
+  const previousStoredVersion = readStoredVehicleDataVersion();
+  persistVehicleDataVersion(nextVersion);
+  dispatchLogiqEvent("logiq:vehicleDataVersionLoaded", {
+    vehicleDataVersion: nextVersion,
+    previousStoredVersion,
+    matchesPrevious:
+      previousStoredVersion !== null && previousStoredVersion === nextVersion,
+    source: "refresh",
+    loadedAt: refreshedAt,
+  } satisfies VehicleDataVersionLoadedPayload);
+
   dispatchLogiqEvent("logiq:vehicleDataRefreshed", payload);
   return payload;
 }
