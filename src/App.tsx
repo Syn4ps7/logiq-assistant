@@ -97,6 +97,7 @@ function AppContent() {
       </div>
       {!isAdmin && <ChatbotWidget />}
       <CookieBanner />
+      <LogiqDebugPanel />
     </>
   );
 }
