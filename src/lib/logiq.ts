@@ -103,6 +103,13 @@ export interface LogiqGlobal {
   termsVersion: TermsVersion;
   /** Live snapshot of the Flex Pro reservation flow (B2B daily). */
   flexPro: FlexProSnapshot;
+  /**
+   * Imperatively re-publish vehicle/rate data and return the resulting
+   * `vehicleDataVersion`. Available on `window.LOGIQ` for the chatbot or
+   * any external script that wants a guaranteed-fresh read without
+   * importing module code. Always emits `logiq:vehicleDataRefreshed`.
+   */
+  refreshVehicleData: () => string;
 }
 
 // Custom event types
@@ -197,8 +204,21 @@ function deepFreeze<T>(value: T): T {
   return Object.freeze(value);
 }
 
-function publishSnapshot(next: LogiqGlobal): void {
-  const frozen = deepFreeze({ ...next }) as Readonly<LogiqGlobal>;
+/**
+ * Stable, externally-callable method attached to every published snapshot.
+ * Defined once at module scope so its identity is preserved across freezes
+ * and any tamper-restore — the chatbot can safely cache `LOGIQ.refreshVehicleData`.
+ */
+function externalRefreshVehicleData(): string {
+  return refreshVehicleData("manual").vehicleDataVersion;
+}
+
+function publishSnapshot(next: Omit<LogiqGlobal, "refreshVehicleData">): void {
+  const withMethod: LogiqGlobal = {
+    ...next,
+    refreshVehicleData: externalRefreshVehicleData,
+  };
+  const frozen = deepFreeze(withMethod) as Readonly<LogiqGlobal>;
   canonicalSnapshot = frozen;
   (window as any).LOGIQ = frozen;
 }
@@ -242,7 +262,7 @@ function startTamperWatcher(): void {
 // Initialize window.LOGIQ
 export function initLogiq(): void {
   const now = new Date().toISOString();
-  const logiq: LogiqGlobal = {
+  const logiq: Omit<LogiqGlobal, "refreshVehicleData"> = {
     vehicleList: buildVehicleListSnapshot(),
     ratePlans,
     vehicleOptions,
