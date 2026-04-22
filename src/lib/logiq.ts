@@ -23,6 +23,46 @@ export interface TermsVersion {
   acceptedAt: string | null;
 }
 
+/**
+ * Chatbot-friendly snapshot of the active Flex Pro reservation.
+ * All values are plain primitives so the chatbot can read them
+ * without parsing the DOM or React state.
+ */
+export interface FlexProSnapshot {
+  /** True when the user is currently in the B2B Flex daily flow. */
+  active: boolean;
+  /** Stable rate identifier — "flex-pro" when active, null otherwise. */
+  rateType: "flex-pro" | null;
+  /** Human-readable plan name. */
+  planName: string | null;
+  /** ISO date string (YYYY-MM-DD) or null. */
+  startDate: string | null;
+  /** ISO date string (YYYY-MM-DD) or null. */
+  endDate: string | null;
+  /** Local time string (HH:mm) or null. */
+  startTime: string | null;
+  /** Local time string (HH:mm) or null. */
+  endTime: string | null;
+  /** Number of billable days, null until both dates are set. */
+  days: number | null;
+  /** Daily HT rate in CHF (constant for Flex Pro). */
+  dailyRateHT: number;
+  /** Daily mileage quota included in the rate. */
+  kmIncludedPerDay: number;
+  /** Total km included for the whole rental, null until days known. */
+  totalIncludedKm: number | null;
+  /** Customer's mileage estimate. */
+  estimatedKm: number;
+  /** Extra km above the included quota (≥ 0), null until days known. */
+  extraKm: number | null;
+  /** Per-extra-km rate in CHF HT. */
+  extraKmRateHT: number;
+  /** Total price estimate in CHF TTC, null until computable. */
+  priceEstimateTTC: number | null;
+  /** Selected vehicle id, null if none picked yet. */
+  vehicleId: string | null;
+}
+
 export interface LogiqGlobal {
   vehicleList: { id: string; name: string; priceDay: number; specs: Vehicle["specs"]; availability: boolean }[];
   ratePlans: RatePlan[];
@@ -31,6 +71,8 @@ export interface LogiqGlobal {
   bookingDraft: BookingDraft;
   userConsent: UserConsent;
   termsVersion: TermsVersion;
+  /** Live snapshot of the Flex Pro reservation flow (B2B daily). */
+  flexPro: FlexProSnapshot;
 }
 
 // Custom event types
