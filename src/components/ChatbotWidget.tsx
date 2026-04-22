@@ -187,6 +187,15 @@ export function ChatbotWidget() {
       inputRef.current?.focus();
       setShowProactive(false);
       if (proactiveTimerRef.current) clearTimeout(proactiveTimerRef.current);
+      // Force a vehicle-data refresh whenever the chat opens so the LLM
+      // never reads a stale `vehicleList` / pricing — `useLogiqReady`
+      // observes the resulting `logiq:vehicleDataRefreshed` event and
+      // keeps `vehicleDataFresh` true for the duration of the session.
+      try {
+        (window as any).LOGIQ?.refreshVehicleData?.();
+      } catch {
+        /* refresh is best-effort; never block the UI */
+      }
     }
   }, [isActive]);
 
