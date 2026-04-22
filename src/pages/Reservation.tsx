@@ -82,6 +82,9 @@ const Reservation = () => {
     if (pack && pack in WEEKEND_PACKS) {
       setSelectedPlan("pack-48h");
       setWeekendPack(pack);
+    } else if (plan === "flex-pro") {
+      setSelectedPlan("flex-pro");
+      setProTab("daily");
     } else if (plan && ["week", "weekend", "pack-48h"].includes(plan)) {
       setSelectedPlan(plan);
     }
