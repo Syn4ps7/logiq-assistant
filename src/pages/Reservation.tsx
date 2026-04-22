@@ -827,7 +827,38 @@ const Reservation = () => {
                 {vehicles.map((v) => (
                   <button
                     key={v.id}
-                    onClick={() => setSelectedVehicle(v.id)}
+                    onClick={() => {
+                      setSelectedVehicle(v.id);
+
+                      // Mirror the reservation flow for the chatbot:
+                      // re-dispatch openReservation with the now-known vehicle
+                      // plus the active plan/pack so external listeners can
+                      // reconstruct the exact state without scraping the DOM.
+                      const planParam = searchParams.get("plan");
+                      const packParam = searchParams.get("pack");
+                      const sourceParam = searchParams.get("source");
+
+                      dispatchLogiqEvent("logiq:openReservation", {
+                        prefillVehicleId: v.id,
+                        prefillPlan: selectedPlan || planParam || undefined,
+                        prefillPack: weekendPack || packParam || undefined,
+                        prefillCarnet: selectedCarnet || undefined,
+                        source: sourceParam || "direct",
+                        isFlexPro: selectedPlan === "flex-pro",
+                        startDate: startDate || null,
+                        endDate: endDate || null,
+                      });
+
+                      dispatchLogiqEvent("logiq:vehicleClick", {
+                        vehicleId: v.id,
+                        vehicleName: v.name,
+                        plan: selectedPlan || undefined,
+                        pack: weekendPack || undefined,
+                        carnet: selectedCarnet || undefined,
+                        isFlexPro: selectedPlan === "flex-pro",
+                        source: searchParams.get("source") || "direct",
+                      });
+                    }}
                     className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
                       selectedVehicle === v.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"
                     }`}
