@@ -181,6 +181,41 @@ export function LogiqDebugPanel() {
               />
             </div>
 
+            {/* Vehicle data refresh status — shows the live LOGIQ
+                vehicleDataVersion + when it last refreshed + whether the
+                last event reported any actual change. Helps QA confirm
+                that refreshVehicleData() and post-navigation init kept
+                the chatbot's source of truth in sync. */}
+            <div className="px-2 py-1.5 border-b border-border space-y-0.5 text-[10px] text-muted-foreground">
+              <div className="flex items-center gap-1.5">
+                <span className="text-foreground/70">version</span>
+                <code className="px-1 py-0.5 rounded bg-muted text-foreground truncate max-w-[220px]">
+                  {snapshot?.vehicleDataVersion ?? "—"}
+                </code>
+                {lastRefresh.changed === true && (
+                  <span className="px-1 py-0.5 rounded bg-amber-500/15 text-amber-700">
+                    changed
+                  </span>
+                )}
+                {lastRefresh.changed === false && (
+                  <span className="px-1 py-0.5 rounded bg-emerald-500/15 text-emerald-700">
+                    stable
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-foreground/70">refreshedAt</span>
+                <code className="px-1 py-0.5 rounded bg-muted text-foreground">
+                  {formatTimeShort(snapshot?.vehicleDataRefreshedAt) ?? "—"}
+                </code>
+                {lastRefresh.trigger && (
+                  <span className="px-1 py-0.5 rounded bg-muted text-muted-foreground">
+                    via {lastRefresh.trigger}
+                  </span>
+                )}
+              </div>
+            </div>
+
             {/* Tabs */}
             <div className="flex gap-1 px-2 py-1.5 border-b border-border overflow-x-auto">
               {(["all", "consent", "terms", "booking", "flexPro"] as const).map((t) => (
