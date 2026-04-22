@@ -230,7 +230,7 @@ const Pro = () => {
             <article
               role="listitem"
               aria-labelledby="plan-business-title"
-              className="flex flex-col rounded-2xl border bg-background p-6 lg:p-8 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+              className="flex flex-col rounded-2xl border bg-background p-6 lg:p-8"
             >
               <header className="mb-6">
                 <h3
@@ -277,7 +277,7 @@ const Pro = () => {
               role="listitem"
               aria-labelledby="plan-premium-title"
               aria-describedby="plan-premium-badge"
-              className="relative flex flex-col rounded-2xl border-2 border-primary bg-background p-6 lg:p-8 shadow-lg md:scale-105 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+              className="relative flex flex-col rounded-2xl border-2 border-primary bg-background p-6 lg:p-8 shadow-lg md:scale-105"
             >
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span
