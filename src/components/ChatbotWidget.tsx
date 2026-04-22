@@ -313,6 +313,8 @@ export function ChatbotWidget() {
     <div
       id="logiq-chatbot"
       data-logiq-ready-reason={logiqReady.reason}
+      data-logiq-vehicle-data-fresh={logiqReady.vehicleDataFresh ? "1" : "0"}
+      data-logiq-vehicle-data-version={logiqReady.vehicleDataVersion ?? ""}
       className="fixed z-50"
       style={bubblePos ? { left: bubblePos.x, top: bubblePos.y, right: "auto", bottom: "auto" } : { bottom: 24, right: 24 }}
     >
