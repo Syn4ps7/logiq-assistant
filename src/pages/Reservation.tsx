@@ -11,14 +11,18 @@ import { useSeo } from "@/hooks/use-seo";
 import emailjs from "@emailjs/browser";
 import { toast } from "sonner";
 
-const TVA_RATE = 0.081;
+import {
+  TVA_RATE,
+  FLEX_PRO_DAILY_HT,
+  FLEX_PRO_KM_PER_DAY,
+  EXTRA_KM_RATE_PRO_HT,
+  computeFlexProBreakdown,
+} from "@/lib/pricing";
+
 const roundCHF = (v: number) => Math.round(v / 0.05) * 0.05;
 const fmtCHF = (v: number) => roundCHF(v).toLocaleString("fr-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 type RatePlanId = "week" | "weekend" | "pack-48h" | "flex-pro";
-
-const FLEX_PRO_DAILY_HT = 155;
-const FLEX_PRO_KM_PER_DAY = 100;
 type WeekendPack = "standard" | "confort" | "premium";
 type ProTab = "daily" | "carnet";
 type CarnetId = "carnet-10" | "carnet-20" | "carnet-40";
