@@ -481,14 +481,21 @@ const Reservation = () => {
           date ? (time ? `${date}T${time}` : date) : null;
 
         dispatchLogiqEvent("logiq:bookingCompleted", {
+          ...buildPlanContext({
+            plan: row?.plan,
+            // DB doesn't store pack/carnet separately — `plan` carries either
+            // a plan id or a carnet id. Pass it on both axes; buildPlanContext
+            // ignores invalid values via its enum whitelists.
+            pack: row?.pack,
+            carnet: row?.plan,
+            source: row?.source,
+          }),
           bookingRef: ref,
           amount: row?.total_chf ?? null,
           currency: "CHF",
           start: composeIso(row?.start_date ?? null, row?.start_time ?? null),
           end: composeIso(row?.end_date ?? null, row?.end_time ?? null),
           vehicleId: row?.vehicle_id ?? null,
-          plan: row?.plan ?? null,
-          source: row?.source ?? null,
           confirmedAt: new Date().toISOString(),
         });
 
