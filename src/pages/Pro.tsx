@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useSeo } from "@/hooks/use-seo";
 import { useState } from "react";
-import { Building2, ChevronRight, Fuel, CreditCard, MapPin, IdCard, ShieldCheck, LogIn } from "lucide-react";
+import { Building2, ChevronRight, Fuel, CreditCard, MapPin, IdCard, ShieldCheck, LogIn, Check, Sparkles, Smartphone, Clock, TrendingDown, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -144,62 +144,138 @@ const Pro = () => {
         </div>
       </section>
 
-      {/* Carnets Pro */}
+      {/* Carnets Pro - Pricing Table */}
       <section className="py-16 bg-card" aria-label="Carnets Pro">
-        <div className="container max-w-4xl">
-          <h2 className="text-2xl font-bold mb-2">{t("pro.carnetsTitle")}</h2>
-          <p className="text-muted-foreground mb-6">{t("pro.carnetsConditions")}</p>
-
-          <div className="rounded-xl border overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="font-semibold">{t("pro.tableCarnet")}</TableHead>
-                  <TableHead className="font-semibold text-right">{t("pro.tableTotal")}</TableHead>
-                  <TableHead className="font-semibold text-right">{t("pro.tableUnit")}</TableHead>
-                  <TableHead className="font-semibold text-right">{t("pro.tableKm")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium">{t("pro.carnet10")}</TableCell>
-                  <TableCell className="text-right">
-                    <PriceHT ht={1193.35} ttc={1290.00} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <PriceHT ht={119.35} ttc={129.00} suffix={`/${t("pro.day")}`} />
-                  </TableCell>
-                  <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">{t("pro.carnet20")}</TableCell>
-                  <TableCell className="text-right">
-                    <PriceHT ht={2257.15} ttc={2440.00} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <PriceHT ht={112.85} ttc={122.00} suffix={`/${t("pro.day")}`} />
-                  </TableCell>
-                  <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
-                </TableRow>
-                <TableRow className="bg-accent/5">
-                  <TableCell className="font-medium">{t("pro.carnet40")}</TableCell>
-                  <TableCell className="text-right">
-                    <PriceHT ht={4255.30} ttc={4600.00} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <PriceHT ht={106.40} ttc={115.00} suffix={`/${t("pro.day")}`} />
-                  </TableCell>
-                  <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
-                </TableRow>
-                <TableRow className="bg-muted/30">
-                  <TableCell className="font-medium">{t("pro.extraKm")}</TableCell>
-                  <TableCell className="text-right" colSpan={3}>
-                    <PriceHT ht={0.65} ttc={0.70} suffix="/km" />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+        <div className="container max-w-6xl">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <h2 className="text-3xl font-bold mb-3">Carnets de jours prépayés</h2>
+            <p className="text-muted-foreground">
+              Choisissez la formule adaptée à vos besoins. Plus votre carnet est grand, plus le tarif journalier est avantageux.
+            </p>
           </div>
+
+          {/* Sales arguments */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-12">
+            {[
+              { icon: Smartphone, text: "100% Autonome via Fleetee" },
+              { icon: Clock, text: "Aucune attente au guichet" },
+              { icon: TrendingDown, text: "Économie jusqu'à 27%" },
+              { icon: FileText, text: "Facturation simplifiée" },
+            ].map((arg, i) => (
+              <div key={i} className="flex items-center gap-2 p-3 rounded-lg border bg-background">
+                <arg.icon className="h-4 w-4 text-primary shrink-0" />
+                <span className="text-xs font-medium">{arg.text}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* 3-column pricing */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+            {/* DISCOVERY */}
+            <div className="flex flex-col rounded-2xl border bg-background p-6 lg:p-8">
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Carnet Discovery</h3>
+                <p className="text-xs text-muted-foreground mb-4">10 jours · Validité 12 mois</p>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-4xl font-bold">1’450</span>
+                  <span className="text-sm font-semibold text-muted-foreground">CHF HT</span>
+                </div>
+                <p className="text-sm text-muted-foreground mt-1">145.- / jour</p>
+              </div>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  "Accès 24/7 via Smartphone (Fleetee)",
+                  "100 km inclus / jour",
+                  "Kit de base (4 sangles + couvertures)",
+                  "Support client prioritaire",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link to="/contact?subject=carnet-discovery">
+                <Button variant="outline" size="lg" className="w-full">
+                  Commander mon carnet
+                </Button>
+              </Link>
+            </div>
+
+            {/* BUSINESS */}
+            <div className="flex flex-col rounded-2xl border bg-background p-6 lg:p-8">
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Carnet Business</h3>
+                <p className="text-xs text-muted-foreground mb-4">20 jours · Validité 18 mois</p>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-4xl font-bold">2’600</span>
+                  <span className="text-sm font-semibold text-muted-foreground">CHF HT</span>
+                </div>
+                <p className="text-sm text-muted-foreground mt-1">130.- / jour</p>
+              </div>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  "Inclus Pack Discovery",
+                  "Diable de manutention inclus",
+                  "Priorité de réservation (garanti sous 24h)",
+                  "Facturation mensuelle détaillée",
+                  "Tolérance nettoyage (usage pro)",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link to="/contact?subject=carnet-business">
+                <Button variant="outline" size="lg" className="w-full">
+                  Commander mon carnet
+                </Button>
+              </Link>
+            </div>
+
+            {/* PREMIUM - HIGHLIGHTED */}
+            <div className="relative flex flex-col rounded-2xl border-2 border-primary bg-background p-6 lg:p-8 shadow-lg md:scale-105">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider">
+                  <Sparkles className="h-3 w-3" />
+                  Meilleur prix
+                </span>
+              </div>
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-primary mb-2">Carnet Premium</h3>
+                <p className="text-xs text-muted-foreground mb-4">40 jours · Validité 18 mois</p>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-4xl font-bold">4’800</span>
+                  <span className="text-sm font-semibold text-muted-foreground">CHF HT</span>
+                </div>
+                <p className="text-sm text-muted-foreground mt-1">120.- / jour</p>
+              </div>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  "Inclus Pack Business",
+                  "Assurance Sérénité incluse (franchise réduite)",
+                  "Kit complet : Diable + Chariot + Protections",
+                  "Ligne VIP WhatsApp",
+                  "Pool kilométrique flexible (4’000 km à répartir)",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link to="/contact?subject=carnet-premium">
+                <Button variant="default" size="lg" className="w-full">
+                  Commander mon carnet
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          <p className="text-xs text-muted-foreground text-center mt-8">
+            Tous les prix sont affichés hors taxes (TVA 8.1% en sus).
+          </p>
         </div>
       </section>
 
