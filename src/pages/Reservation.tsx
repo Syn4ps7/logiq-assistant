@@ -293,6 +293,34 @@ const Reservation = () => {
     }
   }, [price?.total]);
 
+  // Keep window.LOGIQ.flexPro in sync so the chatbot can read the live state
+  // of the B2B Flex flow (rate type, dates, included km, price) without
+  // touching the DOM. Resets to defaults when the user leaves the flex-pro plan.
+  useEffect(() => {
+    const isFlexPro = selectedPlan === "flex-pro";
+    if (!isFlexPro) {
+      updateFlexProSnapshot({ active: false });
+      return;
+    }
+
+    const isFlexPrice = price && price.planName === "B2B Flex – Journalier";
+    updateFlexProSnapshot({
+      active: true,
+      rateType: "flex-pro",
+      planName: "B2B Flex – Journalier",
+      startDate: startDate || null,
+      endDate: endDate || null,
+      startTime: startTime || null,
+      endTime: endTime || null,
+      days: isFlexPrice ? price!.days : null,
+      totalIncludedKm: isFlexPrice ? price!.includedKm : null,
+      estimatedKm: estKm,
+      extraKm: isFlexPrice ? price!.extraKm : null,
+      priceEstimateTTC: isFlexPrice ? price!.total : null,
+      vehicleId: selectedVehicle || null,
+    });
+  }, [selectedPlan, startDate, endDate, startTime, endTime, estKm, selectedVehicle, price?.total]);
+
   const premiumDeliveryValid = !isPremium || (deliveryAddress && deliveryNpa && deliveryCity && deliveryPhone);
 
   const handleApplyPromo = async () => {
