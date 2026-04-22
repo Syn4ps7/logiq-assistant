@@ -190,8 +190,10 @@ export function ChatbotWidget() {
     }
   }, [isActive]);
 
-  // Proactive message after 12 seconds OR on scroll
+  // Proactive message after 12 seconds OR on scroll — gated on LOGIQ readiness
+  // so the bubble never appears before consent state is hydrated.
   useEffect(() => {
+    if (!logiqReady.ready) return;
     proactiveTimerRef.current = setTimeout(() => {
       if (!isActive && !dismissedByUser.current) setShowProactive(true);
     }, 12000);
@@ -207,7 +209,7 @@ export function ChatbotWidget() {
       if (proactiveTimerRef.current) clearTimeout(proactiveTimerRef.current);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [logiqReady.ready]);
 
   const quickKeys = clientType === "pro"
     ? (["quickPro1", "quickPro2", "quickPro3"] as const)
