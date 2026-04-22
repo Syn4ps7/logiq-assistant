@@ -395,10 +395,37 @@ const Reservation = () => {
     const canceled = searchParams.get("canceled");
     const ref = searchParams.get("ref");
     if (success === "true" && ref) {
-      // Mark reservation as paid
-      supabase.from("reservations").update({ status: "paid" }).eq("reference", ref).then(() => {
+      // Mark reservation as paid, then dispatch logiq:bookingCompleted with
+      // canonical values (bookingRef, amount, start, end) read back from the DB
+      // so the event payload reflects what was actually persisted.
+      (async () => {
+        await supabase.from("reservations").update({ status: "paid" }).eq("reference", ref);
+
+        const { data: row } = await supabase
+          .from("reservations")
+          .select("reference, total_chf, start_date, start_time, end_date, end_time, vehicle_id, plan, source")
+          .eq("reference", ref)
+          .maybeSingle();
+
+        // Build ISO-ish start/end strings when both date and time are present;
+        // fall back to date-only (e.g. flat packs without explicit times).
+        const composeIso = (date: string | null, time: string | null) =>
+          date ? (time ? `${date}T${time}` : date) : null;
+
+        dispatchLogiqEvent("logiq:bookingCompleted", {
+          bookingRef: ref,
+          amount: row?.total_chf ?? null,
+          currency: "CHF",
+          start: composeIso(row?.start_date ?? null, row?.start_time ?? null),
+          end: composeIso(row?.end_date ?? null, row?.end_time ?? null),
+          vehicleId: row?.vehicle_id ?? null,
+          plan: row?.plan ?? null,
+          source: row?.source ?? null,
+          confirmedAt: new Date().toISOString(),
+        });
+
         setConfirmed(true);
-      });
+      })();
     }
     if (canceled === "true") {
       toast.error(t("reservation.paymentCanceled", "Paiement annulé. Vous pouvez réessayer."));
