@@ -145,75 +145,110 @@ const Pro = () => {
       </section>
 
       {/* Carnets Pro - Pricing Table */}
-      <section className="py-16 bg-card" aria-label="Carnets Pro">
+      <section className="py-16 bg-card" aria-labelledby="carnets-heading">
         <div className="container max-w-6xl">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-3xl font-bold mb-3">Carnets de jours prépayés</h2>
-            <p className="text-muted-foreground">
+          <header className="text-center max-w-2xl mx-auto mb-12">
+            <h2 id="carnets-heading" className="text-3xl font-bold mb-3">
+              Carnets de jours prépayés
+            </h2>
+            <p className="text-foreground/70">
               Choisissez la formule adaptée à vos besoins. Plus votre carnet est grand, plus le tarif journalier est avantageux.
             </p>
-          </div>
+          </header>
 
           {/* Sales arguments */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-12">
+          <ul
+            role="list"
+            aria-label="Avantages des carnets prépayés"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-12 list-none p-0"
+          >
             {[
               { icon: Smartphone, text: "100% Autonome via Fleetee" },
               { icon: Clock, text: "Aucune attente au guichet" },
               { icon: TrendingDown, text: "Économie jusqu'à 27%" },
               { icon: FileText, text: "Facturation simplifiée" },
             ].map((arg, i) => (
-              <div key={i} className="flex items-center gap-2 p-3 rounded-lg border bg-background">
-                <arg.icon className="h-4 w-4 text-primary shrink-0" />
-                <span className="text-xs font-medium">{arg.text}</span>
-              </div>
+              <li key={i} className="flex items-center gap-2 p-3 rounded-lg border bg-background">
+                <arg.icon className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
+                <span className="text-xs font-medium text-foreground">{arg.text}</span>
+              </li>
             ))}
-          </div>
+          </ul>
 
           {/* 3-column pricing */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          <div
+            role="list"
+            aria-label="Comparatif des carnets de jours prépayés"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch"
+          >
             {/* DISCOVERY */}
-            <div className="flex flex-col rounded-2xl border bg-background p-6 lg:p-8">
-              <div className="mb-6">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Carnet Discovery</h3>
-                <p className="text-xs text-muted-foreground mb-4">10 jours · Validité 12 mois</p>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-4xl font-bold">1’450</span>
-                  <span className="text-sm font-semibold text-muted-foreground">CHF HT</span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">145.- / jour</p>
-              </div>
-              <ul className="space-y-3 mb-8 flex-1">
+            <article
+              role="listitem"
+              aria-labelledby="plan-discovery-title"
+              className="flex flex-col rounded-2xl border bg-background p-6 lg:p-8 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+            >
+              <header className="mb-6">
+                <h3
+                  id="plan-discovery-title"
+                  className="text-lg font-bold text-foreground mb-1"
+                >
+                  Carnet Discovery
+                </h3>
+                <p className="text-sm text-foreground/70 mb-4">10 jours · Validité 12 mois</p>
+                <p className="flex items-baseline gap-1.5" aria-label="Prix : 1450 francs suisses hors taxes">
+                  <span className="text-4xl font-bold text-foreground" aria-hidden="true">1’450</span>
+                  <span className="text-sm font-semibold text-foreground/70" aria-hidden="true">CHF HT</span>
+                </p>
+                <p className="text-sm text-foreground/70 mt-1">
+                  <span className="sr-only">Soit </span>145.- / jour
+                </p>
+              </header>
+              <ul className="space-y-3 mb-8 flex-1" aria-label="Inclus dans le carnet Discovery">
                 {[
                   "Accès 24/7 via Smartphone (Fleetee)",
                   "100 km inclus / jour",
                   "Kit de base (4 sangles + couvertures)",
                   "Support client prioritaire",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm">
-                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                  <li key={i} className="flex items-start gap-2 text-sm text-foreground">
+                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
-              <Link to="/contact?subject=carnet-discovery">
-                <Button variant="outline" size="lg" className="w-full">
+              <Button asChild variant="outline" size="lg" className="w-full">
+                <Link
+                  to="/contact?subject=carnet-discovery"
+                  aria-label="Commander le carnet Discovery 10 jours"
+                >
                   Commander mon carnet
-                </Button>
-              </Link>
-            </div>
+                </Link>
+              </Button>
+            </article>
 
             {/* BUSINESS */}
-            <div className="flex flex-col rounded-2xl border bg-background p-6 lg:p-8">
-              <div className="mb-6">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Carnet Business</h3>
-                <p className="text-xs text-muted-foreground mb-4">20 jours · Validité 18 mois</p>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-4xl font-bold">2’600</span>
-                  <span className="text-sm font-semibold text-muted-foreground">CHF HT</span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">130.- / jour</p>
-              </div>
-              <ul className="space-y-3 mb-8 flex-1">
+            <article
+              role="listitem"
+              aria-labelledby="plan-business-title"
+              className="flex flex-col rounded-2xl border bg-background p-6 lg:p-8 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+            >
+              <header className="mb-6">
+                <h3
+                  id="plan-business-title"
+                  className="text-lg font-bold text-foreground mb-1"
+                >
+                  Carnet Business
+                </h3>
+                <p className="text-sm text-foreground/70 mb-4">20 jours · Validité 18 mois</p>
+                <p className="flex items-baseline gap-1.5" aria-label="Prix : 2600 francs suisses hors taxes">
+                  <span className="text-4xl font-bold text-foreground" aria-hidden="true">2’600</span>
+                  <span className="text-sm font-semibold text-foreground/70" aria-hidden="true">CHF HT</span>
+                </p>
+                <p className="text-sm text-foreground/70 mt-1">
+                  <span className="sr-only">Soit </span>130.- / jour
+                </p>
+              </header>
+              <ul className="space-y-3 mb-8 flex-1" aria-label="Inclus dans le carnet Business">
                 {[
                   "Inclus Pack Discovery",
                   "Diable de manutention inclus",
@@ -221,37 +256,55 @@ const Pro = () => {
                   "Facturation mensuelle détaillée",
                   "Tolérance nettoyage (usage pro)",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm">
-                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                  <li key={i} className="flex items-start gap-2 text-sm text-foreground">
+                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
-              <Link to="/contact?subject=carnet-business">
-                <Button variant="outline" size="lg" className="w-full">
+              <Button asChild variant="outline" size="lg" className="w-full">
+                <Link
+                  to="/contact?subject=carnet-business"
+                  aria-label="Commander le carnet Business 20 jours"
+                >
                   Commander mon carnet
-                </Button>
-              </Link>
-            </div>
+                </Link>
+              </Button>
+            </article>
 
             {/* PREMIUM - HIGHLIGHTED */}
-            <div className="relative flex flex-col rounded-2xl border-2 border-primary bg-background p-6 lg:p-8 shadow-lg md:scale-105">
+            <article
+              role="listitem"
+              aria-labelledby="plan-premium-title"
+              aria-describedby="plan-premium-badge"
+              className="relative flex flex-col rounded-2xl border-2 border-primary bg-background p-6 lg:p-8 shadow-lg md:scale-105 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+            >
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider">
-                  <Sparkles className="h-3 w-3" />
+                <span
+                  id="plan-premium-badge"
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider"
+                >
+                  <Sparkles className="h-3 w-3" aria-hidden="true" />
                   Meilleur prix
                 </span>
               </div>
-              <div className="mb-6">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-primary mb-2">Carnet Premium</h3>
-                <p className="text-xs text-muted-foreground mb-4">40 jours · Validité 18 mois</p>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-4xl font-bold">4’800</span>
-                  <span className="text-sm font-semibold text-muted-foreground">CHF HT</span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">120.- / jour</p>
-              </div>
-              <ul className="space-y-3 mb-8 flex-1">
+              <header className="mb-6">
+                <h3
+                  id="plan-premium-title"
+                  className="text-lg font-bold text-foreground mb-1"
+                >
+                  Carnet Premium
+                </h3>
+                <p className="text-sm text-foreground/70 mb-4">40 jours · Validité 18 mois</p>
+                <p className="flex items-baseline gap-1.5" aria-label="Prix : 4800 francs suisses hors taxes">
+                  <span className="text-4xl font-bold text-foreground" aria-hidden="true">4’800</span>
+                  <span className="text-sm font-semibold text-foreground/70" aria-hidden="true">CHF HT</span>
+                </p>
+                <p className="text-sm text-foreground/70 mt-1">
+                  <span className="sr-only">Soit </span>120.- / jour
+                </p>
+              </header>
+              <ul className="space-y-3 mb-8 flex-1" aria-label="Inclus dans le carnet Premium">
                 {[
                   "Inclus Pack Business",
                   "Assurance Sérénité incluse (franchise réduite)",
@@ -259,21 +312,24 @@ const Pro = () => {
                   "Ligne VIP WhatsApp",
                   "Pool kilométrique flexible (4’000 km à répartir)",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm">
-                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                  <li key={i} className="flex items-start gap-2 text-sm text-foreground">
+                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
-              <Link to="/contact?subject=carnet-premium">
-                <Button variant="default" size="lg" className="w-full">
+              <Button asChild variant="default" size="lg" className="w-full">
+                <Link
+                  to="/contact?subject=carnet-premium"
+                  aria-label="Commander le carnet Premium 40 jours, notre meilleur prix"
+                >
                   Commander mon carnet
-                </Button>
-              </Link>
-            </div>
+                </Link>
+              </Button>
+            </article>
           </div>
 
-          <p className="text-xs text-muted-foreground text-center mt-8">
+          <p className="text-xs text-foreground/70 text-center mt-8" role="note">
             Tous les prix sont affichés hors taxes (TVA 8.1% en sus).
           </p>
         </div>
