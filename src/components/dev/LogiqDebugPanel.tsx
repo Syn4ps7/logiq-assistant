@@ -248,6 +248,17 @@ export function LogiqDebugPanel() {
   );
 }
 
+/** Format an ISO timestamp as HH:mm:ss for compact display. */
+function formatTimeShort(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  try {
+    const d = new Date(iso);
+    return d.toLocaleTimeString(undefined, { hour12: false });
+  } catch {
+    return iso;
+  }
+}
+
 function Indicator({
   label,
   ok,
