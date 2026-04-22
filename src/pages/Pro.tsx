@@ -102,45 +102,70 @@ const Pro = () => {
         </div>
       </section>
 
-      {/* Pro Flex */}
-      <section className="py-16" aria-label="Pro Flex">
+      {/* Tarif Journalier Flex */}
+      <section className="py-16" aria-labelledby="flex-heading">
         <div className="container max-w-4xl">
-          <h2 className="text-2xl font-bold mb-2">{t("pro.flexTitle")}</h2>
-          <p className="text-muted-foreground mb-6">{t("pro.flexConditions")}</p>
+          <header className="text-center max-w-2xl mx-auto mb-10">
+            <h2 id="flex-heading" className="text-3xl font-bold mb-3">
+              Location à la journée (B2B Flex)
+            </h2>
+            <p className="text-foreground/70">
+              Idéal pour des besoins ponctuels. Profitez de la flexibilité totale LogIQ.
+            </p>
+          </header>
 
-          <div className="rounded-xl border overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="font-semibold">{t("pro.tableFormula")}</TableHead>
-                  <TableHead className="font-semibold text-right">{t("pro.tablePrice")}</TableHead>
-                  <TableHead className="font-semibold text-right">{t("pro.tableKm")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium">{t("pro.flexWeekday")}</TableCell>
-                  <TableCell className="text-right">
-                    <PriceHT ht={128.60} ttc={139.00} suffix={` / ${t("pro.day")}`} />
-                  </TableCell>
-                  <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">{t("pro.flexWeekend")}</TableCell>
-                  <TableCell className="text-right">
-                    <PriceHT ht={156.35} ttc={169.00} suffix={` / ${t("pro.day")}`} />
-                  </TableCell>
-                  <TableCell className="text-right">200 km/{t("pro.day")}</TableCell>
-                </TableRow>
-                <TableRow className="bg-muted/30">
-                  <TableCell className="font-medium">{t("pro.extraKm")}</TableCell>
-                  <TableCell className="text-right" colSpan={2}>
-                    <PriceHT ht={0.55} ttc={0.59} suffix="/km" />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
+          <article
+            aria-labelledby="flex-plan-title"
+            className="max-w-2xl mx-auto rounded-2xl border bg-card p-6 lg:p-10"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-8 pb-8 border-b">
+              <div>
+                <h3 id="flex-plan-title" className="text-lg font-bold text-foreground mb-1">
+                  Tarif Journalier Flex
+                </h3>
+                <p className="text-sm text-foreground/70">
+                  One-shot, sans engagement
+                </p>
+              </div>
+              <div className="text-left sm:text-right">
+                <p className="flex items-baseline gap-1.5 sm:justify-end" aria-label="Prix : 155 francs suisses hors taxes par jour">
+                  <span className="text-4xl font-bold text-foreground" aria-hidden="true">155.-</span>
+                  <span className="text-sm font-semibold text-foreground/70" aria-hidden="true">CHF HT</span>
+                </p>
+                <p className="text-sm text-foreground/70 mt-1">
+                  <span className="sr-only">par </span>/ jour
+                </p>
+              </div>
+            </div>
+
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8" aria-label="Inclus dans le tarif journalier Flex">
+              {[
+                "Prix fixe (Semaine & Week-end)",
+                "100 km inclus",
+                "Accès 24/7 via application",
+                "Réservation instantanée",
+              ].map((item, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-foreground">
+                  <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <Button asChild variant="default" size="lg" className="w-full sm:w-auto">
+              <Link
+                to="/reservation"
+                aria-label="Réserver à la journée au tarif Flex 155 CHF hors taxes"
+              >
+                Réserver maintenant
+                <ChevronRight className="h-4 w-4 ml-1" aria-hidden="true" />
+              </Link>
+            </Button>
+
+            <p className="text-xs text-foreground/70 mt-6">
+              Km supplémentaires facturés <span className="font-semibold text-foreground">0.65 CHF HT/km</span>. Prix hors taxes (TVA 8.1% en sus).
+            </p>
+          </article>
         </div>
       </section>
 
