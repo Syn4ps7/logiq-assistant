@@ -1,5 +1,26 @@
 import { vehicles, ratePlans, vehicleOptions, EXTRA_KM_RATE, type Vehicle, type RatePlan, type VehicleOption } from "@/data/vehicles";
 import { CGL_HASH } from "@/data/cgl-content";
+import { FLEX_PRO_DAILY_HT, FLEX_PRO_KM_PER_DAY, EXTRA_KM_RATE_PRO_HT } from "@/lib/pricing";
+
+/** Default snapshot — Flex Pro is inactive on initial load. */
+const DEFAULT_FLEX_PRO_SNAPSHOT: FlexProSnapshot = {
+  active: false,
+  rateType: null,
+  planName: null,
+  startDate: null,
+  endDate: null,
+  startTime: null,
+  endTime: null,
+  days: null,
+  dailyRateHT: FLEX_PRO_DAILY_HT,
+  kmIncludedPerDay: FLEX_PRO_KM_PER_DAY,
+  totalIncludedKm: null,
+  estimatedKm: 0,
+  extraKm: null,
+  extraKmRateHT: EXTRA_KM_RATE_PRO_HT,
+  priceEstimateTTC: null,
+  vehicleId: null,
+};
 
 // Types for window.LOGIQ
 export interface BookingDraft {
