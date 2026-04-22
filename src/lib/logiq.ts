@@ -204,8 +204,21 @@ function deepFreeze<T>(value: T): T {
   return Object.freeze(value);
 }
 
-function publishSnapshot(next: LogiqGlobal): void {
-  const frozen = deepFreeze({ ...next }) as Readonly<LogiqGlobal>;
+/**
+ * Stable, externally-callable method attached to every published snapshot.
+ * Defined once at module scope so its identity is preserved across freezes
+ * and any tamper-restore — the chatbot can safely cache `LOGIQ.refreshVehicleData`.
+ */
+function externalRefreshVehicleData(): string {
+  return refreshVehicleData("manual").vehicleDataVersion;
+}
+
+function publishSnapshot(next: Omit<LogiqGlobal, "refreshVehicleData">): void {
+  const withMethod: LogiqGlobal = {
+    ...next,
+    refreshVehicleData: externalRefreshVehicleData,
+  };
+  const frozen = deepFreeze(withMethod) as Readonly<LogiqGlobal>;
   canonicalSnapshot = frozen;
   (window as any).LOGIQ = frozen;
 }
