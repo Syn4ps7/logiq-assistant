@@ -120,7 +120,8 @@ export type LogiqEventType =
   | "logiq:bookingCompleted"
   | "logiq:cglAccepted"
   | "logiq:tamperDetected"
-  | "logiq:vehicleDataRefreshed";
+  | "logiq:vehicleDataRefreshed"
+  | "logiq:vehicleDataVersionLoaded";
 
 /** Payload of `logiq:vehicleDataRefreshed` — fires whenever vehicle/rate
  *  data is (re)published to `window.LOGIQ`. */
@@ -132,6 +133,45 @@ export interface VehicleDataRefreshedPayload {
   trigger: "init" | "focus" | "visibility" | "manual" | "event";
   vehicleCount: number;
   availableCount: number;
+}
+
+/** Payload of `logiq:vehicleDataVersionLoaded` — fires once per page load
+ *  (on `initLogiq`) and on every successful `refreshVehicleData()` call.
+ *  Lets external observers (chatbot, QA panel, analytics) confirm that the
+ *  current `vehicleDataVersion` was persisted to sessionStorage and is
+ *  consistent across navigation within the same tab. */
+export interface VehicleDataVersionLoadedPayload {
+  /** Version currently published on `window.LOGIQ`. */
+  vehicleDataVersion: string;
+  /** Version found in sessionStorage from a previous navigation, if any. */
+  previousStoredVersion: string | null;
+  /** True when the previously-stored version matches the live one. */
+  matchesPrevious: boolean;
+  /** "init" → first paint of this tab; "refresh" → triggered by refreshVehicleData. */
+  source: "init" | "refresh";
+  loadedAt: string;
+}
+
+const VEHICLE_DATA_VERSION_STORAGE_KEY = "logiq-vehicle-data-version";
+
+/** Read the previously-persisted vehicleDataVersion from sessionStorage. */
+function readStoredVehicleDataVersion(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.sessionStorage.getItem(VEHICLE_DATA_VERSION_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+/** Persist the current vehicleDataVersion to sessionStorage (best-effort). */
+function persistVehicleDataVersion(version: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(VEHICLE_DATA_VERSION_STORAGE_KEY, version);
+  } catch {
+    /* sessionStorage unavailable — skip persistence, version still in memory */
+  }
 }
 
 /**
