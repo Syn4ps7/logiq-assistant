@@ -39,7 +39,7 @@ const CARNETS: { id: CarnetId; days: number; totalHT: number; totalTTC: number; 
   { id: "carnet-40", days: 40, totalHT: 4255.30, totalTTC: 4600, perDayHT: 106.40, perDayTTC: 115, kmPerDay: 200 },
 ];
 
-const EXTRA_KM_RATE_PRO_HT = 0.65;
+
 
 const Reservation = () => {
   const { t } = useTranslation();
