@@ -349,7 +349,15 @@ const Reservation = () => {
   useEffect(() => {
     if (price) {
       updateBookingDraft({ priceEstimate: price.total });
-      dispatchLogiqEvent("logiq:priceCalculated", { priceBreakdown: price });
+      dispatchLogiqEvent("logiq:priceCalculated", {
+        ...buildPlanContext({
+          plan: selectedPlan,
+          pack: weekendPack,
+          carnet: selectedCarnet,
+          source: searchParams.get("source"),
+        }),
+        priceBreakdown: price,
+      });
     }
   }, [price?.total]);
 
