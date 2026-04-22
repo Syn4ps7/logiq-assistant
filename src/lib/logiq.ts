@@ -89,6 +89,15 @@ export interface LogiqGlobal {
   ratePlans: RatePlan[];
   vehicleOptions: VehicleOption[];
   extraKmRate: number;
+  /**
+   * Stable hash of the vehicle/rate fixtures currently exposed.
+   * Lets the chatbot detect bundle-level changes (e.g. after a deploy)
+   * without diffing the full lists. Bumps whenever any of
+   * `vehicles`, `ratePlans`, `vehicleOptions`, or `extraKmRate` change.
+   */
+  vehicleDataVersion: string;
+  /** ISO timestamp of the last `refreshVehicleData()` run. */
+  vehicleDataRefreshedAt: string;
   bookingDraft: BookingDraft;
   userConsent: UserConsent;
   termsVersion: TermsVersion;
