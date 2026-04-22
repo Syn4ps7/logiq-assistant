@@ -471,7 +471,7 @@ const Reservation = () => {
 
         const { data: row } = await supabase
           .from("reservations")
-          .select("reference, total_chf, start_date, start_time, end_date, end_time, vehicle_id, plan, source")
+          .select("reference, total_chf, start_date, start_time, end_date, end_time, vehicle_id, plan, pack, source")
           .eq("reference", ref)
           .maybeSingle();
 
