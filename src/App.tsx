@@ -9,6 +9,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ChatbotWidget } from "@/components/ChatbotWidget";
 import { CookieBanner } from "@/components/CookieBanner";
+import { LogiqDebugPanel } from "@/components/dev/LogiqDebugPanel";
 import { initLogiq } from "@/lib/logiq";
 import { supabase } from "@/integrations/supabase/client";
 import "@/i18n/config";
