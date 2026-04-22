@@ -364,6 +364,9 @@ export function hydrateLogiqFromStorage(): void {
     // Malformed JSON or localStorage unavailable — keep defaults.
   }
 }
+
+// Update a specific property in LOGIQ (internal use)
+export function updateLogiq(updates: Partial<LogiqGlobal>): void {
   const current = (window as any).LOGIQ || {};
   (window as any).LOGIQ = Object.freeze({ ...current, ...updates });
 }
