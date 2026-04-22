@@ -75,20 +75,44 @@ const Reservation = () => {
   const [isProUser, setIsProUser] = useState(false);
   const isProCheckout = searchParams.get("source") === "pro" || isProUser;
 
+  // URL-derived guard: source of truth for the Flex Pro flow.
+  // Computed synchronously from the URL so the UI never flashes B2C plans on first paint.
+  const isFlexProRoute = searchParams.get("plan") === "flex-pro";
+
   // Pre-fill from query params (from Rates page links)
   useEffect(() => {
     const pack = searchParams.get("pack") as WeekendPack | null;
     const plan = searchParams.get("plan") as RatePlanId | null;
+
+    // Flex Pro guard: force-reset any B2C/Carnet state that might linger
+    // from a previous navigation, browser back/forward, or hot reload.
+    if (plan === "flex-pro") {
+      setSelectedPlan("flex-pro");
+      setProTab("daily");
+      setWeekendPack("");
+      setSelectedCarnet("");
+      return;
+    }
+
     if (pack && pack in WEEKEND_PACKS) {
       setSelectedPlan("pack-48h");
       setWeekendPack(pack);
-    } else if (plan === "flex-pro") {
-      setSelectedPlan("flex-pro");
-      setProTab("daily");
     } else if (plan && ["week", "weekend", "pack-48h"].includes(plan)) {
       setSelectedPlan(plan);
     }
   }, [searchParams]);
+
+  // Defensive guard: if the URL says flex-pro but state has drifted (e.g. user
+  // tampered with state via devtools, stale Suspense render, or a future code
+  // path mutates selectedPlan), snap state back to "flex-pro" every render
+  // *before* the JSX is evaluated.
+  useEffect(() => {
+    if (!isFlexProRoute) return;
+    if (selectedPlan !== "flex-pro") setSelectedPlan("flex-pro");
+    if (weekendPack !== "") setWeekendPack("");
+    if (selectedCarnet !== "") setSelectedCarnet("");
+    if (proTab !== "daily") setProTab("daily");
+  }, [isFlexProRoute, selectedPlan, weekendPack, selectedCarnet, proTab]);
 
   // Pre-fill contact info from pro profile if logged in
   useEffect(() => {
