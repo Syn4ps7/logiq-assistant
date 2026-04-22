@@ -296,7 +296,12 @@ const Reservation = () => {
     ? roundCHF(price.total - (discountedTotal || price.total))
     : 0;
 
-  const canProceedStep0 = (proTab === "carnet" && selectedCarnet) || isPackWithSub || (selectedPlan && (selectedPlan === "week" || selectedPlan === "weekend") && startDate && endDate);
+  const isFlexPro = selectedPlan === "flex-pro";
+  const canProceedStep0 =
+    (proTab === "carnet" && selectedCarnet) ||
+    isPackWithSub ||
+    (isFlexPro && startDate && endDate) ||
+    (selectedPlan && (selectedPlan === "week" || selectedPlan === "weekend") && startDate && endDate);
 
   const canConfirm = premiumDeliveryValid && contactName && contactEmail && contactPhone;
 
