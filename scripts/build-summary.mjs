@@ -16,14 +16,16 @@
  *   node scripts/build-summary.mjs --vite    # vite only, skip tsc
  */
 import { spawnSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname, relative, resolve } from "node:path";
+import { mkdirSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { dirname, join, relative, resolve } from "node:path";
 
 const ROOT = resolve(process.cwd());
 const rawArgs = process.argv.slice(2);
 const args = new Set(rawArgs);
 const onlyTsc = args.has("--quick");
 const onlyVite = args.has("--vite");
+const onlyEdge = args.has("--edge"); // run ONLY the edge functions check
+const skipEdge = args.has("--no-edge"); // skip edge functions check (default: included)
 const jsonStdout = args.has("--json"); // emit JSON report on stdout (silences pretty output)
 // --json-out=<path> writes the JSON report to disk (pretty output stays).
 const jsonOutArg = rawArgs.find((a) => a.startsWith("--json-out="));
@@ -164,6 +166,83 @@ function parseVite(out) {
   }
 }
 
+/** Strip ANSI color escapes — Deno always colors errors even with NO_COLOR
+ *  in some shells, so we sanitize before regex matching. */
+function stripAnsi(s) {
+  // eslint-disable-next-line no-control-regex
+  return s.replace(/\x1b\[[0-9;]*m/g, "");
+}
+
+/**
+ * Parse `deno check` output. Two formats matter:
+ *
+ * 1. Type errors:
+ *      TS2322 [ERROR]: Type 'string' is not assignable to type 'number'.
+ *      const x: number = "string";
+ *            ^
+ *          at file:///abs/path:1:7
+ *
+ * 2. Parse errors:
+ *      error: The module's source code could not be parsed: Expected ';' …
+ *      at file:///abs/path:2:5
+ */
+function parseDeno(rawOut) {
+  const out = stripAnsi(rawOut);
+
+  // Type-check errors: capture code + message + the trailing `at file://…:L:C`
+  const reType =
+    /^(TS\d+)\s+\[(ERROR|WARNING)\]:\s+(.+?)$[\s\S]*?at\s+(?:file:\/\/)?(\S+?):(\d+):(\d+)/gm;
+  let m;
+  while ((m = reType.exec(out)) !== null) {
+    pushIssue({
+      file: m[4].replace(/^file:\/\//, ""),
+      line: Number(m[5]),
+      col: Number(m[6]),
+      severity: m[2] === "WARNING" ? "warning" : "error",
+      code: m[1],
+      message: m[3].trim(),
+      source: "deno",
+    });
+  }
+
+  // Parse errors: "error: <message> at file://path:L:C"
+  // (also matches the bundler "could not be parsed" message format)
+  const reParse =
+    /^error:\s+(.+?)\s+at\s+(?:file:\/\/)?(\S+?):(\d+):(\d+)/gm;
+  while ((m = reParse.exec(out)) !== null) {
+    pushIssue({
+      file: m[2].replace(/^file:\/\//, ""),
+      line: Number(m[3]),
+      col: Number(m[4]),
+      severity: "error",
+      message: m[1].trim(),
+      source: "deno",
+    });
+  }
+}
+
+/** List every supabase/functions/<name>/index.ts to type-check. */
+function listEdgeFunctionEntrypoints() {
+  const dir = resolve(ROOT, "supabase/functions");
+  let entries = [];
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return [];
+  }
+  const out = [];
+  for (const name of entries) {
+    if (name.startsWith("_") || name.startsWith(".")) continue;
+    const entry = join(dir, name, "index.ts");
+    try {
+      if (statSync(entry).isFile()) out.push(entry);
+    } catch {
+      /* missing index.ts — skip */
+    }
+  }
+  return out;
+}
+
 function run(cmd, argv, label) {
   if (!jsonStdout) process.stdout.write(C.dim(`▸ ${label}: ${cmd} ${argv.join(" ")}\n`));
   const res = spawnSync(cmd, argv, {
@@ -181,18 +260,48 @@ function run(cmd, argv, label) {
 const ranSteps = [];
 let combinedOut = "";
 
-if (!onlyVite) {
+// Frontend typecheck (skipped when --vite, --edge)
+if (!onlyVite && !onlyEdge) {
   const r = run("npx", ["--no-install", "tsc", "-p", "tsconfig.app.json", "--noEmit"], "typecheck");
   ranSteps.push({ label: "typecheck", code: r.code });
   combinedOut += r.out + "\n";
   parseTsc(r.out);
 }
 
-if (!onlyTsc) {
+// Frontend build (skipped when --quick, --edge)
+if (!onlyTsc && !onlyEdge) {
   const r = run("npx", ["--no-install", "vite", "build", "--logLevel=error"], "build");
   ranSteps.push({ label: "build", code: r.code });
   combinedOut += r.out + "\n";
   parseVite(r.out);
+}
+
+// Edge functions check (skipped when --no-edge, --quick, --vite)
+// Uses `deno check` per function so we get the same file:line:col format
+// as tsc/vite. Requires `deno` on PATH; otherwise the step is reported as
+// FAIL with a single synthetic issue rather than crashing the script.
+if (!skipEdge && !onlyTsc && !onlyVite) {
+  const entries = listEdgeFunctionEntrypoints();
+  if (entries.length > 0) {
+    // One spawn for all entrypoints — Deno handles them concurrently and
+    // prints all diagnostics at the end.
+    const r = run("deno", ["check", "--quiet", ...entries], "edge-functions");
+    ranSteps.push({ label: "edge-functions", code: r.code });
+    combinedOut += r.out + "\n";
+
+    if (r.code !== 0 && /command not found|ENOENT|not recognized/i.test(r.out)) {
+      pushIssue({
+        file: "supabase/functions",
+        line: 1,
+        col: 1,
+        severity: "error",
+        message: "deno CLI not found on PATH — install Deno to enable edge function checks",
+        source: "deno",
+      });
+    } else {
+      parseDeno(r.out);
+    }
+  }
 }
 
 // Deduplicate identical issues.
@@ -279,6 +388,6 @@ for (const i of warnings) console.log(fmt(i));
 
 console.log("");
 if (jsonOutPath) console.log(C.dim(`JSON report written to ${jsonOutPath}`));
-console.log(C.dim(`Tip: --quick · --vite · --json · --json-out=path · --github (or auto on GITHUB_ACTIONS)`));
+console.log(C.dim(`Tip: --quick · --vite · --edge · --no-edge · --json · --json-out=path · --github`));
 
 process.exit(errors.length > 0 ? 1 : 0);
