@@ -425,11 +425,13 @@ function runOnce() {
     const loc = C.cyan(`${i.file}:${i.line}:${i.col}`);
     const code = i.code ? C.dim(` [${i.code}]`) : "";
     const src = C.dim(` (${i.source})`);
-    return `  ${sev}  ${loc}${code} → ${i.message}${src}`;
+    const head = `  ${sev}  ${loc}${code} → ${i.message}${src}`;
+    const snippet = formatSnippet(readSnippet(i.file, i.line, i.col));
+    return snippet ? `${head}\n${snippet}` : head;
   };
 
-  for (const i of errors) console.log(fmt(i));
-  for (const i of warnings) console.log(fmt(i));
+  for (const i of errors) { console.log(fmt(i)); if (CONTEXT_LINES) console.log(""); }
+  for (const i of warnings) { console.log(fmt(i)); if (CONTEXT_LINES) console.log(""); }
 
   console.log("");
   if (jsonOutPath) console.log(C.dim(`JSON report written to ${jsonOutPath}`));
