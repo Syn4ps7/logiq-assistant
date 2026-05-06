@@ -166,6 +166,83 @@ function parseVite(out) {
   }
 }
 
+/** Strip ANSI color escapes — Deno always colors errors even with NO_COLOR
+ *  in some shells, so we sanitize before regex matching. */
+function stripAnsi(s) {
+  // eslint-disable-next-line no-control-regex
+  return s.replace(/\x1b\[[0-9;]*m/g, "");
+}
+
+/**
+ * Parse `deno check` output. Two formats matter:
+ *
+ * 1. Type errors:
+ *      TS2322 [ERROR]: Type 'string' is not assignable to type 'number'.
+ *      const x: number = "string";
+ *            ^
+ *          at file:///abs/path:1:7
+ *
+ * 2. Parse errors:
+ *      error: The module's source code could not be parsed: Expected ';' …
+ *      at file:///abs/path:2:5
+ */
+function parseDeno(rawOut) {
+  const out = stripAnsi(rawOut);
+
+  // Type-check errors: capture code + message + the trailing `at file://…:L:C`
+  const reType =
+    /^(TS\d+)\s+\[(ERROR|WARNING)\]:\s+(.+?)$[\s\S]*?at\s+(?:file:\/\/)?(\S+?):(\d+):(\d+)/gm;
+  let m;
+  while ((m = reType.exec(out)) !== null) {
+    pushIssue({
+      file: m[4].replace(/^file:\/\//, ""),
+      line: Number(m[5]),
+      col: Number(m[6]),
+      severity: m[2] === "WARNING" ? "warning" : "error",
+      code: m[1],
+      message: m[3].trim(),
+      source: "deno",
+    });
+  }
+
+  // Parse errors: "error: <message> at file://path:L:C"
+  // (also matches the bundler "could not be parsed" message format)
+  const reParse =
+    /^error:\s+(.+?)\s+at\s+(?:file:\/\/)?(\S+?):(\d+):(\d+)/gm;
+  while ((m = reParse.exec(out)) !== null) {
+    pushIssue({
+      file: m[2].replace(/^file:\/\//, ""),
+      line: Number(m[3]),
+      col: Number(m[4]),
+      severity: "error",
+      message: m[1].trim(),
+      source: "deno",
+    });
+  }
+}
+
+/** List every supabase/functions/<name>/index.ts to type-check. */
+function listEdgeFunctionEntrypoints() {
+  const dir = resolve(ROOT, "supabase/functions");
+  let entries = [];
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return [];
+  }
+  const out = [];
+  for (const name of entries) {
+    if (name.startsWith("_") || name.startsWith(".")) continue;
+    const entry = join(dir, name, "index.ts");
+    try {
+      if (statSync(entry).isFile()) out.push(entry);
+    } catch {
+      /* missing index.ts — skip */
+    }
+  }
+  return out;
+}
+
 function run(cmd, argv, label) {
   if (!jsonStdout) process.stdout.write(C.dim(`▸ ${label}: ${cmd} ${argv.join(" ")}\n`));
   const res = spawnSync(cmd, argv, {
