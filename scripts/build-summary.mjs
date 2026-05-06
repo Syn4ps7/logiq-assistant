@@ -35,6 +35,55 @@ const ghAnnotations = args.has("--github") || process.env.GITHUB_ACTIONS === "tr
 // --watch: re-run the configured steps whenever source files change. Disables
 // hard process.exit so the loop survives multiple runs.
 const watchMode = args.has("--watch");
+// --context=N: include N lines of source code before/after each issue location
+// in the pretty output and in the JSON report. 0 disables snippets.
+const contextArg = rawArgs.find((a) => a.startsWith("--context="));
+const noSnippet = args.has("--no-snippet");
+const CONTEXT_LINES = noSnippet ? 0 : Math.max(0, Number(contextArg?.slice("--context=".length) ?? 2));
+
+/** Cache of file → split lines, scoped to a single run. */
+let snippetCache = new Map();
+/**
+ * Read N lines around `line` from `file` and return a structured snippet.
+ * Returns null if the file can't be read or N is 0.
+ */
+function readSnippet(file, line, col, n = CONTEXT_LINES) {
+  if (!n || !file || !line) return null;
+  const abs = resolve(ROOT, file);
+  let lines = snippetCache.get(abs);
+  if (!lines) {
+    try {
+      lines = readFileSync(abs, "utf8").split(/\r?\n/);
+    } catch {
+      return null;
+    }
+    snippetCache.set(abs, lines);
+  }
+  const start = Math.max(1, line - n);
+  const end = Math.min(lines.length, line + n);
+  const out = [];
+  for (let l = start; l <= end; l++) {
+    out.push({ line: l, text: lines[l - 1] ?? "", isTarget: l === line });
+  }
+  return { start, end, target: line, col, lines: out };
+}
+
+/** Pretty-print a snippet block with a caret pointing at the column. */
+function formatSnippet(snippet) {
+  if (!snippet) return "";
+  const width = String(snippet.end).length;
+  const out = [];
+  for (const row of snippet.lines) {
+    const ln = String(row.line).padStart(width, " ");
+    const gutter = row.isTarget ? C.red(`${ln} >`) : C.dim(`${ln}  `);
+    out.push(`      ${gutter} ${row.text}`);
+    if (row.isTarget && snippet.col > 0) {
+      const pad = " ".repeat(Math.max(0, snippet.col - 1));
+      out.push(`      ${C.dim(" ".repeat(width))}   ${pad}${C.red("^")}`);
+    }
+  }
+  return out.join("\n");
+}
 
 /**
  * Escape a string for the *message* part of a GitHub workflow command.
