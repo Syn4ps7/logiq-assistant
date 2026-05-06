@@ -186,7 +186,28 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, clientType } = await req.json();
+    const raw = await req.json().catch(() => null);
+    const parsed = RequestSchema.safeParse(raw);
+    if (!parsed.success) {
+      return new Response(
+        JSON.stringify({ error: "Requête invalide", details: parsed.error.flatten() }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    const { clientType } = parsed.data;
+    // Escape any template-literal control chars in user/assistant content
+    // before forwarding to the LLM, so backticks or ${...} sequences in
+    // chat history can never break out of downstream string handling.
+    const messages = parsed.data.messages.map((m) => ({
+      role: m.role,
+      content: escapeTemplateChars(m.content),
+    }));
+
+    // Verify the static prompts haven't regressed to using template chars.
+    assertNoTemplateChars("SYSTEM_PROMPT_BASE", SYSTEM_PROMPT_BASE);
+    assertNoTemplateChars("PARTICULIER_CONTEXT", PARTICULIER_CONTEXT);
+    assertNoTemplateChars("PRO_CONTEXT", PRO_CONTEXT);
+
     const contextBlock = clientType === "pro" ? PRO_CONTEXT : PARTICULIER_CONTEXT;
     const systemPrompt = SYSTEM_PROMPT_BASE + "\n" + contextBlock;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
