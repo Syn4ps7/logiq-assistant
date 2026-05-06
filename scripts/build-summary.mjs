@@ -260,18 +260,48 @@ function run(cmd, argv, label) {
 const ranSteps = [];
 let combinedOut = "";
 
-if (!onlyVite) {
+// Frontend typecheck (skipped when --vite, --edge)
+if (!onlyVite && !onlyEdge) {
   const r = run("npx", ["--no-install", "tsc", "-p", "tsconfig.app.json", "--noEmit"], "typecheck");
   ranSteps.push({ label: "typecheck", code: r.code });
   combinedOut += r.out + "\n";
   parseTsc(r.out);
 }
 
-if (!onlyTsc) {
+// Frontend build (skipped when --quick, --edge)
+if (!onlyTsc && !onlyEdge) {
   const r = run("npx", ["--no-install", "vite", "build", "--logLevel=error"], "build");
   ranSteps.push({ label: "build", code: r.code });
   combinedOut += r.out + "\n";
   parseVite(r.out);
+}
+
+// Edge functions check (skipped when --no-edge, --quick, --vite)
+// Uses `deno check` per function so we get the same file:line:col format
+// as tsc/vite. Requires `deno` on PATH; otherwise the step is reported as
+// FAIL with a single synthetic issue rather than crashing the script.
+if (!skipEdge && !onlyTsc && !onlyVite) {
+  const entries = listEdgeFunctionEntrypoints();
+  if (entries.length > 0) {
+    // One spawn for all entrypoints — Deno handles them concurrently and
+    // prints all diagnostics at the end.
+    const r = run("deno", ["check", "--quiet", ...entries], "edge-functions");
+    ranSteps.push({ label: "edge-functions", code: r.code });
+    combinedOut += r.out + "\n";
+
+    if (r.code !== 0 && /command not found|ENOENT|not recognized/i.test(r.out)) {
+      pushIssue({
+        file: "supabase/functions",
+        line: 1,
+        col: 1,
+        severity: "error",
+        message: "deno CLI not found on PATH — install Deno to enable edge function checks",
+        source: "deno",
+      });
+    } else {
+      parseDeno(r.out);
+    }
+  }
 }
 
 // Deduplicate identical issues.
