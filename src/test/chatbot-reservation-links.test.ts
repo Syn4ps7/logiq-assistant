@@ -60,16 +60,15 @@ describe("chatbot reservation links", () => {
     }
   });
 
-  it("contains no unescaped template-literal control chars (` or ${) inside the prompt strings", () => {
-    // Pull out every backtick-delimited string and ensure none of its body
-    // contains a raw backtick or ${ — that would break Deno parsing again.
-    const stringBodies = Array.from(
-      PROMPT_SOURCE.matchAll(/`([\s\S]*?)`/g),
-      (m) => m[1]
-    );
-    for (const body of stringBodies) {
-      expect(/`/.test(body)).toBe(false);
-      expect(/\$\{/.test(body)).toBe(false);
+  it("prompt constants contain no unescaped template-literal control chars (` or ${)", () => {
+    const names = ["SYSTEM_PROMPT_BASE", "PARTICULIER_CONTEXT", "PRO_CONTEXT"];
+    for (const name of names) {
+      const re = new RegExp(`${name}\\s*=\\s*\`([\\s\\S]*?)\`;`);
+      const match = PROMPT_SOURCE.match(re);
+      expect(match, `could not locate ${name}`).not.toBeNull();
+      const body = match![1];
+      expect(/`/.test(body), `${name} contains backtick`).toBe(false);
+      expect(/\$\{/.test(body), `${name} contains \${`).toBe(false);
     }
   });
 
