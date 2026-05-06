@@ -28,6 +28,33 @@ const jsonStdout = args.has("--json"); // emit JSON report on stdout (silences p
 // --json-out=<path> writes the JSON report to disk (pretty output stays).
 const jsonOutArg = rawArgs.find((a) => a.startsWith("--json-out="));
 const jsonOutPath = jsonOutArg ? jsonOutArg.slice("--json-out=".length) : null;
+// GitHub Actions workflow commands: opt-in via flag OR auto-detected when run on CI.
+const ghAnnotations = args.has("--github") || process.env.GITHUB_ACTIONS === "true";
+
+/**
+ * Escape a string for the *message* part of a GitHub workflow command.
+ * See: https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions#example-masking-and-passing-an-environment-variable
+ */
+function ghEscapeData(s) {
+  return String(s).replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A");
+}
+/** Escape a string for property *values* (file=, line=, etc.). */
+function ghEscapeProp(s) {
+  return ghEscapeData(s).replace(/:/g, "%3A").replace(/,/g, "%2C");
+}
+function emitGhAnnotations(items) {
+  for (const i of items) {
+    const level = i.severity === "error" ? "error" : "warning";
+    const props = [
+      `file=${ghEscapeProp(i.file)}`,
+      `line=${i.line}`,
+      `col=${i.col}`,
+      `title=${ghEscapeProp(`${i.source}${i.code ? ` ${i.code}` : ""}`)}`,
+    ].join(",");
+    // Written to stderr so it never pollutes --json stdout.
+    process.stderr.write(`::${level} ${props}::${ghEscapeData(i.message)}\n`);
+  }
+}
 
 const C = {
   red: (s) => `\x1b[31m${s}\x1b[0m`,
