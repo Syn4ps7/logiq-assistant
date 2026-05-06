@@ -28,6 +28,33 @@ const jsonStdout = args.has("--json"); // emit JSON report on stdout (silences p
 // --json-out=<path> writes the JSON report to disk (pretty output stays).
 const jsonOutArg = rawArgs.find((a) => a.startsWith("--json-out="));
 const jsonOutPath = jsonOutArg ? jsonOutArg.slice("--json-out=".length) : null;
+// GitHub Actions workflow commands: opt-in via flag OR auto-detected when run on CI.
+const ghAnnotations = args.has("--github") || process.env.GITHUB_ACTIONS === "true";
+
+/**
+ * Escape a string for the *message* part of a GitHub workflow command.
+ * See: https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions#example-masking-and-passing-an-environment-variable
+ */
+function ghEscapeData(s) {
+  return String(s).replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A");
+}
+/** Escape a string for property *values* (file=, line=, etc.). */
+function ghEscapeProp(s) {
+  return ghEscapeData(s).replace(/:/g, "%3A").replace(/,/g, "%2C");
+}
+function emitGhAnnotations(items) {
+  for (const i of items) {
+    const level = i.severity === "error" ? "error" : "warning";
+    const props = [
+      `file=${ghEscapeProp(i.file)}`,
+      `line=${i.line}`,
+      `col=${i.col}`,
+      `title=${ghEscapeProp(`${i.source}${i.code ? ` ${i.code}` : ""}`)}`,
+    ].join(",");
+    // Written to stderr so it never pollutes --json stdout.
+    process.stderr.write(`::${level} ${props}::${ghEscapeData(i.message)}\n`);
+  }
+}
 
 const C = {
   red: (s) => `\x1b[31m${s}\x1b[0m`,
@@ -203,6 +230,11 @@ if (jsonOutPath) {
   writeFileSync(abs, JSON.stringify(report, null, 2) + "\n", "utf8");
 }
 
+
+// GitHub annotations are independent of pretty/JSON modes — they go to stderr
+// so the PR shows inline error/warning markers regardless of the chosen output.
+if (ghAnnotations) emitGhAnnotations(unique);
+
 if (jsonStdout) {
   // Pure JSON on stdout — exit code still reflects errors.
   process.stdout.write(JSON.stringify(report, null, 2) + "\n");
@@ -247,6 +279,6 @@ for (const i of warnings) console.log(fmt(i));
 
 console.log("");
 if (jsonOutPath) console.log(C.dim(`JSON report written to ${jsonOutPath}`));
-console.log(C.dim(`Tip: --quick (tsc only) · --vite (build only) · --json (stdout) · --json-out=path`));
+console.log(C.dim(`Tip: --quick · --vite · --json · --json-out=path · --github (or auto on GITHUB_ACTIONS)`));
 
 process.exit(errors.length > 0 ? 1 : 0);
