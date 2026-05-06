@@ -16,8 +16,8 @@
  *   node scripts/build-summary.mjs --vite    # vite only, skip tsc
  */
 import { spawnSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname, relative, resolve } from "node:path";
+import { mkdirSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { dirname, join, relative, resolve } from "node:path";
 
 const ROOT = resolve(process.cwd());
 const rawArgs = process.argv.slice(2);
