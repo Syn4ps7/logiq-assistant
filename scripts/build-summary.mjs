@@ -388,6 +388,6 @@ for (const i of warnings) console.log(fmt(i));
 
 console.log("");
 if (jsonOutPath) console.log(C.dim(`JSON report written to ${jsonOutPath}`));
-console.log(C.dim(`Tip: --quick · --vite · --json · --json-out=path · --github (or auto on GITHUB_ACTIONS)`));
+console.log(C.dim(`Tip: --quick · --vite · --edge · --no-edge · --json · --json-out=path · --github`));
 
 process.exit(errors.length > 0 ? 1 : 0);
