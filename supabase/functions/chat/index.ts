@@ -28,7 +28,7 @@ Tu DOIS toujours utiliser des liens contextualisés vers /reservation avec les b
 - Pack Week-end Standard (319 CHF) : [Réserver le pack Standard](/reservation?plan=pack-48h&pack=standard)
 - Pack Déménagement 48h Confort (399 CHF) : [Réserver le pack 48h](/reservation?plan=pack-48h&pack=confort)
 - Pack Premium 48h (449 CHF) : [Réserver le pack Premium](/reservation?plan=pack-48h&pack=premium)
-- Ajouter des options : append `&options=serenite` ou `&options=serenite,diable,sangles-couverture`
+- Ajouter des options : append "&options=serenite" ou "&options=serenite,diable,sangles-couverture"
   Exemple : [Réserver avec Sérénité](/reservation?plan=pack-48h&pack=confort&options=serenite)
 
 ### Professionnel (B2B) — utilise UNIQUEMENT ces liens :
@@ -36,7 +36,7 @@ Tu DOIS toujours utiliser des liens contextualisés vers /reservation avec les b
 - Carnet Pro 10 jours : [Activer Carnet 10 jours](/reservation?carnet=carnet-10&source=pro)
 - Carnet Pro 20 jours : [Activer Carnet 20 jours](/reservation?carnet=carnet-20&source=pro)
 - Carnet Pro 40 jours : [Activer Carnet 40 jours](/reservation?carnet=carnet-40&source=pro)
-- Avec options : append `&options=serenite` (ex : [Réserver](/reservation?plan=flex-pro&source=pro&options=serenite))
+- Avec options : append "&options=serenite" (ex : [Réserver](/reservation?plan=flex-pro&source=pro&options=serenite))
 - Page commerciale Pro (présentation des carnets) : [Voir l'offre Pro](/pro)
 
 ### Adapte ta réponse selon la réponse :
