@@ -260,137 +260,204 @@ function run(cmd, argv, label) {
   };
 }
 
-const ranSteps = [];
-let combinedOut = "";
+/**
+ * Run the configured steps once and print a summary.
+ * Returns the exit code that a one-shot invocation would use (0 = clean).
+ * In watch mode we keep this pure (no process.exit) so the loop continues.
+ */
+function runOnce() {
+  // Reset cross-run state.
+  issues.length = 0;
+  const ranSteps = [];
+  let combinedOut = "";
 
-// Frontend typecheck (skipped when --vite, --edge)
-if (!onlyVite && !onlyEdge) {
-  const r = run("npx", ["--no-install", "tsc", "-p", "tsconfig.app.json", "--noEmit"], "typecheck");
-  ranSteps.push({ label: "typecheck", code: r.code });
-  combinedOut += r.out + "\n";
-  parseTsc(r.out);
-}
-
-// Frontend build (skipped when --quick, --edge)
-if (!onlyTsc && !onlyEdge) {
-  const r = run("npx", ["--no-install", "vite", "build", "--logLevel=error"], "build");
-  ranSteps.push({ label: "build", code: r.code });
-  combinedOut += r.out + "\n";
-  parseVite(r.out);
-}
-
-// Edge functions check (skipped when --no-edge, --quick, --vite)
-// Uses `deno check` per function so we get the same file:line:col format
-// as tsc/vite. Requires `deno` on PATH; otherwise the step is reported as
-// FAIL with a single synthetic issue rather than crashing the script.
-if (!skipEdge && !onlyTsc && !onlyVite) {
-  const entries = listEdgeFunctionEntrypoints();
-  if (entries.length > 0) {
-    // One spawn for all entrypoints — Deno handles them concurrently and
-    // prints all diagnostics at the end.
-    const r = run("deno", ["check", "--quiet", ...entries], "edge-functions");
-    ranSteps.push({ label: "edge-functions", code: r.code });
+  // Frontend typecheck (skipped when --vite, --edge)
+  if (!onlyVite && !onlyEdge) {
+    const r = run("npx", ["--no-install", "tsc", "-p", "tsconfig.app.json", "--noEmit"], "typecheck");
+    ranSteps.push({ label: "typecheck", code: r.code });
     combinedOut += r.out + "\n";
+    parseTsc(r.out);
+  }
 
-    if (r.code !== 0 && /command not found|ENOENT|not recognized/i.test(r.out)) {
-      pushIssue({
-        file: "supabase/functions",
-        line: 1,
-        col: 1,
-        severity: "error",
-        message: "deno CLI not found on PATH — install Deno to enable edge function checks",
-        source: "deno",
-      });
-    } else {
-      parseDeno(r.out);
+  // Frontend build (skipped when --quick, --edge, or --watch — full vite build
+  // is too slow to rerun on every keystroke; watch mode prefers tsc + edge).
+  if (!onlyTsc && !onlyEdge && !watchMode) {
+    const r = run("npx", ["--no-install", "vite", "build", "--logLevel=error"], "build");
+    ranSteps.push({ label: "build", code: r.code });
+    combinedOut += r.out + "\n";
+    parseVite(r.out);
+  }
+
+  // Edge functions check
+  if (!skipEdge && !onlyTsc && !onlyVite) {
+    const entries = listEdgeFunctionEntrypoints();
+    if (entries.length > 0) {
+      const r = run("deno", ["check", "--quiet", ...entries], "edge-functions");
+      ranSteps.push({ label: "edge-functions", code: r.code });
+      combinedOut += r.out + "\n";
+
+      if (r.code !== 0 && /command not found|ENOENT|not recognized/i.test(r.out)) {
+        pushIssue({
+          file: "supabase/functions",
+          line: 1, col: 1, severity: "error",
+          message: "deno CLI not found on PATH — install Deno to enable edge function checks",
+          source: "deno",
+        });
+      } else {
+        parseDeno(r.out);
+      }
     }
   }
-}
 
-// Deduplicate identical issues.
-const seen = new Set();
-const unique = issues.filter((i) => {
-  const key = `${i.file}:${i.line}:${i.col}:${i.message}`;
-  if (seen.has(key)) return false;
-  seen.add(key);
-  return true;
-});
+  // Deduplicate identical issues.
+  const seen = new Set();
+  const unique = issues.filter((i) => {
+    const key = `${i.file}:${i.line}:${i.col}:${i.message}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 
-const errors = unique.filter((i) => i.severity === "error");
-const warnings = unique.filter((i) => i.severity === "warning");
+  const errors = unique.filter((i) => i.severity === "error");
+  const warnings = unique.filter((i) => i.severity === "warning");
 
-// Build the structured report once — used for both stdout JSON and --json-out.
-const report = {
-  ok: ranSteps.every((s) => s.code === 0) && errors.length === 0,
-  generatedAt: new Date().toISOString(),
-  steps: ranSteps,
-  totals: { errors: errors.length, warnings: warnings.length },
-  issues: unique.map((i) => ({
-    file: i.file,
-    line: i.line,
-    col: i.col,
-    severity: i.severity,
-    code: i.code ?? null,
-    message: i.message,
-    source: i.source,
-  })),
-};
+  const report = {
+    ok: ranSteps.every((s) => s.code === 0) && errors.length === 0,
+    generatedAt: new Date().toISOString(),
+    steps: ranSteps,
+    totals: { errors: errors.length, warnings: warnings.length },
+    issues: unique.map((i) => ({
+      file: i.file, line: i.line, col: i.col,
+      severity: i.severity, code: i.code ?? null,
+      message: i.message, source: i.source,
+    })),
+  };
 
-if (jsonOutPath) {
-  const abs = resolve(ROOT, jsonOutPath);
-  mkdirSync(dirname(abs), { recursive: true });
-  writeFileSync(abs, JSON.stringify(report, null, 2) + "\n", "utf8");
-}
-
-
-// GitHub annotations are independent of pretty/JSON modes — they go to stderr
-// so the PR shows inline error/warning markers regardless of the chosen output.
-if (ghAnnotations) emitGhAnnotations(unique);
-
-if (jsonStdout) {
-  // Pure JSON on stdout — exit code still reflects errors.
-  process.stdout.write(JSON.stringify(report, null, 2) + "\n");
-  process.exit(errors.length > 0 ? 1 : 0);
-}
-
-console.log("");
-console.log(C.bold("── Compilation summary ──"));
-for (const s of ranSteps) {
-  const tag = s.code === 0 ? C.green("PASS") : C.red("FAIL");
-  console.log(`  ${tag}  ${s.label} (exit ${s.code})`);
-}
-console.log("");
-
-if (unique.length === 0) {
-  if (ranSteps.every((s) => s.code === 0)) {
-    console.log(C.green("✓ No errors detected."));
-  } else {
-    console.log(
-      C.yellow(
-        "! A step failed but no structured error was extracted. Re-run the failing command directly to see raw output."
-      )
-    );
+  if (jsonOutPath) {
+    const abs = resolve(ROOT, jsonOutPath);
+    mkdirSync(dirname(abs), { recursive: true });
+    writeFileSync(abs, JSON.stringify(report, null, 2) + "\n", "utf8");
   }
+
+  if (ghAnnotations) emitGhAnnotations(unique);
+
+  if (jsonStdout) {
+    process.stdout.write(JSON.stringify(report, null, 2) + "\n");
+    return errors.length > 0 ? 1 : 0;
+  }
+
+  console.log("");
+  console.log(C.bold("── Compilation summary ──"));
+  for (const s of ranSteps) {
+    const tag = s.code === 0 ? C.green("PASS") : C.red("FAIL");
+    console.log(`  ${tag}  ${s.label} (exit ${s.code})`);
+  }
+  console.log("");
+
+  if (unique.length === 0) {
+    if (ranSteps.every((s) => s.code === 0)) {
+      console.log(C.green("✓ No errors detected."));
+    } else {
+      console.log(C.yellow(
+        "! A step failed but no structured error was extracted. Re-run the failing command directly to see raw output."
+      ));
+    }
+    if (jsonOutPath) console.log(C.dim(`JSON report written to ${jsonOutPath}`));
+    return ranSteps.some((s) => s.code !== 0) ? 1 : 0;
+  }
+
+  console.log(C.bold(`${errors.length} error(s), ${warnings.length} warning(s):`));
+  console.log("");
+
+  const fmt = (i) => {
+    const sev = i.severity === "error" ? C.red("error") : C.yellow("warn ");
+    const loc = C.cyan(`${i.file}:${i.line}:${i.col}`);
+    const code = i.code ? C.dim(` [${i.code}]`) : "";
+    const src = C.dim(` (${i.source})`);
+    return `  ${sev}  ${loc}${code} → ${i.message}${src}`;
+  };
+
+  for (const i of errors) console.log(fmt(i));
+  for (const i of warnings) console.log(fmt(i));
+
+  console.log("");
   if (jsonOutPath) console.log(C.dim(`JSON report written to ${jsonOutPath}`));
-  process.exit(ranSteps.some((s) => s.code !== 0) ? 1 : 0);
+  return errors.length > 0 ? 1 : 0;
 }
 
-console.log(C.bold(`${errors.length} error(s), ${warnings.length} warning(s):`));
-console.log("");
+if (!watchMode) {
+  console.log(C.dim(`Tip: --quick · --vite · --edge · --no-edge · --json · --json-out=path · --github · --watch`));
+  process.exit(runOnce());
+}
 
-const fmt = (i) => {
-  const sev = i.severity === "error" ? C.red("error") : C.yellow("warn ");
-  const loc = C.cyan(`${i.file}:${i.line}:${i.col}`);
-  const code = i.code ? C.dim(` [${i.code}]`) : "";
-  const src = C.dim(` (${i.source})`);
-  return `  ${sev}  ${loc}${code} → ${i.message}${src}`;
-};
+// ── Watch mode ───────────────────────────────────────────────────────────
+//
+// Watches `src/` and `supabase/functions/` for changes. On any change we
+// debounce 250 ms then re-run the configured steps. Vite full builds are
+// auto-skipped in watch mode (see runOnce) — typecheck + edge-check is
+// fast enough for an interactive feedback loop.
+//
+// We avoid heavy file-watcher deps and rely on Node's recursive fs.watch.
+const WATCH_DIRS = [
+  resolve(ROOT, "src"),
+  resolve(ROOT, "supabase/functions"),
+  resolve(ROOT, "scripts"),
+].filter((p) => {
+  try { return statSync(p).isDirectory(); } catch { return false; }
+});
+const WATCH_EXT = /\.(ts|tsx|js|jsx|mjs|cjs|json)$/;
+const DEBOUNCE_MS = 250;
 
-for (const i of errors) console.log(fmt(i));
-for (const i of warnings) console.log(fmt(i));
+let pending = null;
+let running = false;
+let queued = false;
 
-console.log("");
-if (jsonOutPath) console.log(C.dim(`JSON report written to ${jsonOutPath}`));
-console.log(C.dim(`Tip: --quick · --vite · --edge · --no-edge · --json · --json-out=path · --github`));
+function clearScreen() {
+  // ANSI: clear + move cursor home. Falls back gracefully on dumb terminals.
+  process.stdout.write("\x1b[2J\x1b[H");
+}
 
-process.exit(errors.length > 0 ? 1 : 0);
+function triggerRun(reason) {
+  if (running) { queued = true; return; }
+  running = true;
+  clearScreen();
+  console.log(C.bold(C.cyan(`◐ build-summary · watch mode`)));
+  console.log(C.dim(`Trigger: ${reason} · ${new Date().toLocaleTimeString()}`));
+  console.log(C.dim(`Watching: ${WATCH_DIRS.map((d) => relative(ROOT, d) || ".").join(", ")}`));
+
+  try { runOnce(); } catch (e) { console.error(C.red(`Run failed: ${e?.message || e}`)); }
+
+  console.log("");
+  console.log(C.dim(`Waiting for changes… (Ctrl+C to exit)`));
+  running = false;
+  if (queued) { queued = false; triggerRun("queued change"); }
+}
+
+function schedule(reason) {
+  if (pending) clearTimeout(pending);
+  pending = setTimeout(() => { pending = null; triggerRun(reason); }, DEBOUNCE_MS);
+}
+
+for (const dir of WATCH_DIRS) {
+  try {
+    watch(dir, { recursive: true }, (_event, filename) => {
+      if (!filename) return schedule("change");
+      if (!WATCH_EXT.test(filename)) return; // ignore non-source changes
+      schedule(`${relative(ROOT, dir)}/${filename}`);
+    });
+  } catch (e) {
+    console.error(C.yellow(`! Could not watch ${dir}: ${e?.message || e}`));
+  }
+}
+
+if (WATCH_DIRS.length === 0) {
+  console.error(C.red("No watchable directories found (expected src/ or supabase/functions/)."));
+  process.exit(1);
+}
+
+// Initial run.
+triggerRun("startup");
+
+// Keep the process alive (fs.watch handles do that already, but be explicit).
+process.stdin.resume();
+process.on("SIGINT", () => { console.log(C.dim("\nbye.")); process.exit(0); });
