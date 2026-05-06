@@ -138,7 +138,7 @@ function parseVite(out) {
 }
 
 function run(cmd, argv, label) {
-  process.stdout.write(C.dim(`▸ ${label}: ${cmd} ${argv.join(" ")}\n`));
+  if (!jsonStdout) process.stdout.write(C.dim(`▸ ${label}: ${cmd} ${argv.join(" ")}\n`));
   const res = spawnSync(cmd, argv, {
     cwd: ROOT,
     encoding: "utf8",
