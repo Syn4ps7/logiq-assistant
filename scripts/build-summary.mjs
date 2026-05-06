@@ -279,6 +279,6 @@ for (const i of warnings) console.log(fmt(i));
 
 console.log("");
 if (jsonOutPath) console.log(C.dim(`JSON report written to ${jsonOutPath}`));
-console.log(C.dim(`Tip: --quick (tsc only) · --vite (build only) · --json (stdout) · --json-out=path`));
+console.log(C.dim(`Tip: --quick · --vite · --json · --json-out=path · --github (or auto on GITHUB_ACTIONS)`));
 
 process.exit(errors.length > 0 ? 1 : 0);
