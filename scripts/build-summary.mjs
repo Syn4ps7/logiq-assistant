@@ -380,6 +380,7 @@ function runOnce() {
       file: i.file, line: i.line, col: i.col,
       severity: i.severity, code: i.code ?? null,
       message: i.message, source: i.source,
+      snippet: readSnippet(i.file, i.line, i.col),
     })),
   };
 
