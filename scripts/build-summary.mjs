@@ -180,6 +180,35 @@ const unique = issues.filter((i) => {
 const errors = unique.filter((i) => i.severity === "error");
 const warnings = unique.filter((i) => i.severity === "warning");
 
+// Build the structured report once — used for both stdout JSON and --json-out.
+const report = {
+  ok: ranSteps.every((s) => s.code === 0) && errors.length === 0,
+  generatedAt: new Date().toISOString(),
+  steps: ranSteps,
+  totals: { errors: errors.length, warnings: warnings.length },
+  issues: unique.map((i) => ({
+    file: i.file,
+    line: i.line,
+    col: i.col,
+    severity: i.severity,
+    code: i.code ?? null,
+    message: i.message,
+    source: i.source,
+  })),
+};
+
+if (jsonOutPath) {
+  const abs = resolve(ROOT, jsonOutPath);
+  mkdirSync(dirname(abs), { recursive: true });
+  writeFileSync(abs, JSON.stringify(report, null, 2) + "\n", "utf8");
+}
+
+if (jsonStdout) {
+  // Pure JSON on stdout — exit code still reflects errors.
+  process.stdout.write(JSON.stringify(report, null, 2) + "\n");
+  process.exit(errors.length > 0 ? 1 : 0);
+}
+
 console.log("");
 console.log(C.bold("── Compilation summary ──"));
 for (const s of ranSteps) {
@@ -198,6 +227,7 @@ if (unique.length === 0) {
       )
     );
   }
+  if (jsonOutPath) console.log(C.dim(`JSON report written to ${jsonOutPath}`));
   process.exit(ranSteps.some((s) => s.code !== 0) ? 1 : 0);
 }
 
@@ -216,6 +246,7 @@ for (const i of errors) console.log(fmt(i));
 for (const i of warnings) console.log(fmt(i));
 
 console.log("");
-console.log(C.dim(`Tip: re-run \`npm run build:summary -- --quick\` for typecheck-only.`));
+if (jsonOutPath) console.log(C.dim(`JSON report written to ${jsonOutPath}`));
+console.log(C.dim(`Tip: --quick (tsc only) · --vite (build only) · --json (stdout) · --json-out=path`));
 
 process.exit(errors.length > 0 ? 1 : 0);
