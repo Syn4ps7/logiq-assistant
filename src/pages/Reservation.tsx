@@ -69,12 +69,14 @@ const Reservation = () => {
     return "";
   });
   // proTab is irrelevant for flex-pro (B2C tab) — pin it to "daily" so no Carnet UI flashes.
-  const [proTab, setProTab] = useState<ProTab>("daily");
+  const [proTab, setProTab] = useState<ProTab>(initialIsCarnet ? "carnet" : "daily");
   // selectedCarnet must stay empty when flex-pro is active (Carnet ≠ Flex).
-  const [selectedCarnet, setSelectedCarnet] = useState<CarnetId | "">("");
+  const [selectedCarnet, setSelectedCarnet] = useState<CarnetId | "">(
+    initialIsCarnet && !initialIsFlexPro ? (initialCarnetParam as CarnetId) : ""
+  );
   // weekendPack is a B2C-only concept — must stay empty under flex-pro.
   const [weekendPack, setWeekendPack] = useState<WeekendPack | "">(() => {
-    if (initialIsFlexPro) return "";
+    if (initialIsFlexPro || initialIsCarnet) return "";
     if (initialPackParam && initialPackParam in WEEKEND_PACKS) return initialPackParam;
     return "";
   });
@@ -83,7 +85,11 @@ const Reservation = () => {
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("20:00");
   const [selectedVehicle, setSelectedVehicle] = useState(searchParams.get("vehicle") || "");
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(() => {
+    if (!initialOptionsParam) return [];
+    const valid = new Set(["serenite", "diable", "sangles-couverture"]);
+    return initialOptionsParam.split(",").map((s) => s.trim()).filter((s) => valid.has(s));
+  });
   const [estKm, setEstKm] = useState(200);
 
   // Delivery fields (Premium only)
