@@ -16,12 +16,18 @@
  *   node scripts/build-summary.mjs --vite    # vite only, skip tsc
  */
 import { spawnSync } from "node:child_process";
-import { relative, resolve } from "node:path";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { dirname, relative, resolve } from "node:path";
 
 const ROOT = resolve(process.cwd());
-const args = new Set(process.argv.slice(2));
+const rawArgs = process.argv.slice(2);
+const args = new Set(rawArgs);
 const onlyTsc = args.has("--quick");
 const onlyVite = args.has("--vite");
+const jsonStdout = args.has("--json"); // emit JSON report on stdout (silences pretty output)
+// --json-out=<path> writes the JSON report to disk (pretty output stays).
+const jsonOutArg = rawArgs.find((a) => a.startsWith("--json-out="));
+const jsonOutPath = jsonOutArg ? jsonOutArg.slice("--json-out=".length) : null;
 
 const C = {
   red: (s) => `\x1b[31m${s}\x1b[0m`,
