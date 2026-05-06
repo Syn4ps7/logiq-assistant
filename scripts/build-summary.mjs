@@ -32,6 +32,9 @@ const jsonOutArg = rawArgs.find((a) => a.startsWith("--json-out="));
 const jsonOutPath = jsonOutArg ? jsonOutArg.slice("--json-out=".length) : null;
 // GitHub Actions workflow commands: opt-in via flag OR auto-detected when run on CI.
 const ghAnnotations = args.has("--github") || process.env.GITHUB_ACTIONS === "true";
+// --watch: re-run the configured steps whenever source files change. Disables
+// hard process.exit so the loop survives multiple runs.
+const watchMode = args.has("--watch");
 
 /**
  * Escape a string for the *message* part of a GitHub workflow command.
