@@ -51,7 +51,12 @@ const Reservation = () => {
   // first render already reflects flex-pro (no flash of B2C plans, no useEffect lag).
   const initialPlanParam = searchParams.get("plan");
   const initialPackParam = searchParams.get("pack") as WeekendPack | null;
+  const initialCarnetParam = searchParams.get("carnet") as CarnetId | null;
+  const initialOptionsParam = searchParams.get("options");
+  const initialSourceParam = searchParams.get("source");
   const initialIsFlexPro = initialPlanParam === "flex-pro";
+  const initialIsCarnet = initialCarnetParam && ["carnet-10", "carnet-20", "carnet-40"].includes(initialCarnetParam);
+  const initialIsProSource = initialSourceParam === "pro" || initialIsFlexPro || !!initialIsCarnet;
 
   const [step, setStep] = useState(0);
   const [selectedPlan, setSelectedPlan] = useState<RatePlanId | "">(() => {
