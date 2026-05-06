@@ -123,6 +123,8 @@ const Reservation = () => {
   useEffect(() => {
     const pack = searchParams.get("pack") as WeekendPack | null;
     const plan = searchParams.get("plan") as RatePlanId | null;
+    const carnet = searchParams.get("carnet") as CarnetId | null;
+    const optionsParam = searchParams.get("options");
 
     // Flex Pro takes absolute precedence — wipe any B2C/Carnet residue.
     if (plan === "flex-pro") {
@@ -130,14 +132,22 @@ const Reservation = () => {
       setProTab("daily");
       setWeekendPack("");
       setSelectedCarnet("");
-      return;
-    }
-
-    if (pack && pack in WEEKEND_PACKS) {
+    } else if (carnet && ["carnet-10", "carnet-20", "carnet-40"].includes(carnet)) {
+      setProTab("carnet");
+      setSelectedCarnet(carnet);
+      setSelectedPlan("");
+      setWeekendPack("");
+    } else if (pack && pack in WEEKEND_PACKS) {
       setSelectedPlan("pack-48h");
       setWeekendPack(pack);
     } else if (plan && ["week", "weekend", "pack-48h"].includes(plan)) {
       setSelectedPlan(plan);
+    }
+
+    if (optionsParam) {
+      const valid = new Set(["serenite", "diable", "sangles-couverture"]);
+      const opts = optionsParam.split(",").map((s) => s.trim()).filter((s) => valid.has(s));
+      if (opts.length) setSelectedOptions((prev) => Array.from(new Set([...prev, ...opts])));
     }
   }, [searchParams]);
 
