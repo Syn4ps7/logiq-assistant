@@ -439,7 +439,7 @@ function runOnce() {
 }
 
 if (!watchMode) {
-  console.log(C.dim(`Tip: --quick · --vite · --edge · --no-edge · --json · --json-out=path · --github · --watch`));
+  console.log(C.dim(`Tip: --quick · --vite · --edge · --no-edge · --json · --json-out=path · --github · --watch · --context=N · --no-snippet`));
   process.exit(runOnce());
 }
 
