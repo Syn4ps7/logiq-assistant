@@ -230,6 +230,11 @@ if (jsonOutPath) {
   writeFileSync(abs, JSON.stringify(report, null, 2) + "\n", "utf8");
 }
 
+
+// GitHub annotations are independent of pretty/JSON modes — they go to stderr
+// so the PR shows inline error/warning markers regardless of the chosen output.
+if (ghAnnotations) emitGhAnnotations(unique);
+
 if (jsonStdout) {
   // Pure JSON on stdout — exit code still reflects errors.
   process.stdout.write(JSON.stringify(report, null, 2) + "\n");
