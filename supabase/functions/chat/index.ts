@@ -1,10 +1,50 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+/**
+ * Escape any character sequence that could break out of a JS template
+ * literal if a future maintainer accidentally embeds user/AI content
+ * inside backticks. Neutralises: backticks, ${...} interpolation, and
+ * stray backslashes. Safe for plain-text LLM prompts.
+ */
+function escapeTemplateChars(input: string): string {
+  return input
+    .replace(/\\/g, "\\\\")
+    .replace(/`/g, "\\`")
+    .replace(/\$\{/g, "\\${");
+}
+
+/**
+ * Runtime guard: any string literal we send as a system prompt must not
+ * contain raw template-literal control sequences. Throws on regression
+ * (e.g. someone re-introduces backticks inside SYSTEM_PROMPT_BASE).
+ */
+function assertNoTemplateChars(label: string, value: string): void {
+  if (/`|\$\{/.test(value)) {
+    throw new Error(
+      `Prompt regression: \"${label}\" contains template-literal chars (\` or \${). Use plain quotes.`
+    );
+  }
+}
+
+const RequestSchema = z.object({
+  clientType: z.enum(["pro", "particulier"]).nullable().optional(),
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant", "system"]),
+        content: z.string().min(1).max(4000),
+      })
+    )
+    .min(1)
+    .max(40),
+});
 
 const SYSTEM_PROMPT_BASE = `Tu es l'assistant de réservation de LogIQ Transport, location d'utilitaires à Vevey (Suisse).
 
