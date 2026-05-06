@@ -317,6 +317,7 @@ function run(cmd, argv, label) {
 function runOnce() {
   // Reset cross-run state.
   issues.length = 0;
+  snippetCache = new Map();
   const ranSteps = [];
   let combinedOut = "";
 
