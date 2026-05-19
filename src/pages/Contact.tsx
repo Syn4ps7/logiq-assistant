@@ -1,4 +1,4 @@
-import { Phone, Mail, Clock, Check, Loader2 } from "lucide-react";
+import { Mail, Clock, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -57,13 +57,6 @@ const Contact = () => {
           <div>
             <h2 className="text-lg font-semibold mb-4">{t("contact.coordinates")}</h2>
             <div className="space-y-4">
-              <div className="flex gap-3">
-                <Phone className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-medium">{t("contact.phone")}</p>
-                  <p className="text-sm text-muted-foreground">078 200 69 58</p>
-                </div>
-              </div>
               <div className="flex gap-3">
                 <Mail className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
