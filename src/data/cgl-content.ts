@@ -284,7 +284,7 @@ export const cglArticles: CGLArticle[] = [
         id: "article-14.10",
         title: "14.10 — Kilométrage Pro & supplément",
         content:
-          "a) Quota inclus : 100 km par jour de location effectif, identique pour le Tarif Journalier Flex et pour l'ensemble des Carnets Pro (Discovery, Business, Premium).\nb) Tarif kilométrique supplémentaire au-delà du quota : 0.65 CHF HT par km (TVA suisse en sus), facturé automatiquement au retour du véhicule. Ce tarif Pro se substitue au tarif B2C de l'Article 5.2.\nc) Les kilomètres inclus dans les Carnets Pro sont intégralement compris dans le prix prépayé : aucun supplément n'est facturé tant que la consommation reste dans le quota du carnet (pool mutualisé pour le Premium, voir Article 14.9 d).",
+          "a) Quota inclus : 100 km par jour de location effectif pour le Tarif Journalier Flex ; 200 km par jour de location effectif pour l'ensemble des Carnets Pro (Discovery, Business, Premium).\nb) Tarif kilométrique supplémentaire au-delà du quota : 0.65 CHF HT par km (TVA suisse en sus), facturé automatiquement au retour du véhicule. Ce tarif Pro se substitue au tarif B2C de l'Article 5.2.\nc) Les kilomètres inclus dans les Carnets Pro sont intégralement compris dans le prix prépayé : aucun supplément n'est facturé tant que la consommation reste dans le quota du carnet (pool mutualisé pour le Premium, voir Article 14.9 d).",
       },
     ],
   },
