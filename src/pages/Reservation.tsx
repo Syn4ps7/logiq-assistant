@@ -225,7 +225,7 @@ const Reservation = () => {
       }, 0);
 
       const extraKm = Math.max(0, estKm - includedKm);
-      const extraKmCost = Math.round(extraKm * 0.70 * 100) / 100;
+      const extraKmCost = Math.round(extraKm * EXTRA_KM_RATE_PRO_HT * 100) / 100;
       const total = Math.round((baseTotal + optionsCost + extraKmCost) * 100) / 100;
 
       return { days, baseTotal, includedKm, optionsCost, extraKm, extraKmCost, total, planName: `Carnet ${days} jours`, isCarnet: true, carnetHT: carnet.totalHT, perDayHT: carnet.perDayHT };
