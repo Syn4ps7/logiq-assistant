@@ -233,9 +233,10 @@ serve(async (req) => {
     assertNoTemplateChars("SYSTEM_PROMPT_BASE", SYSTEM_PROMPT_BASE);
     assertNoTemplateChars("PARTICULIER_CONTEXT", PARTICULIER_CONTEXT);
     assertNoTemplateChars("PRO_CONTEXT", PRO_CONTEXT);
+    assertNoTemplateChars("CGL_REFERENCE", CGL_REFERENCE);
 
     const contextBlock = clientType === "pro" ? PRO_CONTEXT : PARTICULIER_CONTEXT;
-    const systemPrompt = SYSTEM_PROMPT_BASE + "\n" + contextBlock;
+    const systemPrompt = SYSTEM_PROMPT_BASE + "\n" + contextBlock + "\n" + CGL_REFERENCE;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
