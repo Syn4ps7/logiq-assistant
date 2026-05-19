@@ -1,4 +1,4 @@
-import { Phone, Mail, Clock, Check, Loader2 } from "lucide-react";
+import { Mail, Clock, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
