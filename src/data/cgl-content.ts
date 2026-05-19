@@ -278,13 +278,13 @@ export const cglArticles: CGLArticle[] = [
         id: "article-14.9",
         title: "14.9 — Carnets Pro (prépayés)",
         content:
-          "a) Paiement 100 % à la commande.\nb) Validité des jours acquis à compter de la date d'achat : 12 mois pour le Carnet Discovery (10 jours), 18 mois pour les Carnets Business (20 jours) et Premium (40 jours). Au-delà de l'échéance, les jours non consommés ne sont ni reportables ni remboursables.\nc) La réservation des jours reste soumise à la disponibilité des véhicules. La priorité Pro est garantie sous réserve d'un préavis minimum de 48 heures.\nd) Le Carnet Premium ouvre droit à un pool kilométrique mutualisé de 4'000 km (soit 100 km × 40 jours) librement répartissable sur la durée de validité du carnet ; les kilomètres non consommés ne sont ni reportables au-delà de l'échéance ni remboursables.",
+          "a) Paiement 100 % à la commande.\nb) Validité des jours acquis à compter de la date d'achat : 12 mois pour le Carnet Discovery (10 jours), 18 mois pour les Carnets Business (20 jours) et Premium (40 jours). Au-delà de l'échéance, les jours non consommés ne sont ni reportables ni remboursables.\nc) La réservation des jours reste soumise à la disponibilité des véhicules. La priorité Pro est garantie sous réserve d'un préavis minimum de 48 heures.\nd) Le Carnet Premium ouvre droit à un pool kilométrique mutualisé de 8'000 km (soit 200 km × 40 jours) librement répartissable sur la durée de validité du carnet ; les kilomètres non consommés ne sont ni reportables au-delà de l'échéance ni remboursables.",
       },
       {
         id: "article-14.10",
         title: "14.10 — Kilométrage Pro & supplément",
         content:
-          "a) Quota inclus : 100 km par jour de location effectif, identique pour le Tarif Journalier Flex et pour l'ensemble des Carnets Pro (Discovery, Business, Premium).\nb) Tarif kilométrique supplémentaire au-delà du quota : 0.65 CHF HT par km (TVA suisse en sus), facturé automatiquement au retour du véhicule. Ce tarif Pro se substitue au tarif B2C de l'Article 5.2.\nc) Les kilomètres inclus dans les Carnets Pro sont intégralement compris dans le prix prépayé : aucun supplément n'est facturé tant que la consommation reste dans le quota du carnet (pool mutualisé pour le Premium, voir Article 14.9 d).",
+          "a) Quota inclus : 100 km par jour de location effectif pour le Tarif Journalier Flex ; 200 km par jour de location effectif pour l'ensemble des Carnets Pro (Discovery, Business, Premium).\nb) Tarif kilométrique supplémentaire au-delà du quota : 0.65 CHF HT par km (TVA suisse en sus), facturé automatiquement au retour du véhicule. Ce tarif Pro se substitue au tarif B2C de l'Article 5.2.\nc) Les kilomètres inclus dans les Carnets Pro sont intégralement compris dans le prix prépayé : aucun supplément n'est facturé tant que la consommation reste dans le quota du carnet (pool mutualisé pour le Premium, voir Article 14.9 d).",
       },
     ],
   },
