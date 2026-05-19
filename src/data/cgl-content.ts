@@ -1,5 +1,5 @@
-export const CGL_VERSION = "01/01/2026";
-export const CGL_HASH = "sha256-logiq-cgl-v20260101-v2";
+export const CGL_VERSION = "19/05/2026";
+export const CGL_HASH = "sha256-logiq-cgl-v20260519-v1";
 
 export interface CGLArticle {
   id: string;
@@ -13,13 +13,13 @@ export const cglArticles: CGLArticle[] = [
     id: "article-1",
     title: "Article 1 — Mentions Légales & Objet",
     content:
-      "Les présentes Conditions Générales de Location (ci-après « CGL ») régissent les modalités de location de véhicules utilitaires proposés par LogIQ Transport Brissot (ci-après « Le Loueur »), service de location autonome accessible via plateforme numérique.",
+      "Les présentes Conditions Générales de Location (ci-après « CGL ») régissent les modalités de location de véhicules utilitaires proposés par LogIQ Transport Sàrl (ci-après « Le Loueur »), service de location autonome accessible via plateforme numérique.",
     subsections: [
       {
         id: "article-1.1",
         title: "1.1 — Le Loueur",
         content:
-          "LogIQ Transport Brissot, siège social à Vevey (1800), Suisse.",
+          "LogIQ Transport Sàrl, siège social à Vevey (1800), Suisse.",
       },
       {
         id: "article-1.2",
@@ -278,7 +278,13 @@ export const cglArticles: CGLArticle[] = [
         id: "article-14.9",
         title: "14.9 — Carnets Pro (prépayés)",
         content:
-          "a) Paiement 100 % à la commande.\nb) Les jours acquis ne sont ni reportables ni remboursables au-delà de l'échéance de validité de 6 mois à compter de la date d'achat.\nc) La réservation des jours reste soumise à la disponibilité des véhicules. La priorité Pro est garantie sous réserve d'un préavis minimum de 48 heures.",
+          "a) Paiement 100 % à la commande.\nb) Validité des jours acquis à compter de la date d'achat : 12 mois pour le Carnet Discovery (10 jours), 18 mois pour les Carnets Business (20 jours) et Premium (40 jours). Au-delà de l'échéance, les jours non consommés ne sont ni reportables ni remboursables.\nc) La réservation des jours reste soumise à la disponibilité des véhicules. La priorité Pro est garantie sous réserve d'un préavis minimum de 48 heures.\nd) Le Carnet Premium ouvre droit à un pool kilométrique mutualisé de 4'000 km (soit 100 km × 40 jours) librement répartissable sur la durée de validité du carnet ; les kilomètres non consommés ne sont ni reportables au-delà de l'échéance ni remboursables.",
+      },
+      {
+        id: "article-14.10",
+        title: "14.10 — Kilométrage Pro & supplément",
+        content:
+          "a) Quota inclus : 100 km par jour de location effectif, identique pour le Tarif Journalier Flex et pour l'ensemble des Carnets Pro (Discovery, Business, Premium).\nb) Tarif kilométrique supplémentaire au-delà du quota : 0.65 CHF HT par km (TVA suisse en sus), facturé automatiquement au retour du véhicule. Ce tarif Pro se substitue au tarif B2C de l'Article 5.2.\nc) Les kilomètres inclus dans les Carnets Pro sont intégralement compris dans le prix prépayé : aucun supplément n'est facturé tant que la consommation reste dans le quota du carnet (pool mutualisé pour le Premium, voir Article 14.9 d).",
       },
     ],
   },

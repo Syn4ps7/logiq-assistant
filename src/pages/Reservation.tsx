@@ -33,10 +33,12 @@ const WEEKEND_PACKS: Record<WeekendPack, { price: number; label: string }> = {
   premium: { price: 449, label: "Pack Déménagement Premium 48h" },
 };
 
+// Aligné sur la page /pro (source de vérité commerciale des Carnets Pro).
+// TVA 8.1 %. Quota km calé sur la CGL Art. 14.10 (100 km/jour).
 const CARNETS: { id: CarnetId; days: number; totalHT: number; totalTTC: number; perDayHT: number; perDayTTC: number; kmPerDay: number }[] = [
-  { id: "carnet-10", days: 10, totalHT: 1193.35, totalTTC: 1290, perDayHT: 119.35, perDayTTC: 129, kmPerDay: 200 },
-  { id: "carnet-20", days: 20, totalHT: 2257.15, totalTTC: 2440, perDayHT: 112.85, perDayTTC: 122, kmPerDay: 200 },
-  { id: "carnet-40", days: 40, totalHT: 4255.30, totalTTC: 4600, perDayHT: 106.40, perDayTTC: 115, kmPerDay: 200 },
+  { id: "carnet-10", days: 10, totalHT: 1450, totalTTC: 1567.45, perDayHT: 145, perDayTTC: 156.75, kmPerDay: 100 },
+  { id: "carnet-20", days: 20, totalHT: 2600, totalTTC: 2810.60, perDayHT: 130, perDayTTC: 140.55, kmPerDay: 100 },
+  { id: "carnet-40", days: 40, totalHT: 4800, totalTTC: 5188.80, perDayHT: 120, perDayTTC: 129.70, kmPerDay: 100 },
 ];
 
 
