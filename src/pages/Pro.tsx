@@ -231,7 +231,7 @@ const Pro = () => {
               <ul className="space-y-3 mb-8 flex-1" aria-label="Inclus dans le carnet Discovery">
                 {[
                   "Accès 24/7 via Smartphone (Fleetee)",
-                  "100 km inclus / jour",
+                  "200 km inclus / jour",
                   "Kit de base (4 sangles + couvertures)",
                   "Support client prioritaire",
                 ].map((item, i) => (
@@ -335,7 +335,7 @@ const Pro = () => {
                   "Assurance Sérénité incluse (franchise réduite)",
                   "Kit complet : Diable + Chariot + Protections",
                   "Ligne VIP WhatsApp",
-                  "Pool kilométrique flexible (4’000 km à répartir)",
+                  "Pool kilométrique flexible (8'000 km à répartir)",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-foreground">
                     <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
