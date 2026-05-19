@@ -180,6 +180,32 @@ Tu parles à un professionnel. Affiche les prix HT.
 - **Diable** : 10 CHF HT
 - **Sangles & couvertures** : 5 CHF HT`;
 
+/**
+ * Extraits verbatim des CGL (source : src/data/cgl-content.ts).
+ * Toute modification doit rester synchrone avec la page /cgl pour préserver
+ * la valeur juridique des citations renvoyées par l'assistant.
+ */
+const CGL_REFERENCE = `
+## Référence CGL — Articles 14.9 et 14.10 (verbatim)
+
+### Article 14.9 — Carnets Pro (prépayés)
+a) Paiement 100 % à la commande.
+b) Validité des jours acquis à compter de la date d'achat : 12 mois pour le Carnet Discovery (10 jours), 18 mois pour les Carnets Business (20 jours) et Premium (40 jours). Au-delà de l'échéance, les jours non consommés ne sont ni reportables ni remboursables.
+c) La réservation des jours reste soumise à la disponibilité des véhicules. La priorité Pro est garantie sous réserve d'un préavis minimum de 48 heures.
+d) Le Carnet Premium ouvre droit à un pool kilométrique mutualisé de 8'000 km (soit 200 km × 40 jours) librement répartissable sur la durée de validité du carnet ; les kilomètres non consommés ne sont ni reportables au-delà de l'échéance ni remboursables.
+
+### Article 14.10 — Kilométrage Pro & supplément
+a) Quota inclus : 100 km par jour de location effectif pour le Tarif Journalier Flex ; 200 km par jour de location effectif pour l'ensemble des Carnets Pro (Discovery, Business, Premium).
+b) Tarif kilométrique supplémentaire au-delà du quota : 0.65 CHF HT par km (TVA suisse en sus), facturé automatiquement au retour du véhicule. Ce tarif Pro se substitue au tarif B2C de l'Article 5.2.
+c) Les kilomètres inclus dans les Carnets Pro sont intégralement compris dans le prix prépayé : aucun supplément n'est facturé tant que la consommation reste dans le quota du carnet (pool mutualisé pour le Premium, voir Article 14.9 d).
+
+## Règles de citation CGL (Art. 14.9 et 14.10 uniquement)
+- Si l'utilisateur pose une question portant sur la **validité d'un carnet Pro**, le **pool kilométrique Premium**, le **quota km Pro (Flex ou Carnets)**, le **tarif km supplémentaire Pro (0.65 CHF HT/km)**, ou le **paiement/non-remboursement** des carnets, tu DOIS répondre en citant **textuellement** le ou les alinéas concernés des Articles 14.9 / 14.10 ci-dessus.
+- Format obligatoire : préfixer la citation par **Art. 14.9 X)** ou **Art. 14.10 X)** (où X = a, b, c ou d), puis reproduire l'alinéa entre guillemets « … » **sans paraphrase**.
+- Ajouter un lien d'ancre vers la clause exacte : [Voir Art. 14.9](/cgl#article-14.9) ou [Voir Art. 14.10](/cgl#article-14.10).
+- Cette règle de citation **prévaut** sur la limite « 1–2 phrases max » et sur la règle générale « Ne jamais rediriger vers les CGV » : pour ces deux articles uniquement, la citation verbatim + lien d'ancre est obligatoire.
+- Ne JAMAIS inventer un alinéa, un chiffre ou une formulation absente du bloc verbatim ci-dessus. Si la question dépasse le périmètre des Art. 14.9/14.10, répondre normalement sans citation et sans renvoyer aux CGL.`;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -207,9 +233,10 @@ serve(async (req) => {
     assertNoTemplateChars("SYSTEM_PROMPT_BASE", SYSTEM_PROMPT_BASE);
     assertNoTemplateChars("PARTICULIER_CONTEXT", PARTICULIER_CONTEXT);
     assertNoTemplateChars("PRO_CONTEXT", PRO_CONTEXT);
+    assertNoTemplateChars("CGL_REFERENCE", CGL_REFERENCE);
 
     const contextBlock = clientType === "pro" ? PRO_CONTEXT : PARTICULIER_CONTEXT;
-    const systemPrompt = SYSTEM_PROMPT_BASE + "\n" + contextBlock;
+    const systemPrompt = SYSTEM_PROMPT_BASE + "\n" + contextBlock + "\n" + CGL_REFERENCE;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
