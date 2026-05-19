@@ -39,7 +39,7 @@ export function Footer() {
             <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider text-primary">{t("nav.contact")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>contact@logiq-transport.ch</li>
-              <li>Tel: 078 200 69 58</li>
+              
             </ul>
           </div>
         </div>
